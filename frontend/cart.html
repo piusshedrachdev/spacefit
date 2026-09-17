@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cart | SpaceFit</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: "#fbf9f6",
+                        primary: "#914720",
+                        "primary-container": "#b05f36",
+                        "secondary-container": "#fe932c",
+                        "surface-container-low": "#f5f3f0",
+                        "surface-container": "#efeeeb",
+                        "surface-container-high": "#eae8e5",
+                        "on-surface": "#1b1c1a",
+                        "on-surface-variant": "#54433c",
+                        outline: "#87736a",
+                        "outline-variant": "#dac1b7"
+                    },
+
+                    fontFamily: {
+                        headline: ["Playfair Display"],
+                        body: ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+
+<body class="bg-background text-on-surface font-body">
+
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-outline-variant/30">
+
+        <div class="max-w-[1360px] mx-auto px-6 h-20 flex items-center justify-between">
+
+            <!-- Logo -->
+            <a href="index.html"
+                class="font-headline text-2xl font-semibold text-primary">
+                SpaceFit
+            </a>
+
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex items-center gap-8">
+
+                <a href="index.html"
+                    class="text-sm font-medium text-on-surface-variant hover:text-primary transition">
+                    Home
+                </a>
+
+                <a href="index.html"
+                    class="text-sm font-medium text-on-surface-variant hover:text-primary transition">
+                    Shop
+                </a>
+
+                <a href="product-details.html"
+                    class="text-sm font-medium text-on-surface-variant hover:text-primary transition">
+                    Products
+                </a>
+
+            </nav>
+
+
+            <!-- Right Icons -->
+            <div class="flex items-center gap-3">
+
+                <!-- Wishlist -->
+                <button
+                    class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high transition">
+
+                    <span class="material-symbols-outlined">
+                        favorite
+                    </span>
+
+                </button>
+
+
+                <!-- Cart -->
+                <a href="cart.html"
+                    class="relative w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+
+                    <span class="material-symbols-outlined">
+                        shopping_bag
+                    </span>
+
+                    <span id="cartBadge"
+                        class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-secondary-container text-white text-[10px] font-bold flex items-center justify-center">
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- Profile -->
+                <button
+                    class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
+
+                    <span class="material-symbols-outlined text-xl">
+                        person
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="pt-20 min-h-screen">
+
+        <div class="max-w-[1200px] mx-auto px-5 md:px-8 py-12">
+
+
+            <!-- Page heading -->
+
+            <div class="mb-10">
+
+                <p class="text-primary text-xs md:text-sm font-bold uppercase tracking-[0.2em] mb-3">
+                    Your Selection
+                </p>
+
+                <h1 class="font-headline text-4xl md:text-5xl font-semibold">
+                    Shopping Cart
+                </h1>
+
+                <p class="text-on-surface-variant mt-3 max-w-xl">
+                    Review the furniture and pieces you've selected for your space.
+                </p>
+
+            </div>
+
+
+
+            <!-- ================= CART CONTENT ================= -->
+
+            <div id="cartContent"
+                class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+
+                <!-- ================= CART ITEMS ================= -->
+
+                <section class="lg:col-span-2">
+
+                    <div id="cartItems"
+                        class="space-y-4">
+                    </div>
+
+
+                    <!-- EMPTY CART -->
+
+                    <div id="emptyCart"
+                        class="hidden bg-white rounded-2xl border border-outline-variant/30 p-10 md:p-16 text-center">
+
+                        <div
+                            class="w-20 h-20 mx-auto rounded-full bg-surface-container-low flex items-center justify-center mb-6">
+
+                            <span class="material-symbols-outlined text-4xl text-outline">
+                                shopping_bag
+                            </span>
+
+                        </div>
+
+                        <h2 class="font-headline text-2xl md:text-3xl font-semibold mb-3">
+                            Your cart is empty
+                        </h2>
+
+                        <p class="text-on-surface-variant text-sm max-w-md mx-auto mb-7">
+                            You haven't added anything to your space yet.
+                            Explore our collection and find something that fits.
+                        </p>
+
+                        <a href="index.html"
+                            class="inline-flex items-center gap-2 bg-primary hover:bg-primary-container text-white px-6 py-3 rounded-lg font-semibold transition">
+
+                            <span class="material-symbols-outlined text-lg">
+                                arrow_back
+                            </span>
+
+                            Continue Shopping
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ================= ORDER SUMMARY ================= -->
+
+                <aside>
+
+                    <div class="bg-white rounded-2xl border border-outline-variant/30 p-6 sticky top-28">
+
+                        <h2 class="font-headline text-2xl font-semibold mb-6">
+                            Order Summary
+                        </h2>
+
+
+                        <!-- Subtotal -->
+
+                        <div class="flex justify-between items-center mb-4">
+
+                            <span class="text-sm text-on-surface-variant">
+                                Subtotal
+                            </span>
+
+                            <span id="subtotal"
+                                class="font-semibold">
+                                ₦0
+                            </span>
+
+                        </div>
+
+
+                        <!-- Delivery -->
+
+                        <div class="flex justify-between items-center mb-4">
+
+                            <span class="text-sm text-on-surface-variant">
+                                Delivery
+                            </span>
+
+                            <span class="text-sm font-medium">
+                                Calculated later
+                            </span>
+
+                        </div>
+
+
+                        <div class="border-t border-outline-variant/40 my-5"></div>
+
+
+                        <!-- Total -->
+
+                        <div class="flex justify-between items-center mb-6">
+
+                            <span class="font-semibold text-lg">
+                                Total
+                            </span>
+
+                            <span id="total"
+                                class="font-bold text-xl text-primary">
+                                ₦0
+                            </span>
+
+                        </div>
+
+
+                        <!-- Checkout -->
+
+                        <button
+                            onclick="goToCheckout()"
+                            class="w-full bg-primary hover:bg-primary-container text-white py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition">
+
+                            Proceed to Checkout
+
+                            <span class="material-symbols-outlined">
+                                arrow_forward
+                            </span>
+
+                        </button>
+
+
+                        <!-- Continue Shopping -->
+
+                        <a href="index.html"
+                            class="mt-5 flex items-center justify-center gap-2 text-primary text-sm font-semibold hover:underline">
+
+                            <span class="material-symbols-outlined text-lg">
+                                arrow_back
+                            </span>
+
+                            Continue Shopping
+
+                        </a>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="bg-surface-container-low mt-16">
+
+        <div class="max-w-[1200px] mx-auto px-6 py-10">
+
+            <div class="flex flex-col md:flex-row justify-between gap-6">
+
+                <div>
+
+                    <h2 class="font-headline text-2xl font-semibold text-primary mb-2">
+                        SpaceFit
+                    </h2>
+
+                    <p class="text-sm text-on-surface-variant max-w-md">
+                        Furniture and spatial pieces designed around your
+                        space, style and budget.
+                    </p>
+
+                </div>
+
+
+                <div class="text-sm text-on-surface-variant md:text-right">
+
+                    <p>
+                        ₦ NGN • Lagos, NG
+                    </p>
+
+                    <p class="text-xs text-outline mt-2">
+                        © 2025 SpaceFit Studio Limited.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        /*
+        -----------------------------------------
+        CART DATA
+        -----------------------------------------
+        */
+
+        let cart = JSON.parse(
+            localStorage.getItem("spacefitCart")
+        ) || [];
+
+
+
+        /*
+        -----------------------------------------
+        FORMAT PRICE
+        -----------------------------------------
+        */
+
+        function formatPrice(price) {
+
+            return "₦" + Number(price).toLocaleString("en-NG");
+
+        }
+
+
+
+        /*
+        -----------------------------------------
+        DISPLAY CART
+        -----------------------------------------
+        */
+
+        function displayCart() {
+
+            const cartItems =
+                document.getElementById("cartItems");
+
+            const emptyCart =
+                document.getElementById("emptyCart");
+
+            const subtotalElement =
+                document.getElementById("subtotal");
+
+            const totalElement =
+                document.getElementById("total");
+
+            const cartBadge =
+                document.getElementById("cartBadge");
+
+
+            cartItems.innerHTML = "";
+
+
+            /*
+            Count products
+            */
+
+            let totalQuantity = 0;
+
+            cart.forEach(item => {
+
+                totalQuantity += Number(item.quantity);
+
+            });
+
+
+            cartBadge.textContent = totalQuantity;
+
+
+
+            /*
+            If cart is empty
+            */
+
+            if (cart.length === 0) {
+
+                emptyCart.classList.remove("hidden");
+
+                subtotalElement.textContent = "₦0";
+
+                totalElement.textContent = "₦0";
+
+                return;
+
+            }
+
+
+            emptyCart.classList.add("hidden");
+
+
+
+            /*
+            Calculate subtotal
+            */
+
+            let subtotal = 0;
+
+
+
+            /*
+            Create each product
+            */
+
+            cart.forEach((item, index) => {
+
+                const quantity =
+                    Number(item.quantity) || 1;
+
+                const price =
+                    Number(item.price) || 0;
+
+                const itemTotal =
+                    price * quantity;
+
+                subtotal += itemTotal;
+
+
+
+                const productCard =
+                    document.createElement("div");
+
+
+                productCard.className =
+                    "bg-white rounded-2xl border border-outline-variant/30 p-4 md:p-5";
+
+
+
+                productCard.innerHTML = `
+
+                    <div class="flex gap-4">
+
+
+                        <!-- Product Image -->
+
+                        <div class="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 rounded-xl bg-surface-container-low overflow-hidden flex items-center justify-center">
+
+                            ${
+                                item.image
+                                ?
+                                `<img src="${item.image}"
+                                    alt="${item.name}"
+                                    class="w-full h-full object-cover">`
+                                :
+                                `<span class="material-symbols-outlined text-4xl text-outline">
+                                    chair
+                                </span>`
+                            }
+
+                        </div>
+
+
+
+                        <!-- Product Information -->
+
+                        <div class="flex-1 min-w-0">
+
+
+                            <div class="flex justify-between gap-3">
+
+                                <div>
+
+                                    <h3 class="font-semibold text-base md:text-lg">
+                                        ${item.name}
+                                    </h3>
+
+                                    <p class="text-xs md:text-sm text-on-surface-variant mt-1">
+                                        SpaceFit furniture
+                                    </p>
+
+                                </div>
+
+
+                                <!-- Delete -->
+
+                                <button
+                                    onclick="removeItem(${index})"
+                                    class="text-outline hover:text-red-600 transition flex-shrink-0">
+
+                                    <span class="material-symbols-outlined">
+                                        delete
+                                    </span>
+
+                                </button>
+
+                            </div>
+
+
+
+                            <!-- Bottom row -->
+
+                            <div class="mt-5 flex flex-wrap items-center justify-between gap-4">
+
+
+                                <!-- Price -->
+
+                                <div>
+
+                                    <p class="text-xs text-outline mb-1">
+                                        Price
+                                    </p>
+
+                                    <p class="font-bold text-primary">
+                                        ${formatPrice(price)}
+                                    </p>
+
+                                </div>
+
+
+
+                                <!-- Quantity -->
+
+                                <div>
+
+                                    <p class="text-xs text-outline mb-1">
+                                        Quantity
+                                    </p>
+
+                                    <div class="flex items-center border border-outline-variant/50 rounded-lg overflow-hidden">
+
+                                        <button
+                                            onclick="changeQuantity(${index}, -1)"
+                                            class="w-9 h-9 flex items-center justify-center hover:bg-surface-container-high transition">
+
+                                            <span class="material-symbols-outlined text-lg">
+                                                remove
+                                            </span>
+
+                                        </button>
+
+
+                                        <span class="w-10 text-center font-semibold">
+                                            ${quantity}
+                                        </span>
+
+
+                                        <button
+                                            onclick="changeQuantity(${index}, 1)"
+                                            class="w-9 h-9 flex items-center justify-center bg-primary text-white hover:bg-primary-container transition">
+
+                                            <span class="material-symbols-outlined text-lg">
+                                                add
+                                            </span>
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- Item Total -->
+
+                                <div class="text-right">
+
+                                    <p class="text-xs text-outline mb-1">
+                                        Total
+                                    </p>
+
+                                    <p class="font-bold">
+                                        ${formatPrice(itemTotal)}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+
+                cartItems.appendChild(productCard);
+
+            });
+
+
+
+            /*
+            Update totals
+            */
+
+            subtotalElement.textContent =
+                formatPrice(subtotal);
+
+            totalElement.textContent =
+                formatPrice(subtotal);
+
+        }
+
+
+
+        /*
+        -----------------------------------------
+        CHANGE QUANTITY
+        -----------------------------------------
+        */
+
+        function changeQuantity(index, amount) {
+
+            cart[index].quantity =
+                Number(cart[index].quantity) + amount;
+
+
+            /*
+            Remove item if quantity reaches zero
+            */
+
+            if (cart[index].quantity <= 0) {
+
+                cart.splice(index, 1);
+
+            }
+
+
+            saveCart();
+
+            displayCart();
+
+        }
+
+
+
+        /*
+        -----------------------------------------
+        REMOVE ITEM
+        -----------------------------------------
+        */
+
+        function removeItem(index) {
+
+            cart.splice(index, 1);
+
+            saveCart();
+
+            displayCart();
+
+        }
+
+
+
+        /*
+        -----------------------------------------
+        SAVE CART
+        -----------------------------------------
+        */
+
+        function saveCart() {
+
+            localStorage.setItem(
+                "spacefitCart",
+                JSON.stringify(cart)
+            );
+
+        }
+
+
+
+        /*
+        -----------------------------------------
+        CHECKOUT
+        -----------------------------------------
+        */
+
+        function goToCheckout() {
+
+            if (cart.length === 0) {
+
+                alert("Your cart is empty.");
+
+                return;
+
+            }
+
+
+            window.location.href =
+                "checkout.html";
+
+        }
+
+
+
+        /*
+        -----------------------------------------
+        LOAD CART
+        -----------------------------------------
+        */
+
+        displayCart();
+
+    </script>
+
+</body>
+
+</html>

@@ -71,7 +71,7 @@
                             class="absolute top-1 right-1 w-4 h-4 bg-primary text-on-primary font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">2</span></a><a
                         aria-label="Cart"
                         class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
-                        data-path="cart" href="#"><span
+                        data-path="cart" href="cart.html"><span
                             class="material-symbols-outlined text-2xl">local_mall</span><span
                             class="absolute top-1 right-1 w-4 h-4 bg-secondary-container text-on-secondary-container font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">3</span></a>
                     <div class="h-5 w-px bg-outline-variant/40 mx-space-xs hidden sm:block"></div><a
@@ -1081,17 +1081,69 @@
             <!-- Interactive JavaScript -->
             <script>
                 function triggerAddToCart(productTitle) {
-                    const toast = document.getElementById('cartToast');
-                    const toastItemName = document.getElementById('toastItemName');
-                    toastItemName.textContent = productTitle + ' added';
-                    toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
-                    toast.classList.add('opacity-100', 'translate-y-0');
 
-                    clearTimeout(window.toastTimer);
-                    window.toastTimer = setTimeout(() => {
-                        dismissToast();
-                    }, 3500);
-                }
+    const products = {
+        "Luna Upholstered Queen Bed": 450000,
+        "Nordic Ergonomic Oak Desk": 185000,
+        "CloudRest Memory Hybrid Mattress": 220000,
+        "Kanso Minimalist 3-Door Wardrobe": 380000,
+        "Arlo Floating Walnut Nightstand": 65000,
+        "Sahara Handwoven Wool Rug": 140000,
+        "Vesper Brass Floor Lamp": 82000,
+        "Kyoto Solid Ash Bed Frame": 520000
+    };
+
+    const price = products[productTitle];
+
+    if (!price) {
+        console.log("Product not found:", productTitle);
+        return;
+    }
+
+    // Get the existing cart
+    let cart = JSON.parse(localStorage.getItem("spacefitCart")) || [];
+
+    // Check if the product is already in the cart
+    const existingProduct = cart.find(item => item.name === productTitle);
+
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+    } else {
+        cart.push({
+            name: productTitle,
+            price: price,
+            quantity: 1
+        });
+    }
+
+    // Save the cart
+    localStorage.setItem("spacefitCart", JSON.stringify(cart));
+
+    // Show the existing notification
+    const toast = document.getElementById("cartToast");
+    const toastItemName = document.getElementById("toastItemName");
+
+    if (toast && toastItemName) {
+        toastItemName.textContent = productTitle + " added";
+
+        toast.classList.remove(
+            "opacity-0",
+            "pointer-events-none",
+            "translate-y-[-20px]"
+        );
+
+        toast.classList.add(
+            "opacity-100",
+            "translate-y-0"
+        );
+
+        clearTimeout(window.toastTimer);
+
+        window.toastTimer = setTimeout(() => {
+            dismissToast();
+        }, 3500);
+    }
+}
 
                 function dismissToast() {
                     const toast = document.getElementById('cartToast');
