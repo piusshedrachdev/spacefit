@@ -30,73 +30,40 @@
 
 <body class="min-h-screen bg-background text-on-surface flex flex-col justify-between antialiased">
   <!-- BEGIN: MainHeader -->
-  <header class="bg-surface border-b border-outline-variant sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-      <!-- Brand Logo & Main Nav Links -->
-      <div class="flex items-center space-x-8 shrink-0">
-        <a class="flex items-center gap-2 group text-decoration-none" href="index.html">
-          <div class="w-8 h-8 rounded-lg bg-primary text-on-primary flex items-center justify-center shadow-sm">
-            <!-- House/Sofa Stylized Brand Icon -->
-            <svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
-              <path d="M12 3L3 10v10a1 1 0 001 1h5v-6h6v6h5a1 1 0 001-1V10l-9-7zm0 2.84L18 11v8h-3v-6H9v6H6v-8l6-5.16z">
-              </path>
-            </svg>
-          </div>
-          <span class="text-xl font-extrabold tracking-tight text-on-surface">SpaceFit</span>
-        </a>
-        <!-- Top Navigation -->
-        <nav class="hidden md:flex items-center space-x-6 text-sm font-semibold text-on-surface-variant">
-          <a class="hover:text-primary transition-colors" href="index.html">Shop</a>
-          <a class="hover:text-primary transition-colors" href="#">Categories</a>
+  <header
+    class="fixed top-0 left-0 right-0 z-50 bg-surface-bright/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(41,37,36,0.05)]">
+    <div class="h-20 w-full max-w-[1360px] mx-auto px-margin flex items-center justify-between gap-gutter">
+      <div class="flex items-center gap-space-xl"><a class="flex items-center gap-space-sm" data-path="shop"
+          href="index.html"><img alt="SpaceFit Brand Logo" class="h-8 w-auto object-contain"
+            src="https://lh3.googleusercontent.com/aida/AEtjO1X-ZdF68vH1qgNXmwfX40VBc_Q5Eq_-5ZMicO7IymUWzQkgWfGnJmVNLK8EvOEGpNAng3qrFRqt9Tlhas7hoD1-VHZ5EFw9gppWkUzegD1FC-HhV8QCmQYnUVNJhJSpxEsp0l0emKPeBMwFQq9xeWTIUooFYaguzWC8iitLBVckT0e2F9fMlZhOrkT58zdQrnlGri6VJ-8Npq6DzFvJ5cEsGuMk29a5ovXzKcdp-oYvHRizRuOz2x7sK7E" /><span
+            class="font-headline-md text-headline-md text-primary tracking-tight">SpaceFit</span></a>
+        <nav class="hidden md:flex items-center gap-space-lg">
+          <a class="relative py-space-sm transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-primary after:transition-all text-on-surface-variant font-label-lg text-label-lg hover:text-primary after:w-0 hover:after:w-full"
+            data-path="shop" href="index.html">Shop</a><a
+            class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+            data-path="categories" href="#">Categories</a><a
+            class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+            data-path="sale" href="#">Sale</a>
         </nav>
       </div>
-      <!-- Center Search Bar -->
-      <div class="flex-1 max-w-lg mx-4 hidden sm:block">
-        <div class="relative w-full">
-          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-outline">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-              <path d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" stroke-linecap="round"
-                stroke-linejoin="round" stroke-width="2"></path>
-            </svg>
-          </div>
-          <input
-            class="w-full pl-10 pr-4 py-2 text-sm bg-surface-container-low border border-outline-variant rounded-full focus:outline-none focus:border-primary focus:bg-surface focus:ring-1 focus:ring-primary transition-all placeholder:text-outline"
-            placeholder="Search for furniture, rooms..." type="search" />
-        </div>
-      </div>
-      <!-- Header Action Icons -->
-      <div class="flex items-center space-x-5 text-on-surface-variant shrink-0">
-        <!-- Cart Icon -->
-        <button aria-label="Cart" class="p-1.5 hover:text-primary hover:bg-surface-container rounded-full transition-colors"
-          type="button">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round"
-              stroke-width="1.8"></path>
-          </svg>
-        </button>
-        <!-- Notification / Bell Icon -->
-        <button aria-label="Notifications"
-          class="p-1.5 hover:text-primary hover:bg-surface-container rounded-full transition-colors" type="button">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-            <path
-              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
-          </svg>
-        </button>
-        <!-- Profile Icon -->
-        <button aria-label="User Profile"
-          class="p-1.5 hover:text-primary hover:bg-surface-container rounded-full transition-colors" type="button">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round"
-              stroke-linejoin="round" stroke-width="1.8"></path>
-          </svg>
-        </button>
+      <div class="flex items-center gap-space-sm"><a aria-label="Wishlist"
+          class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+          data-path="wishlist" href="#"><span class="material-symbols-outlined text-2xl">favorite</span><span
+            class="absolute top-1 right-1 w-4 h-4 bg-primary text-on-primary font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">2</span></a><a
+          aria-label="Cart"
+          class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+          data-path="cart" href="#"><span class="material-symbols-outlined text-2xl">local_mall</span><span
+            class="absolute top-1 right-1 w-4 h-4 bg-secondary-container text-on-secondary-container font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">3</span></a>
+        <div class="h-5 w-px bg-outline-variant/40 mx-space-xs hidden sm:block"></div><a
+          class="p-0.5 rounded-full ring-1 ring-outline-variant/50 hover:ring-primary transition-all flex items-center justify-center"
+          data-path="account" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnchXX3z1wQX9pgJZ7KjrS1y_6HJLcOfzdigpvbC1rgHJYOrB6jiAyyhA9aIjfoFrRTp3TzwxELoxg6FxNwaOXmvBTDij_BjE-rLjcGdV_7i9wI0NFWaL9VgaKCSnyvKV4iXo3m7TObnO8aASPyPRV61y28uDRnO5rNc_gdmQKanpNEcN_dfQTNQjm_ZZLniBhHrj9WtOJUM0hxzeJ07LNH8HirBOpsI13O0Xm2XswN6hr6zI746lp" /></a>
       </div>
     </div>
   </header>
   <!-- END: MainHeader -->
   <!-- BEGIN: MainConfirmationContent -->
-  <main class="max-w-4xl mx-auto w-full px-4 pt-10 pb-16 flex-1 flex flex-col items-center">
+  <main class="max-w-4xl mx-auto w-full px-4 pt-28 pb-16 flex-1 flex flex-col items-center">
     <!-- Success Badge / Checkmark Indicator -->
     <div
       class="w-16 h-16 rounded-full bg-primary-fixed border-4 border-primary-fixed-dim flex items-center justify-center mb-5 shadow-sm">

@@ -41,66 +41,41 @@
 <body
   class="bg-background text-on-surface min-h-screen flex flex-col antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
   <!-- BEGIN: MainHeader -->
-  <header class="bg-surface border-b border-outline-variant sticky top-0 z-30 shadow-sm" data-purpose="navigation-header">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-      <!-- Brand Logo & Main Nav Links -->
-      <div class="flex items-center gap-8">
-        <!-- Logo -->
-        <a class="flex items-center gap-2 text-on-surface font-bold text-xl tracking-tight" data-purpose="site-brand"
-          href="index.html">
-          <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2L2 9.5V20C2 20.5523 2.44772 21 3 21H9V14H15V21H21C21.5523 21 22 20.5523 22 20V9.5L12 2Z">
-            </path>
-            <path d="M9 10C9 8.34315 10.3431 7 12 7C13.6569 7 15 8.34315 15 10V11H9V10Z" fill="#ffb694"></path>
-          </svg>
-          <span class="">SpaceFit</span>
-        </a>
-        <!-- Desktop Navigation Items -->
-        <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-on-surface-variant">
-          <a class="hover:text-primary transition-colors" href="index.html">Shop</a>
-          <a class="hover:text-primary transition-colors" href="#">Categories</a>
+  <header
+    class="fixed top-0 left-0 right-0 z-50 bg-surface-bright/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(41,37,36,0.05)]"
+    data-purpose="navigation-header">
+    <div class="h-20 w-full max-w-[1360px] mx-auto px-margin flex items-center justify-between gap-gutter">
+      <div class="flex items-center gap-space-xl"><a class="flex items-center gap-space-sm" data-path="shop"
+          href="index.html"><img alt="SpaceFit Brand Logo" class="h-8 w-auto object-contain"
+            src="https://lh3.googleusercontent.com/aida/AEtjO1X-ZdF68vH1qgNXmwfX40VBc_Q5Eq_-5ZMicO7IymUWzQkgWfGnJmVNLK8EvOEGpNAng3qrFRqt9Tlhas7hoD1-VHZ5EFw9gppWkUzegD1FC-HhV8QCmQYnUVNJhJSpxEsp0l0emKPeBMwFQq9xeWTIUooFYaguzWC8iitLBVckT0e2F9fMlZhOrkT58zdQrnlGri6VJ-8Npq6DzFvJ5cEsGuMk29a5ovXzKcdp-oYvHRizRuOz2x7sK7E" /><span
+            class="font-headline-md text-headline-md text-primary tracking-tight">SpaceFit</span></a>
+        <nav class="hidden md:flex items-center gap-space-lg">
+          <a class="relative py-space-sm transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-primary after:transition-all text-on-surface-variant font-label-lg text-label-lg hover:text-primary after:w-0 hover:after:w-full"
+            data-path="shop" href="index.html">Shop</a><a
+            class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+            data-path="categories" href="#">Categories</a><a
+            class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+            data-path="sale" href="#">Sale</a>
         </nav>
       </div>
-      <!-- Center Search Bar -->
-      <div class="flex-1 max-w-md mx-2 sm:mx-6" data-purpose="header-search">
-        <div class="relative">
-          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-outline">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </span>
-          <input
-            class="w-full pl-9 pr-4 py-1.5 text-xs sm:text-sm bg-surface-container-low border border-outline-variant rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:bg-surface text-on-surface placeholder-outline transition-all shadow-inner"
-            placeholder="Search for furniture, rooms..." type="text">
-        </div>
-      </div>
-      <!-- User Action Icons -->
-      <div class="flex items-center space-x-3 text-on-surface-variant" data-purpose="user-actions">
-        <!-- Shopping Cart Icon -->
-        <button aria-label="Shopping Cart" class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant transition"
-          type="button">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path
-              d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-              stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-        </button>
-        <!-- Profile Icon -->
-        <button aria-label="User Account" class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant transition"
-          type="button">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path
-              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-              stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-        </button>
+      <div class="flex items-center gap-space-sm"><a aria-label="Wishlist"
+          class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+          data-path="wishlist" href="#"><span class="material-symbols-outlined text-2xl">favorite</span><span
+            class="absolute top-1 right-1 w-4 h-4 bg-primary text-on-primary font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">2</span></a><a
+          aria-label="Cart"
+          class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+          data-path="cart" href="#"><span class="material-symbols-outlined text-2xl">local_mall</span><span
+            class="absolute top-1 right-1 w-4 h-4 bg-secondary-container text-on-secondary-container font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">3</span></a>
+        <div class="h-5 w-px bg-outline-variant/40 mx-space-xs hidden sm:block"></div><a
+          class="p-0.5 rounded-full ring-1 ring-outline-variant/50 hover:ring-primary transition-all flex items-center justify-center"
+          data-path="account" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnchXX3z1wQX9pgJZ7KjrS1y_6HJLcOfzdigpvbC1rgHJYOrB6jiAyyhA9aIjfoFrRTp3TzwxELoxg6FxNwaOXmvBTDij_BjE-rLjcGdV_7i9wI0NFWaL9VgaKCSnyvKV4iXo3m7TObnO8aASPyPRV61y28uDRnO5rNc_gdmQKanpNEcN_dfQTNQjm_ZZLniBhHrj9WtOJUM0hxzeJ07LNH8HirBOpsI13O0Xm2XswN6hr6zI746lp" /></a>
       </div>
     </div>
   </header>
   <!-- END: MainHeader -->
   <!-- BEGIN: MainContent -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" data-purpose="checkout-container">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-8" data-purpose="checkout-container">
     <!-- Page Title -->
     <h1 class="font-headline-lg text-headline-lg sm:text-[32px] font-bold tracking-tight text-on-surface mb-6" data-purpose="page-title">
       Checkout
