@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Product Details - SpaceFit</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        @layer base {
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                overscroll-behavior: none;
+            }
+
+            main>:first-child {
+                margin-top: 0 !important;
+            }
+
+            main>:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#eae8e5",
+                        "surface-bright": "#fbf9f6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#6e3900",
+                        "primary-fixed-dim": "#ffb694",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e4e2df",
+                        "on-primary-fixed": "#351000",
+                        "tertiary-fixed": "#e9e1df",
+                        "on-surface-variant": "#54433c",
+                        "surface-dim": "#dbdad7",
+                        "background": "#fbf9f6",
+                        "primary-fixed": "#ffdbcc",
+                        "primary": "#914720",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#2f1500",
+                        "inverse-surface": "#30312f",
+                        "surface-tint": "#944922",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#4b4644",
+                        "on-primary-fixed-variant": "#76330d",
+                        "inverse-primary": "#ffb694",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#1b1c1a",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#dac1b7",
+                        "tertiary-container": "#797372",
+                        "tertiary": "#605b59",
+                        "secondary-fixed": "#ffdcc3",
+                        "secondary": "#904d00",
+                        "surface-container-highest": "#e4e2df",
+                        "on-tertiary-container": "#fffbff",
+                        "on-surface": "#1b1c1a",
+                        "outline": "#87736a",
+                        "tertiary-fixed-dim": "#cdc5c3",
+                        "secondary-fixed-dim": "#ffb77d",
+                        "surface-container-low": "#f5f3f0",
+                        "secondary-container": "#fe932c",
+                        "on-secondary-container": "#663500",
+                        "primary-container": "#b05f36",
+                        "surface-container": "#efeeeb",
+                        "on-primary-container": "#fffbff",
+                        "surface": "#fbf9f6",
+                        "inverse-on-surface": "#f2f0ed",
+                        "on-tertiary-fixed": "#1e1b1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "space-2xl": "4rem",
+                        "margin-mobile": "1rem",
+                        "gutter-sm": "1rem",
+                        "margin": "2rem",
+                        "space-lg": "1.5rem",
+                        "space-xs": "0.25rem",
+                        "gutter": "1.5rem",
+                        "space-md": "1rem",
+                        "margin-desktop": "4rem",
+                        "gutter-lg": "2rem",
+                        "space-xl": "2.5rem",
+                        "space-sm": "0.5rem"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "price-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "price-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Playfair Display"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "price-md": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+                        "price-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["34px", { "lineHeight": "42px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["26px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+
+<body class="bg-background font-body-md text-on-surface antialiased">
+    <!-- Header -->
+    <header
+        class="fixed top-0 left-0 right-0 z-50 bg-surface-bright/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(41,37,36,0.05)]">
+        <div class="h-20 w-full max-w-[1360px] mx-auto px-margin flex items-center justify-between gap-gutter">
+            <div class="flex items-center gap-space-xl">
+                <a class="flex items-center gap-space-sm" data-path="shop" href="index.html">
+                    <img alt="SpaceFit Brand Logo" class="h-8 w-auto object-contain"
+                        src="https://lh3.googleusercontent.com/aida/AEtjO1X-ZdF68vH1qgNXmwfX40VBc_Q5Eq_-5ZMicO7IymUWzQkgWfGnJmVNLK8EvOEGpNAng3qrFRqt9Tlhas7hoD1-VHZ5EFw9gppWkUzegD1FC-HhV8QCmQYnUVNJhJSpxEsp0l0emKPeBMwFQq9xeWTIUooFYaguzWC8iitLBVckT0e2F9fMlZhOrkT58zdQrnlGri6VJ-8Npq6DzFvJ5cEsGuMk29a5ovXzKcdp-oYvHRizRuOz2x7sK7E" />
+                    <span class="font-headline-md text-headline-md text-primary tracking-tight">SpaceFit</span>
+                </a>
+                <nav class="hidden md:flex items-center gap-space-lg">
+                    <a class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+                        data-path="shop" href="index.html">Shop</a>
+                    <a class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+                        data-path="categories" href="index.html">Categories</a>
+                    <a class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+                        data-path="sale" href="index.html">Sale</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-space-sm">
+                <a aria-label="Wishlist"
+                    class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+                    data-path="wishlist" href="#">
+                    <span class="material-symbols-outlined text-2xl">favorite</span>
+                    <span
+                        class="absolute top-1 right-1 w-4 h-4 bg-primary text-on-primary font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">2</span>
+                </a>
+                <a aria-label="Cart"
+                    class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+                    data-path="cart" href="checkout.html">
+                    <span class="material-symbols-outlined text-2xl">local_mall</span>
+                    <span
+                        class="absolute top-1 right-1 w-4 h-4 bg-secondary-container text-on-secondary-container font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">3</span>
+                </a>
+                <div class="h-5 w-px bg-outline-variant/40 mx-space-xs hidden sm:block"></div>
+                <a class="p-0.5 rounded-full ring-1 ring-outline-variant/50 hover:ring-primary transition-all flex items-center justify-center"
+                    data-path="account" href="#">
+                    <img alt="Profile" class="w-8 h-8 rounded-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnchXX3z1wQX9pgJZ7KjrS1y_6HJLcOfzdigpvbC1rgHJYOrB6jiAyyhA9aIjfoFrRTp3TzwxELoxg6FxNwaOXmvBTDij_BjE-rLjcGdV_7i9wI0NFWaL9VgaKCSnyvKV4iXo3m7TObnO8aASPyPRV61y28uDRnO5rNc_gdmQKanpNEcN_dfQTNQjm_ZZLniBhHrj9WtOJUM0hxzeJ07LNH8HirBOpsI13O0Xm2XswN6hr6zI746lp" />
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="w-full pt-24 pb-space-2xl bg-background">
+        <!-- Toast Notification Container -->
+        <div class="fixed top-24 right-8 z-50 flex items-center gap-space-sm bg-inverse-surface text-inverse-on-surface px-space-lg py-space-md rounded-xl shadow-xl transform translate-y-[-20px] opacity-0 pointer-events-none transition-all duration-300"
+            id="cartToast">
+            <span class="material-symbols-outlined text-primary-fixed-dim text-xl"
+                style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            <div class="flex flex-col">
+                <span class="font-label-md text-label-md font-bold">Added to Spatial Bag</span>
+                <span class="font-body-sm text-body-sm text-surface-dim" id="toastItemName">Piece successfully
+                    reserved</span>
+            </div>
+            <button class="ml-space-md text-surface-dim hover:text-inverse-on-surface" onclick="dismissToast()">
+                <span class="material-symbols-outlined text-base">close</span>
+            </button>
+        </div>
+
+        <div class="w-full max-w-[1360px] mx-auto px-margin">
+            <!-- Product Detail Content Shell Card -->
+            <section class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-space-md md:p-space-xl shadow-sm">
+                <!-- Two Column Product Information Area -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter-lg items-start">
+                    <!-- Left Column: Image Gallery -->
+                    <div class="md:col-span-6 space-y-space-md">
+                        <!-- Main Product Image -->
+                        <div class="relative w-full aspect-[4/3] bg-surface-container-low rounded-xl overflow-hidden shadow-xs border border-outline-variant/20">
+                            <img id="mainProductImage"
+                                class="w-full h-full object-cover transition-opacity duration-300"
+                                src="" alt="Product Image" />
+                            <button aria-label="Add to wishlist"
+                                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 hover:bg-surface-container-lowest text-on-surface flex items-center justify-center transition-transform active:scale-90 shadow-sm"
+                                onclick="toggleFavorite(this)">
+                                <span class="material-symbols-outlined text-lg">favorite</span>
+                            </button>
+                        </div>
+                        <!-- Thumbnail Strip -->
+                        <div class="flex items-center gap-space-sm overflow-x-auto pb-1" id="thumbnailStrip">
+                            <!-- Thumbnails dynamically rendered -->
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Product Information & Controls -->
+                    <div class="md:col-span-6 space-y-space-md flex flex-col justify-between h-full">
+                        <div class="space-y-space-xs">
+                            <!-- Category & Rating -->
+                            <div class="flex items-center justify-between">
+                                <span class="font-label-md text-label-md text-outline font-semibold uppercase tracking-wider" id="productCategory">Beds</span>
+                                <div class="flex items-center text-secondary-container">
+                                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="font-bold text-on-surface ml-1 text-xs" id="productRating">4.8</span>
+                                    <span class="text-outline text-xs ml-1" id="productReviews">(14 reviews)</span>
+                                </div>
+                            </div>
+
+                            <!-- Title -->
+                            <h1 class="font-headline-lg text-headline-lg md:text-[34px] md:leading-[42px] text-on-surface font-semibold tracking-tight" id="productTitle">
+                                Luna Bed
+                            </h1>
+
+                            <!-- Price & Availability -->
+                            <div class="flex items-center gap-space-md pt-space-xs">
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-price-lg text-price-lg text-on-surface font-bold" id="productPrice">₦450,000</span>
+                                    <span class="text-xs text-outline line-through hidden" id="productOrigPrice"></span>
+                                </div>
+                                <span class="text-xs text-emerald-700 font-label-md uppercase font-semibold flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60" id="productAvailability">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> In stock
+                                </span>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="font-body-md text-body-md text-on-surface-variant pt-space-xs leading-relaxed" id="productDescription">
+                                A modern and comfortable bed frame designed for quality sleep and timeless style. Made with solid wood and upholstered headboard.
+                            </p>
+
+                            <!-- Key Features -->
+                            <div class="pt-space-xs space-y-1.5">
+                                <h3 class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider">Key Features</h3>
+                                <ul class="space-y-1 font-body-sm text-body-sm text-on-surface-variant" id="productFeatures">
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
+                                        Solid wood frame
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
+                                        Upholstered headboard
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
+                                        Available in multiple colours
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
+                                        Easy assembly
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Colour Swatches -->
+                        <div class="pt-space-xs space-y-space-xs">
+                            <label class="font-label-md text-label-md font-bold text-on-surface block uppercase tracking-wider">
+                                Colour: <span class="font-normal text-on-surface-variant" id="selectedColorName">Oat Bouclé</span>
+                            </label>
+                            <div class="flex items-center gap-space-sm" id="colorSwatches">
+                                <!-- Swatches dynamically rendered -->
+                            </div>
+                        </div>
+
+                        <!-- Size Selector -->
+                        <div class="pt-space-xs space-y-space-xs">
+                            <label class="font-label-md text-label-md font-bold text-on-surface block uppercase tracking-wider" for="sizeSelect">
+                                Size
+                            </label>
+                            <div class="relative w-full">
+                                <select id="sizeSelect"
+                                    class="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg py-2.5 px-space-md font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary appearance-none cursor-pointer">
+                                    <!-- Options dynamically rendered -->
+                                </select>
+                                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-xl">
+                                    expand_more
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Purchase Row (Quantity + Add to Cart) -->
+                        <div class="pt-space-sm flex items-center gap-space-md">
+                            <!-- Quantity Selector -->
+                            <div class="flex items-center border border-outline-variant/40 rounded-lg bg-surface-container-low p-1">
+                                <button onclick="adjustQuantity(-1)"
+                                    class="w-8 h-8 rounded flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors active:scale-95"
+                                    aria-label="Decrease quantity">
+                                    <span class="material-symbols-outlined text-base">remove</span>
+                                </button>
+                                <span id="quantityVal" class="w-8 text-center font-label-md text-label-md font-bold text-on-surface">1</span>
+                                <button onclick="adjustQuantity(1)"
+                                    class="w-8 h-8 rounded flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors active:scale-95"
+                                    aria-label="Increase quantity">
+                                    <span class="material-symbols-outlined text-base">add</span>
+                                </button>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <button onclick="handleAddToCart()"
+                                class="flex-1 bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-3 px-space-lg rounded-lg shadow-sm font-semibold flex items-center justify-center gap-space-xs transition-all active:scale-98">
+                                <span class="material-symbols-outlined text-lg">local_mall</span>
+                                <span>Add to Cart</span>
+                            </button>
+                        </div>
+
+                        <!-- Secondary Action: Continue Shopping -->
+                        <div class="pt-space-xs">
+                            <a href="index.html"
+                                class="w-full border border-outline/60 text-on-surface hover:bg-surface-container-low py-2.5 px-space-lg rounded-lg font-label-md text-label-md font-semibold text-center block transition-all">
+                                Continue Shopping
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specifications Block -->
+                <div class="mt-space-2xl pt-space-lg border-t border-outline-variant/20">
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface mb-space-md">Specifications</h2>
+                    <div class="bg-surface-container-low/60 rounded-xl p-space-md border border-outline-variant/30 max-w-3xl">
+                        <dl class="divide-y divide-outline-variant/20 text-body-sm font-body-sm" id="specsList">
+                            <!-- Specifications rows dynamically rendered -->
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- "You may also like" Related Products Section -->
+                <div class="mt-space-2xl pt-space-lg border-t border-outline-variant/20">
+                    <h2 class="font-headline-md text-headline-md text-on-surface mb-space-md">You may also like</h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-gutter" id="relatedProductsGrid">
+                        <!-- Related product cards dynamically rendered -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-surface-container-low text-on-surface-variant mt-space-2xl">
+        <div class="max-w-[1360px] mx-auto px-margin pt-space-2xl pb-space-xl">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg pb-space-2xl border-b border-outline-variant/30">
+                <div class="lg:col-span-5 space-y-space-md">
+                    <span class="font-headline-md text-headline-md text-primary tracking-tight block">SpaceFit</span>
+                    <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+                        Curated architectural pieces, sculptural ceramics, and mindful spatial furniture designed for deliberate contemporary living.
+                    </p>
+                </div>
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-gutter">
+                    <div class="space-y-space-sm">
+                        <h4 class="font-headline-sm text-headline-sm text-on-surface">Collections</h4>
+                        <ul class="space-y-space-xs font-body-md text-body-md">
+                            <li class="hover:text-primary transition-colors"><a data-path="living-room" href="index.html">Living Room</a></li>
+                            <li class="hover:text-primary transition-colors"><a data-path="bedroom" href="index.html">Bedroom Sanctuary</a></li>
+                            <li class="hover:text-primary transition-colors"><a data-path="dining" href="index.html">Dining &amp; Vessels</a></li>
+                            <li class="hover:text-primary transition-colors"><a data-path="workspaces" href="index.html">Executive Studios</a></li>
+                            <li class="hover:text-primary transition-colors"><a data-path="lighting" href="index.html">Architectural Lighting</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-space-sm">
+                        <h4 class="font-headline-sm text-headline-sm text-on-surface">Showrooms &amp; Care</h4>
+                        <ul class="space-y-space-xs font-body-md text-body-md">
+                            <li><a class="hover:text-primary transition-colors" href="#">Lagos Flagship Gallery</a></li>
+                            <li><a class="hover:text-primary transition-colors" href="#">Abuja Design Suite</a></li>
+                            <li><a class="hover:text-primary transition-colors" href="#">Care &amp; Timber Maintenance</a></li>
+                            <li><a class="hover:text-primary transition-colors" href="#">White-Glove Delivery</a></li>
+                            <li><a class="hover:text-primary transition-colors" href="#">Order Inquiries</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-space-xl flex flex-col md:flex-row items-center justify-between gap-space-lg font-body-sm text-body-sm">
+                <div class="flex items-center gap-space-md">
+                    <div class="flex items-center gap-space-xs bg-surface-container px-space-md py-space-xs rounded-full">
+                        <span class="material-symbols-outlined text-base text-primary">public</span>
+                        <span class="font-label-sm text-label-sm text-on-surface">₦ NGN • Lagos, NG</span>
+                    </div>
+                    <span class="text-outline">© 2025 SpaceFit Studio Limited. Handcrafted for space harmony.</span>
+                </div>
+                <div class="flex items-center gap-space-md text-outline font-label-sm text-label-sm">
+                    <span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base">verified_user</span> Encrypted Checkout</span>
+                    <span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-base">local_shipping</span> Insured Nationwide</span>
+                    <div class="flex items-center gap-space-sm ml-space-sm text-on-surface-variant">
+                        <span class="font-bold tracking-widest text-[10px] bg-surface-container px-2 py-1 rounded">PAYSTACK</span>
+                        <span class="font-bold tracking-widest text-[10px] bg-surface-container px-2 py-1 rounded">VISA</span>
+                        <span class="font-bold tracking-widest text-[10px] bg-surface-container px-2 py-1 rounded">MASTERCARD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript -->
+    <script>
+        // Catalogue Products Data Registry
+        const PRODUCTS_DATA = {
+            "luna-bed": {
+                id: "luna-bed",
+                title: "Luna Bed",
+                fullTitle: "Luna Upholstered Queen Bed",
+                category: "Beds",
+                rating: "4.8",
+                reviews: "(14 reviews)",
+                price: "₦450,000",
+                origPrice: null,
+                availability: "In stock",
+                description: "A modern and comfortable bed frame designed for quality sleep and timeless style. Made with solid wood and upholstered headboard.",
+                features: [
+                    "Solid wood frame",
+                    "Upholstered headboard",
+                    "Available in multiple colours",
+                    "Easy assembly"
+                ],
+                colors: [
+                    { name: "Oat Bouclé", bg: "bg-[#E5DFD5]", active: true },
+                    { name: "Muted Clay", bg: "bg-[#C4A493]", active: false },
+                    { name: "Deep Walnut", bg: "bg-[#5C4033]", active: false },
+                    { name: "Soft Sage", bg: "bg-[#A3B19B]", active: false }
+                ],
+                sizes: [
+                    "Queen (160 × 200 cm)",
+                    "King (180 × 200 cm)",
+                    "Full (140 × 200 cm)"
+                ],
+                specs: [
+                    { label: "Material", value: "Solid wood + fabric" },
+                    { label: "Dimensions", value: "200 × 160 × 90 cm" },
+                    { label: "Style", value: "Modern" },
+                    { label: "Assembly", value: "Required" },
+                    { label: "Availability", value: "In stock" }
+                ],
+                mainImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE",
+                gallery: [
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDVzMml7coHnGf3o4Gdp_Y0OByFnTgfzhKQIykduVEJQojnhNZjtDVIZSjkX68Hee4upP-GQJviC1xAo5jlCS_w1DtQOmxu0ipeXy38ilr4AmNVAWiXsxrrGgD_ovcWzNchEuA0pPnbgJMAqNz8paLldGIHX04XI7dek1jOiSExnXoagWEYA8SUjF14dVTuMsgQFfdZKIZmigHrMurd5EDyQMgbRtUsefXa200-qslNf3PkQqRBmwq4",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3"
+                ],
+                related: [
+                    { title: "Comfort Mattress", price: "₦290,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3", id: "cloudrest-mattress" },
+                    { title: "Nevus Nightstand", price: "₦80,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd", id: "arlo-nightstand" },
+                    { title: "Bedside Lamp", price: "₦45,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1", id: "vesper-lamp" },
+                    { title: "Bedding Set", price: "₦65,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx", id: "sahara-rug" }
+                ]
+            },
+            "nordic-desk": {
+                id: "nordic-desk",
+                title: "Nordic Ergonomic Oak Desk",
+                fullTitle: "Nordic Ergonomic Oak Desk",
+                category: "Desks & Studio",
+                rating: "4.8",
+                reviews: "(29 reviews)",
+                price: "₦185,000",
+                origPrice: null,
+                availability: "In stock",
+                description: "An ergonomic light oak studio desk with smooth beveled edges and integrated cable routing for clean, deliberate workspaces.",
+                features: [
+                    "Sustainably sourced white oak",
+                    "Beveled perimeter edges",
+                    "Integrated cable management",
+                    "Sturdy tapered oak legs"
+                ],
+                colors: [
+                    { name: "Natural Oak", bg: "bg-[#D8C29D]", active: true },
+                    { name: "Smoked Ash", bg: "bg-[#7A7267]", active: false },
+                    { name: "Matte Black", bg: "bg-[#2C2A29]", active: false }
+                ],
+                sizes: [
+                    "Standard (120 × 60 cm)",
+                    "Executive (150 × 75 cm)"
+                ],
+                specs: [
+                    { label: "Material", value: "Sustainably sourced white oak" },
+                    { label: "Dimensions", value: "120 × 60 × 75 cm" },
+                    { label: "Style", value: "Scandinavian Minimalist" },
+                    { label: "Assembly", value: "Easy assembly" },
+                    { label: "Availability", value: "In stock" }
+                ],
+                mainImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAg9iUcew14JZ-qhYmgk6dSnhivEProXqgY_WBfSH49RVkLunQz-uIjeajEZfp1M0xKaw31fATfor0gpO4zpoFulbt-uSni1X27NgeGSnkyxjRO71hl7BhepNKUfDK--og7GaKufpwtZGKuX6BH7sCQo5eTZaGzvdhYGCR1n_0IoyZ_fq5v5Kr03vSd5zWEjb4J6PDmMpKvcVBhzIYHTSbhvGcnXW0TZz4BozLeOI7h7egR-yyEtLQ3",
+                gallery: [
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuAg9iUcew14JZ-qhYmgk6dSnhivEProXqgY_WBfSH49RVkLunQz-uIjeajEZfp1M0xKaw31fATfor0gpO4zpoFulbt-uSni1X27NgeGSnkyxjRO71hl7BhepNKUfDK--og7GaKufpwtZGKuX6BH7sCQo5eTZaGzvdhYGCR1n_0IoyZ_fq5v5Kr03vSd5zWEjb4J6PDmMpKvcVBhzIYHTSbhvGcnXW0TZz4BozLeOI7h7egR-yyEtLQ3",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDvxXhF1i2fiTlKoLKBDzrpsKz-eCvRpp4PJq0Wi1sjLaxpBg02ND1Nle3XsSUjqpE1xcl7u6dXgf5jasBsvcmEvhCtTgIcP24Zwd1VE_7js2KsyYgYwTq4Hz3lc84oc5xSHAYTQl5ixdPKM3ISvUBIHHFWpWT7VZbfF56qVT2ak4W6sZndG51Gqb6ksi4eQoSOkYTakFrnvy16Cza8wxwMkTTZoUJegxPUlc_RVpfj6yI8BmR8g96P"
+                ],
+                related: [
+                    { title: "Vesper Brass Floor Lamp", price: "₦82,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1", id: "vesper-lamp" },
+                    { title: "Arlo Floating Walnut Nightstand", price: "₦65,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd", id: "arlo-nightstand" },
+                    { title: "Sahara Handwoven Wool Rug", price: "₦140,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx", id: "sahara-rug" },
+                    { title: "Kanso Minimalist Wardrobe", price: "₦380,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDvxXhF1i2fiTlKoLKBDzrpsKz-eCvRpp4PJq0Wi1sjLaxpBg02ND1Nle3XsSUjqpE1xcl7u6dXgf5jasBsvcmEvhCtTgIcP24Zwd1VE_7js2KsyYgYwTq4Hz3lc84oc5xSHAYTQl5ixdPKM3ISvUBIHHFWpWT7VZbfF56qVT2ak4W6sZndG51Gqb6ksi4eQoSOkYTakFrnvy16Cza8wxwMkTTZoUJegxPUlc_RVpfj6yI8BmR8g96P", id: "kanso-wardrobe" }
+                ]
+            },
+            "cloudrest-mattress": {
+                id: "cloudrest-mattress",
+                title: "CloudRest Memory Hybrid",
+                fullTitle: "CloudRest Memory Hybrid Mattress",
+                category: "Mattresses",
+                rating: "4.9",
+                reviews: "(53 reviews)",
+                price: "₦220,000",
+                origPrice: "₦260,000",
+                availability: "In stock",
+                description: "Advanced orthopaedic memory foam hybrid mattress featuring pocket spring motion isolation and breathable cooling gel structure.",
+                features: [
+                    "Zero motion transfer core",
+                    "Breathable cooling gel layer",
+                    "Organic cotton quilted cover",
+                    "10-year structural warranty"
+                ],
+                colors: [
+                    { name: "Cloud White", bg: "bg-[#FAF9F6]", active: true },
+                    { name: "Cool Grey", bg: "bg-[#D5D8DC]", active: false }
+                ],
+                sizes: [
+                    "Queen (160 × 200 × 28 cm)",
+                    "King (180 × 200 × 28 cm)",
+                    "Single (100 × 200 × 28 cm)"
+                ],
+                specs: [
+                    { label: "Material", value: "Memory foam & Pocket springs" },
+                    { label: "Dimensions", value: "180 × 200 × 28 cm" },
+                    { label: "Style", value: "Ergonomic Orthopaedic" },
+                    { label: "Assembly", value: "None (Unroll & Rest)" },
+                    { label: "Availability", value: "In stock" }
+                ],
+                mainImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3",
+                gallery: [
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDVzMml7coHnGf3o4Gdp_Y0OByFnTgfzhKQIykduVEJQojnhNZjtDVIZSjkX68Hee4upP-GQJviC1xAo5jlCS_w1DtQOmxu0ipeXy38ilr4AmNVAWiXsxrrGgD_ovcWzNchEuA0pPnbgJMAqNz8paLldGIHX04XI7dek1jOiSExnXoagWEYA8SUjF14dVTuMsgQFfdZKIZmigHrMurd5EDyQMgbRtUsefXa200-qslNf3PkQqRBmwq4",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx"
+                ],
+                related: [
+                    { title: "Luna Upholstered Queen Bed", price: "₦450,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE", id: "luna-bed" },
+                    { title: "Kyoto Solid Ash Bed Frame", price: "₦520,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDVzMml7coHnGf3o4Gdp_Y0OByFnTgfzhKQIykduVEJQojnhNZjtDVIZSjkX68Hee4upP-GQJviC1xAo5jlCS_w1DtQOmxu0ipeXy38ilr4AmNVAWiXsxrrGgD_ovcWzNchEuA0pPnbgJMAqNz8paLldGIHX04XI7dek1jOiSExnXoagWEYA8SUjF14dVTuMsgQFfdZKIZmigHrMurd5EDyQMgbRtUsefXa200-qslNf3PkQqRBmwq4", id: "kyoto-bed" },
+                    { title: "Arlo Floating Walnut Nightstand", price: "₦65,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd", id: "arlo-nightstand" },
+                    { title: "Sahara Handwoven Wool Rug", price: "₦140,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx", id: "sahara-rug" }
+                ]
+            },
+            "kanso-wardrobe": {
+                id: "kanso-wardrobe",
+                title: "Kanso Minimalist 3-Door",
+                fullTitle: "Kanso Minimalist 3-Door Wardrobe",
+                category: "Wardrobes",
+                rating: "4.9",
+                reviews: "(18 reviews)",
+                price: "₦380,000",
+                origPrice: null,
+                availability: "In stock",
+                description: "Blonde ash minimalist 3-door wardrobe featuring recessed handles, modular internal hanging rails, and soft-close German hardware.",
+                features: [
+                    "Soft-close German hinges",
+                    "Blonde ash timber veneer",
+                    "Modular adjustable shelving",
+                    "Flush joinery details"
+                ],
+                colors: [
+                    { name: "Blonde Ash", bg: "bg-[#E6D7C3]", active: true },
+                    { name: "Walnut Stain", bg: "bg-[#5C4033]", active: false }
+                ],
+                sizes: [
+                    "3-Door (150 × 210 × 60 cm)",
+                    "2-Door (100 × 210 × 60 cm)"
+                ],
+                specs: [
+                    { label: "Material", value: "Blonde ash wood & German hinges" },
+                    { label: "Dimensions", value: "150 × 210 × 60 cm" },
+                    { label: "Style", value: "Japanese Minimalist" },
+                    { label: "Assembly", value: "Professional required" },
+                    { label: "Availability", value: "In stock" }
+                ],
+                mainImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDvxXhF1i2fiTlKoLKBDzrpsKz-eCvRpp4PJq0Wi1sjLaxpBg02ND1Nle3XsSUjqpE1xcl7u6dXgf5jasBsvcmEvhCtTgIcP24Zwd1VE_7js2KsyYgYwTq4Hz3lc84oc5xSHAYTQl5ixdPKM3ISvUBIHHFWpWT7VZbfF56qVT2ak4W6sZndG51Gqb6ksi4eQoSOkYTakFrnvy16Cza8wxwMkTTZoUJegxPUlc_RVpfj6yI8BmR8g96P",
+                gallery: [
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDvxXhF1i2fiTlKoLKBDzrpsKz-eCvRpp4PJq0Wi1sjLaxpBg02ND1Nle3XsSUjqpE1xcl7u6dXgf5jasBsvcmEvhCtTgIcP24Zwd1VE_7js2KsyYgYwTq4Hz3lc84oc5xSHAYTQl5ixdPKM3ISvUBIHHFWpWT7VZbfF56qVT2ak4W6sZndG51Gqb6ksi4eQoSOkYTakFrnvy16Cza8wxwMkTTZoUJegxPUlc_RVpfj6yI8BmR8g96P",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDVzMml7coHnGf3o4Gdp_Y0OByFnTgfzhKQIykduVEJQojnhNZjtDVIZSjkX68Hee4upP-GQJviC1xAo5jlCS_w1DtQOmxu0ipeXy38ilr4AmNVAWiXsxrrGgD_ovcWzNchEuA0pPnbgJMAqNz8paLldGIHX04XI7dek1jOiSExnXoagWEYA8SUjF14dVTuMsgQFfdZKIZmigHrMurd5EDyQMgbRtUsefXa200-qslNf3PkQqRBmwq4",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuAg9iUcew14JZ-qhYmgk6dSnhivEProXqgY_WBfSH49RVkLunQz-uIjeajEZfp1M0xKaw31fATfor0gpO4zpoFulbt-uSni1X27NgeGSnkyxjRO71hl7BhepNKUfDK--og7GaKufpwtZGKuX6BH7sCQo5eTZaGzvdhYGCR1n_0IoyZ_fq5v5Kr03vSd5zWEjb4J6PDmMpKvcVBhzIYHTSbhvGcnXW0TZz4BozLeOI7h7egR-yyEtLQ3"
+                ],
+                related: [
+                    { title: "Luna Upholstered Queen Bed", price: "₦450,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE", id: "luna-bed" },
+                    { title: "Arlo Floating Walnut Nightstand", price: "₦65,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd", id: "arlo-nightstand" },
+                    { title: "Nordic Ergonomic Oak Desk", price: "₦185,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAg9iUcew14JZ-qhYmgk6dSnhivEProXqgY_WBfSH49RVkLunQz-uIjeajEZfp1M0xKaw31fATfor0gpO4zpoFulbt-uSni1X27NgeGSnkyxjRO71hl7BhepNKUfDK--og7GaKufpwtZGKuX6BH7sCQo5eTZaGzvdhYGCR1n_0IoyZ_fq5v5Kr03vSd5zWEjb4J6PDmMpKvcVBhzIYHTSbhvGcnXW0TZz4BozLeOI7h7egR-yyEtLQ3", id: "nordic-desk" },
+                    { title: "Sahara Handwoven Wool Rug", price: "₦140,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx", id: "sahara-rug" }
+                ]
+            },
+            "arlo-nightstand": {
+                id: "arlo-nightstand",
+                title: "Arlo Floating Walnut Nightstand",
+                fullTitle: "Arlo Floating Walnut Nightstand",
+                category: "Nightstands",
+                rating: "4.7",
+                reviews: "(54 reviews)",
+                price: "₦65,000",
+                origPrice: null,
+                availability: "In stock",
+                description: "Cantilevered floating American walnut nightstand with hidden cable management channel and brass wall-cleat mounting hardware.",
+                features: [
+                    "Solid American walnut",
+                    "Wall-mounted brass cleat",
+                    "Integrated cable dock groove",
+                    "Beveled edge profile"
+                ],
+                colors: [
+                    { name: "American Walnut", bg: "bg-[#5C4033]", active: true },
+                    { name: "Natural Oak", bg: "bg-[#D8C29D]", active: false }
+                ],
+                sizes: [
+                    "Compact (45 × 32 × 25 cm)",
+                    "Wide (60 × 35 × 25 cm)"
+                ],
+                specs: [
+                    { label: "Material", value: "American walnut & brass cleat" },
+                    { label: "Dimensions", value: "45 × 32 × 25 cm" },
+                    { label: "Style", value: "Floating Modern" },
+                    { label: "Assembly", value: "Wall mount required" },
+                    { label: "Availability", value: "In stock" }
+                ],
+                mainImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd",
+                gallery: [
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3"
+                ],
+                related: [
+                    { title: "Luna Upholstered Queen Bed", price: "₦450,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE", id: "luna-bed" },
+                    { title: "Vesper Brass Floor Lamp", price: "₦82,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1", id: "vesper-lamp" },
+                    { title: "Sahara Handwoven Wool Rug", price: "₦140,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx", id: "sahara-rug" },
+                    { title: "CloudRest Memory Hybrid", price: "₦220,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3", id: "cloudrest-mattress" }
+                ]
+            },
+            "sahara-rug": {
+                id: "sahara-rug",
+                title: "Sahara Handwoven Wool Rug",
+                fullTitle: "Sahara Handwoven Wool Rug",
+                category: "Rugs & Textiles",
+                rating: "5.0",
+                reviews: "(12 reviews)",
+                price: "₦140,000",
+                origPrice: null,
+                availability: "In stock",
+                description: "Handwoven 100% natural mountain wool area rug featuring subtle Berber geometric motifs and a dense, non-shedding pile.",
+                features: [
+                    "100% Unbleached mountain wool",
+                    "Handwoven Berber construction",
+                    "Dense non-shedding pile",
+                    "Natural stain-resistant fibers"
+                ],
+                colors: [
+                    { name: "Natural Ivory", bg: "bg-[#F5F2EC]", active: true },
+                    { name: "Warm Charcoal", bg: "bg-[#4A4744]", active: false }
+                ],
+                sizes: [
+                    "8 × 10 ft (240 × 300 cm)",
+                    "6 × 9 ft (180 × 270 cm)",
+                    "5 × 7 ft (150 × 210 cm)"
+                ],
+                specs: [
+                    { label: "Material", value: "100% Unbleached Mountain Wool" },
+                    { label: "Dimensions", value: "240 × 300 cm" },
+                    { label: "Style", value: "Berber Geometric" },
+                    { label: "Assembly", value: "None" },
+                    { label: "Availability", value: "In stock" }
+                ],
+                mainImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx",
+                gallery: [
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3"
+                ],
+                related: [
+                    { title: "Luna Upholstered Queen Bed", price: "₦450,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE", id: "luna-bed" },
+                    { title: "Vesper Brass Floor Lamp", price: "₦82,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1", id: "vesper-lamp" },
+                    { title: "Arlo Floating Walnut Nightstand", price: "₦65,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd", id: "arlo-nightstand" },
+                    { title: "Nordic Ergonomic Oak Desk", price: "₦185,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAg9iUcew14JZ-qhYmgk6dSnhivEProXqgY_WBfSH49RVkLunQz-uIjeajEZfp1M0xKaw31fATfor0gpO4zpoFulbt-uSni1X27NgeGSnkyxjRO71hl7BhepNKUfDK--og7GaKufpwtZGKuX6BH7sCQo5eTZaGzvdhYGCR1n_0IoyZ_fq5v5Kr03vSd5zWEjb4J6PDmMpKvcVBhzIYHTSbhvGcnXW0TZz4BozLeOI7h7egR-yyEtLQ3", id: "nordic-desk" }
+                ]
+            },
+            "vesper-lamp": {
+                id: "vesper-lamp",
+                title: "Vesper Brass Floor Lamp",
+                fullTitle: "Vesper Brass Floor Lamp",
+                category: "Lighting",
+                rating: "4.8",
+                reviews: "(31 reviews)",
+                price: "₦82,000",
+                origPrice: null,
+                availability: "In stock",
+                description: "Architectural floor lamp crafted from brushed solid brass with a solid travertine stone base and ambient warm-dimming parchment shade.",
+                features: [
+                    "Solid travertine stone base",
+                    "Brushed architectural brass arm",
+                    "Warm-dimming foot toggle",
+                    "2700K warm LED bulb included"
+                ],
+                colors: [
+                    { name: "Brushed Brass", bg: "bg-[#D4AF37]", active: true },
+                    { name: "Matte Black Brass", bg: "bg-[#2B2B2B]", active: false }
+                ],
+                sizes: [
+                    "Standard (H: 145 cm • Base Ø 28 cm)",
+                    "Tall (H: 165 cm • Base Ø 32 cm)"
+                ],
+                specs: [
+                    { label: "Material", value: "Brushed brass & travertine base" },
+                    { label: "Dimensions", value: "145 × 28 × 28 cm" },
+                    { label: "Style", value: "Architectural Modern" },
+                    { label: "Assembly", value: "Minimal assembly" },
+                    { label: "Availability", value: "In stock" }
+                ],
+                mainImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1",
+                gallery: [
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx"
+                ],
+                related: [
+                    { title: "Arlo Floating Walnut Nightstand", price: "₦65,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd", id: "arlo-nightstand" },
+                    { title: "Nordic Ergonomic Oak Desk", price: "₦185,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAg9iUcew14JZ-qhYmgk6dSnhivEProXqgY_WBfSH49RVkLunQz-uIjeajEZfp1M0xKaw31fATfor0gpO4zpoFulbt-uSni1X27NgeGSnkyxjRO71hl7BhepNKUfDK--og7GaKufpwtZGKuX6BH7sCQo5eTZaGzvdhYGCR1n_0IoyZ_fq5v5Kr03vSd5zWEjb4J6PDmMpKvcVBhzIYHTSbhvGcnXW0TZz4BozLeOI7h7egR-yyEtLQ3", id: "nordic-desk" },
+                    { title: "Luna Upholstered Queen Bed", price: "₦450,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE", id: "luna-bed" },
+                    { title: "Sahara Handwoven Wool Rug", price: "₦140,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx", id: "sahara-rug" }
+                ]
+            },
+            "kyoto-bed": {
+                id: "kyoto-bed",
+                title: "Kyoto Solid Ash Bed Frame",
+                fullTitle: "Kyoto Solid Ash Bed Frame",
+                category: "Beds",
+                rating: "4.9",
+                reviews: "(67 reviews)",
+                price: "₦520,000",
+                origPrice: null,
+                availability: "Low stock (2 Left)",
+                description: "Low-profile Japanese solid ash bed frame featuring traditional mortise and tenon joinery with integrated floating headboard ledges.",
+                features: [
+                    "Mortise & tenon joinery",
+                    "Solid Japanese ash timber",
+                    "Integrated headboard side ledges",
+                    "Low-profile Japandi silhouette"
+                ],
+                colors: [
+                    { name: "Natural Ash", bg: "bg-[#DFD3C3]", active: true },
+                    { name: "Dark Walnut", bg: "bg-[#5C4033]", active: false }
+                ],
+                sizes: [
+                    "King (180 × 200 cm)",
+                    "Queen (160 × 200 cm)",
+                    "Super King (200 × 200 cm)"
+                ],
+                specs: [
+                    { label: "Material", value: "Solid Japanese Ash" },
+                    { label: "Dimensions", value: "215 × 195 × 85 cm" },
+                    { label: "Style", value: "Japandi Minimalist" },
+                    { label: "Assembly", value: "Required" },
+                    { label: "Availability", value: "Low stock" }
+                ],
+                mainImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDVzMml7coHnGf3o4Gdp_Y0OByFnTgfzhKQIykduVEJQojnhNZjtDVIZSjkX68Hee4upP-GQJviC1xAo5jlCS_w1DtQOmxu0ipeXy38ilr4AmNVAWiXsxrrGgD_ovcWzNchEuA0pPnbgJMAqNz8paLldGIHX04XI7dek1jOiSExnXoagWEYA8SUjF14dVTuMsgQFfdZKIZmigHrMurd5EDyQMgbRtUsefXa200-qslNf3PkQqRBmwq4",
+                gallery: [
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuDVzMml7coHnGf3o4Gdp_Y0OByFnTgfzhKQIykduVEJQojnhNZjtDVIZSjkX68Hee4upP-GQJviC1xAo5jlCS_w1DtQOmxu0ipeXy38ilr4AmNVAWiXsxrrGgD_ovcWzNchEuA0pPnbgJMAqNz8paLldGIHX04XI7dek1jOiSExnXoagWEYA8SUjF14dVTuMsgQFfdZKIZmigHrMurd5EDyQMgbRtUsefXa200-qslNf3PkQqRBmwq4",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3",
+                    "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd"
+                ],
+                related: [
+                    { title: "CloudRest Memory Hybrid", price: "₦220,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCS5n17fWQXmcbXfYtkUyDgEiAp1ELLhWksLy_ZpMTQjYsXy7mSmX9ndPABRCqiyovsh5ImI8kBiPZUK2GuwaAPD3QOZp-LvTGjKwvlwXKXwWDElGhj2ZRJEnotQ2QwbKuraambZQNhyYmaGJZJyGV7LUOXQ56kX17rY8w917K6aSqh9pujbf3vw7dCC8S7HS7E9bOisJxg6bErQLXnNwQN2SEH9FISm_pARNYDtQ7BWsI0OOxMXam3", id: "cloudrest-mattress" },
+                    { title: "Arlo Floating Walnut Nightstand", price: "₦65,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd", id: "arlo-nightstand" },
+                    { title: "Vesper Brass Floor Lamp", price: "₦82,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDI9xV0S2hvURTfgz2aWY2hxfemSeONJRc6aGfbptdwpbaYvRndoGTIwomoZVheXg0GCNTbp2Ww3_u96aV4NEknjaxbo3IOpLVLfo0okkGXGl8Qqa3bwthc3eDqo6cxApks-JIx5vlJMtbPEle1IxMjPCJSXsOZ1Jlh1oeuDqBluBzg-8r4-P2npCLOq2xNT9rqjIW8WVpxn14cGmEmlhApkom8nP65fmE77Lmb3F3LYe8Pxa5Exgq1", id: "vesper-lamp" },
+                    { title: "Sahara Handwoven Wool Rug", price: "₦140,000", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx", id: "sahara-rug" }
+                ]
+            }
+        };
+
+        let currentProduct = null;
+        let quantity = 1;
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('id') || 'luna-bed';
+            
+            currentProduct = PRODUCTS_DATA[productId] || PRODUCTS_DATA['luna-bed'];
+            renderProductDetails(currentProduct);
+        });
+
+        function renderProductDetails(product) {
+            document.title = `${product.title} - SpaceFit`;
+            
+            // Text Content
+            document.getElementById('productTitle').textContent = product.title;
+            document.getElementById('productCategory').textContent = product.category;
+            document.getElementById('productRating').textContent = product.rating;
+            document.getElementById('productReviews').textContent = product.reviews;
+            document.getElementById('productPrice').textContent = product.price;
+            document.getElementById('productDescription').textContent = product.description;
+            
+            // Original Price if sale
+            const origPriceEl = document.getElementById('productOrigPrice');
+            if (product.origPrice) {
+                origPriceEl.textContent = product.origPrice;
+                origPriceEl.classList.remove('hidden');
+            } else {
+                origPriceEl.classList.add('hidden');
+            }
+
+            // Availability Badge
+            const availEl = document.getElementById('productAvailability');
+            if (product.availability.toLowerCase().includes('low')) {
+                availEl.className = "text-xs text-amber-700 font-label-md uppercase font-semibold flex items-center gap-1.5 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200/60";
+                availEl.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> ${product.availability}`;
+            } else {
+                availEl.className = "text-xs text-emerald-700 font-label-md uppercase font-semibold flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60";
+                availEl.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> ${product.availability}`;
+            }
+
+            // Key Features
+            const featuresEl = document.getElementById('productFeatures');
+            featuresEl.innerHTML = product.features.map(f => `
+                <li class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
+                    ${f}
+                </li>
+            `).join('');
+
+            // Main Image
+            const mainImg = document.getElementById('mainProductImage');
+            mainImg.src = product.mainImage;
+            mainImg.alt = product.title;
+
+            // Thumbnail Strip
+            const thumbsEl = document.getElementById('thumbnailStrip');
+            thumbsEl.innerHTML = product.gallery.map((imgUrl, idx) => `
+                <button onclick="switchMainImage('${imgUrl}', this)" 
+                    class="relative w-16 h-12 sm:w-20 sm:h-14 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 ${idx === 0 ? 'border-primary ring-1 ring-primary' : 'border-outline-variant/30 hover:border-outline'}">
+                    <img src="${imgUrl}" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover" />
+                </button>
+            `).join('');
+
+            // Color Swatches
+            const colorSwatchesEl = document.getElementById('colorSwatches');
+            document.getElementById('selectedColorName').textContent = product.colors[0]?.name || '';
+            colorSwatchesEl.innerHTML = product.colors.map((c, idx) => `
+                <button onclick="selectColor('${c.name}', this)"
+                    class="w-7 h-7 rounded-full ${c.bg} transition-all border border-black/10 flex items-center justify-center ${idx === 0 ? 'ring-2 ring-primary ring-offset-2' : 'hover:scale-105'}"
+                    title="${c.name}">
+                </button>
+            `).join('');
+
+            // Size Dropdown
+            const sizeSelectEl = document.getElementById('sizeSelect');
+            sizeSelectEl.innerHTML = product.sizes.map(s => `
+                <option value="${s}">${s}</option>
+            `).join('');
+
+            // Specifications Table
+            const specsListEl = document.getElementById('specsList');
+            specsListEl.innerHTML = product.specs.map((spec, idx) => `
+                <div class="py-2.5 flex items-center justify-between ${idx === 0 ? '' : 'border-t border-outline-variant/20'}">
+                    <dt class="font-label-md text-label-md font-bold text-on-surface-variant w-1/3">${spec.label}</dt>
+                    <dd class="font-body-md text-body-md text-on-surface w-2/3">${spec.value}</dd>
+                </div>
+            `).join('');
+
+            // Related Products Row
+            const relatedGridEl = document.getElementById('relatedProductsGrid');
+            relatedGridEl.innerHTML = product.related.map(rel => `
+                <article class="product-card group flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all border border-outline-variant/20">
+                    <div class="relative w-full aspect-[4/3] bg-surface-container-low overflow-hidden">
+                        <a href="product-details.html?id=${rel.id}">
+                            <img src="${rel.image}" alt="${rel.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        </a>
+                        <button aria-label="Add to wishlist" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-surface-container-lowest/90 hover:bg-surface-container-lowest text-on-surface flex items-center justify-center transition-transform active:scale-90 shadow-xs" onclick="toggleFavorite(this)">
+                            <span class="material-symbols-outlined text-sm">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-space-xs sm:p-space-sm flex flex-col flex-1 justify-between gap-space-xs">
+                        <a href="product-details.html?id=${rel.id}" class="font-headline-sm text-xs sm:text-[13px] leading-tight font-semibold text-on-surface group-hover:text-primary transition-colors line-clamp-1">
+                            ${rel.title}
+                        </a>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="font-price-md text-xs sm:text-sm font-bold text-on-surface">${rel.price}</span>
+                            <button onclick="triggerAddToCart('${rel.title}')" class="bg-primary hover:bg-primary-container text-on-primary p-1.5 rounded-lg shadow-xs transition-transform active:scale-95 flex items-center justify-center" title="Add to cart">
+                                <span class="material-symbols-outlined text-xs sm:text-sm">add</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Image Switcher
+        function switchMainImage(src, btn) {
+            const mainImg = document.getElementById('mainProductImage');
+            mainImg.style.opacity = '0.4';
+            setTimeout(() => {
+                mainImg.src = src;
+                mainImg.style.opacity = '1';
+            }, 150);
+
+            // Update active thumbnail outline
+            const thumbnails = document.querySelectorAll('#thumbnailStrip button');
+            thumbnails.forEach(t => {
+                t.className = "relative w-16 h-12 sm:w-20 sm:h-14 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 border-outline-variant/30 hover:border-outline";
+            });
+            btn.className = "relative w-16 h-12 sm:w-20 sm:h-14 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 border-primary ring-1 ring-primary";
+        }
+
+        // Swatch Selector
+        function selectColor(colorName, btn) {
+            document.getElementById('selectedColorName').textContent = colorName;
+            const swatches = document.querySelectorAll('#colorSwatches button');
+            swatches.forEach(s => {
+                s.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
+                s.classList.add('hover:scale-105');
+            });
+            btn.classList.remove('hover:scale-105');
+            btn.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+        }
+
+        // Quantity Adjuster
+        function adjustQuantity(delta) {
+            quantity = Math.max(1, quantity + delta);
+            document.getElementById('quantityVal').textContent = quantity;
+        }
+
+        // Add to Cart
+        function handleAddToCart() {
+            if (currentProduct) {
+                triggerAddToCart(`${currentProduct.title} (x${quantity})`);
+            }
+        }
+
+        // Toast Notification Logic
+        function triggerAddToCart(productTitle) {
+            const toast = document.getElementById('cartToast');
+            const toastItemName = document.getElementById('toastItemName');
+            toastItemName.textContent = productTitle + ' added';
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                dismissToast();
+            }, 3500);
+        }
+
+        function dismissToast() {
+            const toast = document.getElementById('cartToast');
+            toast.classList.remove('opacity-100', 'translate-y-0');
+            toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
+        }
+
+        // Wishlist Favorite Toggle
+        function toggleFavorite(btn) {
+            const icon = btn.querySelector('.material-symbols-outlined');
+            const isFilled = icon.style.fontVariationSettings && icon.style.fontVariationSettings.includes("'FILL' 1");
+            if (isFilled) {
+                icon.style.fontVariationSettings = "'FILL' 0";
+                icon.classList.remove('text-primary');
+            } else {
+                icon.style.fontVariationSettings = "'FILL' 1";
+                icon.classList.add('text-primary');
+            }
+        }
+    </script>
+</body>
+
+</html>
