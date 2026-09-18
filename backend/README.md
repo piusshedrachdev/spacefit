@@ -219,3 +219,23 @@ To resolve it:
 Tip: run `npm run dev` in only one terminal at a time. `node --watch` keeps a
 child process alive, so closing the terminal window without Ctrl+C can leave an
 orphaned listener behind.
+
+---
+
+## Serving the frontend
+
+The backend serves the static storefront from `../frontend` so the UI and API share an origin (no CORS setup needed). Run `npm run dev` and open http://localhost:4000/ . Clean URLs work: `/cart`, `/checkout`, `/product-details?id=luna-bed`. Override the directory with `FRONTEND_DIR`.
+
+### Frontend API client
+
+All pages load `frontend/js/api.js`, which exposes `window.SpaceFitAPI`: `getProducts`, `getFeaturedProducts`, `getProduct`, `getRelatedProducts`, `getCategories`, `ensureCart`, `addToCart`, `updateCartItem`, `removeCartItem`, `validateCart`, `placeOrder`, `getOrder`, `getConfig`, `subscribe`, `bookConsultation`, `formatPrice`.
+
+The server cart id is stored in `localStorage` under `spacefitCartId`. `ensureCart()` creates a server cart on first use.
+
+### Page scripts
+
+- `js/index.js` — index.html: product grid/categories, add-to-cart, newsletter, consultation
+- `js/product-details.js` — product-details.html: product + related by `?id=`, add-to-cart
+- `js/cart.js` — cart.html: list, quantity, remove, totals from the API
+- `js/checkout.js` — checkout.html: order summary + place order, redirect to success
+- `js/order-success.js` — order-succes.html: confirmation from `?id=`
