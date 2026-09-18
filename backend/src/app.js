@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import cors from 'cors';
 import { config } from './config.js';
@@ -8,6 +10,17 @@ import ordersRouter from './routes/orders.js';
 import consultationsRouter from './routes/consultations.js';
 import newsletterRouter from './routes/newsletter.js';
 import metaRouter from './routes/meta.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Directory containing the static storefront. Defaults to the repo's
+ * `frontend/` folder (two levels up from `backend/src`), overridable via
+ * FRONTEND_DIR for deployment layouts.
+ */
+export const frontendDir = process.env.FRONTEND_DIR
+  ? path.resolve(process.env.FRONTEND_DIR)
+  : path.resolve(__dirname, '..', '..', 'frontend');
 
 /**
  * Build the Express application.
@@ -35,7 +48,8 @@ export function createApp() {
     });
   }
 
-  app.get('/', (_req, res) => {
+  // API metadata endpoint.
+  app.get('/api', (_req, res) => {
     res.json({
       success: true,
       data: {
@@ -54,12 +68,16 @@ export function createApp() {
     });
   });
 
+  // API routers (registered before static assets so /api/* always wins).
   app.use('/api/meta', metaRouter);
   app.use('/api/products', productsRouter);
   app.use('/api/cart', cartRouter);
   app.use('/api/orders', ordersRouter);
   app.use('/api/consultations', consultationsRouter);
   app.use('/api/newsletter', newsletterRouter);
+
+  // Serve the storefront from the same origin (removes CORS friction).
+  app.use(express.static(frontendDir, { extensions: ['html'] }));
 
   app.use(notFoundHandler);
   app.use(errorHandler);

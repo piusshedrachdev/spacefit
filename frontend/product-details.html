@@ -823,8 +823,8 @@
             const params = new URLSearchParams(window.location.search);
             const productId = params.get('id') || 'luna-bed';
             
-            currentProduct = PRODUCTS_DATA[productId] || PRODUCTS_DATA['luna-bed'];
-            renderProductDetails(currentProduct);
+            // Product data is loaded from the API by js/product-details.js.
+            // (initial render handled by js/product-details.js)
         });
 
         function renderProductDetails(product) {
@@ -1007,6 +1007,8 @@
             }
         }
     </script>
+<script src="js/api.js"></script>
+    <script src="js/product-details.js"></script>
 </body>
 
 </html>

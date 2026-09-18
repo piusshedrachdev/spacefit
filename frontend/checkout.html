@@ -200,7 +200,7 @@
             Order Summary
           </h2>
           <!-- Products List -->
-          <div class="divide-y divide-outline-variant/50 mb-5">
+          <div class="divide-y divide-outline-variant/50 mb-5" id="checkoutItems">
             <!-- Item 1: Luna Bed -->
             <div class="py-3.5 first:pt-0 flex items-center justify-between gap-4">
               <div class="flex items-center gap-3 min-w-0">
@@ -257,7 +257,7 @@
           <div class="space-y-2 pt-4 border-t border-outline-variant/70 text-sm">
             <div class="flex justify-between text-on-surface-variant">
               <span class="">Subtotal</span>
-              <span class="font-medium text-on-surface">₦780,000</span>
+              <span class="font-medium text-on-surface" id="checkoutSubtotal">₦0</span>
             </div>
             <div class="flex justify-between text-on-surface-variant items-center">
               <span class="flex items-center gap-1">
@@ -268,12 +268,12 @@
                     stroke-linejoin="round" stroke-width="2"></path>
                 </svg>
               </span>
-              <span class="font-medium text-on-surface">₦0</span>
+              <span class="font-medium text-on-surface" id="checkoutDelivery">₦0</span>
             </div>
             <!-- Grand Total -->
             <div class="flex justify-between items-center pt-2 text-base font-bold text-on-surface">
               <span class="">Total</span>
-              <span class="font-price-lg text-price-lg text-primary">₦780,000</span>
+              <span class="font-price-lg text-price-lg text-primary" id="checkoutTotal">₦0</span>
             </div>
           </div>
         </section>
@@ -429,6 +429,8 @@
   <!-- END: MainFooter -->
 
 
+<script src="js/api.js"></script>
+  <script src="js/checkout.js"></script>
 </body>
 
 </html>
