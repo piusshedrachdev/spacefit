@@ -45,31 +45,34 @@
     class="fixed top-0 left-0 right-0 z-50 bg-surface-bright/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(41,37,36,0.05)]"
     data-purpose="navigation-header">
     <div class="h-20 w-full max-w-[1360px] mx-auto px-margin flex items-center justify-between gap-gutter">
-      <div class="flex items-center gap-space-xl"><a class="flex items-center gap-space-sm" data-path="shop"
-          href="index.html"><img alt="SpaceFit Brand Logo" class="h-8 w-auto object-contain"
-            src="https://lh3.googleusercontent.com/aida/AEtjO1X-ZdF68vH1qgNXmwfX40VBc_Q5Eq_-5ZMicO7IymUWzQkgWfGnJmVNLK8EvOEGpNAng3qrFRqt9Tlhas7hoD1-VHZ5EFw9gppWkUzegD1FC-HhV8QCmQYnUVNJhJSpxEsp0l0emKPeBMwFQq9xeWTIUooFYaguzWC8iitLBVckT0e2F9fMlZhOrkT58zdQrnlGri6VJ-8Npq6DzFvJ5cEsGuMk29a5ovXzKcdp-oYvHRizRuOz2x7sK7E" /><span
-            class="font-headline-md text-headline-md text-primary tracking-tight">SpaceFit</span></a>
+      <!-- Logo (left) -->
+      <a class="flex items-center gap-space-sm shrink-0" data-path="home" href="index.html"><img
+          alt="SpaceFit Brand Logo" class="h-8 w-auto object-contain"
+          src="https://lh3.googleusercontent.com/aida/AEtjO1X-ZdF68vH1qgNXmwfX40VBc_Q5Eq_-5ZMicO7IymUWzQkgWfGnJmVNLK8EvOEGpNAng3qrFRqt9Tlhas7hoD1-VHZ5EFw9gppWkUzegD1FC-HhV8QCmQYnUVNJhJSpxEsp0l0emKPeBMwFQq9xeWTIUooFYaguzWC8iitLBVckT0e2F9fMlZhOrkT58zdQrnlGri6VJ-8Npq6DzFvJ5cEsGuMk29a5ovXzKcdp-oYvHRizRuOz2x7sK7E" /><span
+          class="font-headline-md text-headline-md text-primary tracking-tight">SpaceFit</span></a>
+      <!-- Nav links + action icons (right) -->
+      <div class="flex items-center gap-space-lg">
         <nav class="hidden md:flex items-center gap-space-lg">
-          <a class="relative py-space-sm transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-primary after:transition-all text-on-surface-variant font-label-lg text-label-lg hover:text-primary after:w-0 hover:after:w-full"
-            data-path="shop" href="index.html">Shop</a><a
+          <a class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+            data-path="home" href="index.html">Home</a><a
             class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
-            data-path="categories" href="#">Categories</a><a
+            data-path="shop" href="index.html#shop">Shop</a><a
             class="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
-            data-path="sale" href="#">Sale</a>
+            data-path="products" href="index.html">Products</a>
         </nav>
-      </div>
-      <div class="flex items-center gap-space-sm"><a aria-label="Wishlist"
-          class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
-          data-path="wishlist" href="#"><span class="material-symbols-outlined text-2xl">favorite</span><span
-            class="absolute top-1 right-1 w-4 h-4 bg-primary text-on-primary font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">2</span></a><a
-          aria-label="Cart"
-          class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
-          data-path="cart" href="#"><span class="material-symbols-outlined text-2xl">local_mall</span><span
-            class="absolute top-1 right-1 w-4 h-4 bg-secondary-container text-on-secondary-container font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">3</span></a>
-        <div class="h-5 w-px bg-outline-variant/40 mx-space-xs hidden sm:block"></div><a
-          class="p-0.5 rounded-full ring-1 ring-outline-variant/50 hover:ring-primary transition-all flex items-center justify-center"
-          data-path="account" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnchXX3z1wQX9pgJZ7KjrS1y_6HJLcOfzdigpvbC1rgHJYOrB6jiAyyhA9aIjfoFrRTp3TzwxELoxg6FxNwaOXmvBTDij_BjE-rLjcGdV_7i9wI0NFWaL9VgaKCSnyvKV4iXo3m7TObnO8aASPyPRV61y28uDRnO5rNc_gdmQKanpNEcN_dfQTNQjm_ZZLniBhHrj9WtOJUM0hxzeJ07LNH8HirBOpsI13O0Xm2XswN6hr6zI746lp" /></a>
+        <div class="flex items-center gap-space-sm"><a aria-label="Wishlist"
+            class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+            data-path="wishlist" href="#"><span class="material-symbols-outlined text-2xl">favorite</span><span
+              class="absolute top-1 right-1 w-4 h-4 bg-primary text-on-primary font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">2</span></a><a
+            aria-label="Cart"
+            class="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+            data-path="cart" href="cart.html"><span class="material-symbols-outlined text-2xl">local_mall</span><span
+              class="absolute top-1 right-1 w-4 h-4 bg-secondary-container text-on-secondary-container font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">3</span></a>
+          <div class="h-5 w-px bg-outline-variant/40 mx-space-xs hidden sm:block"></div><a
+            class="p-0.5 rounded-full ring-1 ring-outline-variant/50 hover:ring-primary transition-all flex items-center justify-center"
+            data-path="account" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnchXX3z1wQX9pgJZ7KjrS1y_6HJLcOfzdigpvbC1rgHJYOrB6jiAyyhA9aIjfoFrRTp3TzwxELoxg6FxNwaOXmvBTDij_BjE-rLjcGdV_7i9wI0NFWaL9VgaKCSnyvKV4iXo3m7TObnO8aASPyPRV61y28uDRnO5rNc_gdmQKanpNEcN_dfQTNQjm_ZZLniBhHrj9WtOJUM0hxzeJ07LNH8HirBOpsI13O0Xm2XswN6hr6zI746lp" /></a>
+        </div>
       </div>
     </div>
   </header>
