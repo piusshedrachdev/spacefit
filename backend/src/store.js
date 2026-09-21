@@ -266,7 +266,7 @@ class Store {
     this.orders.set(order.id, order);
 
     if (cartId && this.carts.has(cartId)) {
-      this.clearCart(cartId);
+      this.carts.delete(cartId);
     }
 
     return order;

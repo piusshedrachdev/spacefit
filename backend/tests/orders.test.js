@@ -51,7 +51,7 @@ describe('POST /api/orders', () => {
     expect(res.status).toBe(201);
 
     const after = await request(app).get(`/api/cart/${cartId}`);
-    expect(after.body.data.items).toHaveLength(0);
+    expect(after.status).toBe(404);
   });
 
   it('rejects an invalid email', async () => {

@@ -137,9 +137,12 @@ export async function createOrder({
     throwIfError({ error: itemsError }, 'create order items');
   }
 
-  // Empty the originating cart now that the order exists.
+  // Delete the originating cart now that the order exists.
+  // order_items holds a snapshot and orders has no cart_id FK,
+  // so the emptied cart row would otherwise accumulate as an orphan.
   if (cartId) {
     await supabase.from('cart_items').delete().eq('cart_id', cartId);
+    await supabase.from('carts').delete().eq('id', cartId);
   }
 
   return getOrder(order.id);
