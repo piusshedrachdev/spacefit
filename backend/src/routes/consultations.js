@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { store } from '../store.js';
+import * as db from '../db/index.js';
 import { asyncHandler, ok } from '../utils/http.js';
 import { validate } from '../utils/validate.js';
+import { requireAdmin } from '../middleware/auth.js';
 
 /**
  * Spatial consultation routes.
  *
  * Frontend coverage:
  *   - index.html -> "Book Spatial Measurement (Free)" CTA and the
- *     "Ask SpaceFit" concierge widget. The frontend currently exposes these as
- *     static buttons with no handler; these endpoints give them somewhere to post.
+ *     "Ask SpaceFit" concierge widget.
  */
 const router = Router();
 
@@ -27,7 +27,10 @@ router.post(
       notes: { type: 'string' }
     });
 
-    const consultation = store.createConsultation(payload);
+    const consultation = await db.createConsultation({
+      ...payload,
+      userId: req.user?.id || null
+    });
     return ok(res, consultation, 201);
   })
 );
@@ -35,8 +38,9 @@ router.post(
 /** GET /api/consultations -> admin listing */
 router.get(
   '/',
-  asyncHandler(async (req, res) => {
-    return ok(res, store.consultations);
+  requireAdmin,
+  asyncHandler(async (_req, res) => {
+    return ok(res, await db.listConsultations());
   })
 );
 

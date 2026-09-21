@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { store } from '../store.js';
+import * as db from '../db/index.js';
 import { asyncHandler, ok } from '../utils/http.js';
 import { validate } from '../utils/validate.js';
+import { requireAdmin } from '../middleware/auth.js';
 
 /**
  * Order routes.
@@ -11,12 +12,6 @@ import { validate } from '../utils/validate.js';
  *   - order-succes.html -> order confirmation / reference lookup
  */
 const router = Router();
-
-const customerSchema = {
-  'customer.fullName': { required: true, type: 'string', minLength: 2 },
-  'customer.email': { required: true, type: 'email' },
-  'customer.phone': { required: true, type: 'string', minLength: 7 }
-};
 
 /** POST /api/orders -> place an order from checkout.html */
 router.post(
@@ -51,13 +46,14 @@ router.post(
       paymentMethod: { required: true, enum: ['card', 'transfer', 'cash'] }
     });
 
-    const order = store.createOrder({
+    const order = await db.createOrder({
       cartId: body.cartId,
       items: body.items,
       customer,
       delivery,
       paymentMethod: body.paymentMethod,
-      notes: body.notes
+      notes: body.notes,
+      userId: req.user?.id || null
     });
 
     return ok(res, order, 201);
@@ -67,16 +63,18 @@ router.post(
 /** GET /api/orders -> admin listing (latest first) */
 router.get(
   '/',
+  requireAdmin,
   asyncHandler(async (req, res) => {
-    return ok(res, store.listOrders());
+    const userId = req.query.userId || null;
+    return ok(res, await db.listOrders({ userId }));
   })
 );
 
-/** GET /api/orders/:id -> order-succes.html lookup by id */
+/** GET /api/orders/:id -> order-succes.html lookup by id or reference */
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
-    return ok(res, store.getOrder(req.params.id));
+    return ok(res, await db.getOrder(req.params.id));
   })
 );
 

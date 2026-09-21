@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { store } from '../store.js';
+import * as db from '../db/index.js';
 import { asyncHandler, ok, ApiError } from '../utils/http.js';
 import { validate } from '../utils/validate.js';
 
@@ -7,13 +7,12 @@ import { validate } from '../utils/validate.js';
  * Cart routes.
  *
  * Frontend coverage:
- *   - index.html  -> triggerAddToCart() (currently localStorage only)
+ *   - index.html  -> triggerAddToCart()
  *   - cart.html   -> displayCart(), changeQuantity(), removeItem(), saveCart()
  *   - checkout.html -> order summary reads cart contents
  *
- * The frontend currently persists carts in localStorage under "spacefitCart".
- * These endpoints let the same flows move server-side so carts survive across
- * devices. The cart id is returned on creation and can be stored client-side.
+ * Carts are server-side so they survive across devices. When the request
+ * carries a valid Supabase session the cart is tied to the user's id.
  */
 const router = Router();
 
@@ -21,8 +20,8 @@ const router = Router();
 router.post(
   '/',
   asyncHandler(async (req, res) => {
-    const cart = store.createCart();
-    return ok(res, store.summariseCart(cart), 201);
+    const cart = await db.createCart({ userId: req.user?.id || null });
+    return ok(res, cart, 201);
   })
 );
 
@@ -30,8 +29,7 @@ router.post(
 router.get(
   '/:cartId',
   asyncHandler(async (req, res) => {
-    const cart = store.getCart(req.params.cartId);
-    return ok(res, store.summariseCart(cart));
+    return ok(res, await db.getCart(req.params.cartId));
   })
 );
 
@@ -46,7 +44,7 @@ router.post(
       color: { type: 'string' }
     });
 
-    const cart = store.addCartItem(req.params.cartId, payload);
+    const cart = await db.addCartItem(req.params.cartId, payload);
     return ok(res, cart, 201);
   })
 );
@@ -59,7 +57,11 @@ router.patch(
       quantity: { required: true, type: 'number', min: 0 }
     });
 
-    const cart = store.updateCartItem(req.params.cartId, req.params.itemKey, payload.quantity);
+    const cart = await db.updateCartItem(
+      req.params.cartId,
+      req.params.itemKey,
+      payload.quantity
+    );
     return ok(res, cart);
   })
 );
@@ -68,7 +70,7 @@ router.patch(
 router.delete(
   '/:cartId/items/:itemKey',
   asyncHandler(async (req, res) => {
-    const cart = store.removeCartItem(req.params.cartId, req.params.itemKey);
+    const cart = await db.removeCartItem(req.params.cartId, req.params.itemKey);
     return ok(res, cart);
   })
 );
@@ -77,7 +79,7 @@ router.delete(
 router.delete(
   '/:cartId',
   asyncHandler(async (req, res) => {
-    const cart = store.clearCart(req.params.cartId);
+    const cart = await db.clearCart(req.params.cartId);
     return ok(res, cart);
   })
 );
@@ -86,11 +88,11 @@ router.delete(
 router.post(
   '/:cartId/validate',
   asyncHandler(async (req, res) => {
-    const cart = store.getCart(req.params.cartId);
+    const cart = await db.getCart(req.params.cartId);
     if (cart.items.length === 0) {
       throw ApiError.badRequest('Cart is empty');
     }
-    return ok(res, { valid: true, summary: store.summariseCart(cart) });
+    return ok(res, { valid: true, summary: cart });
   })
 );
 

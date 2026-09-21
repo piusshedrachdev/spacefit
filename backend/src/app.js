@@ -9,7 +9,9 @@ import cartRouter from './routes/cart.js';
 import ordersRouter from './routes/orders.js';
 import consultationsRouter from './routes/consultations.js';
 import newsletterRouter from './routes/newsletter.js';
+import authRouter from './routes/auth.js';
 import metaRouter from './routes/meta.js';
+import { attachUser } from './middleware/auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -39,6 +41,9 @@ export function createApp() {
   );
   app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: true }));
+
+  // Resolve the caller's Supabase session (if any) for every request.
+  app.use(attachUser);
 
   // Lightweight request logger (only outside tests).
   if (config.nodeEnv !== 'test') {
@@ -70,6 +75,7 @@ export function createApp() {
 
   // API routers (registered before static assets so /api/* always wins).
   app.use('/api/meta', metaRouter);
+  app.use('/api/auth', authRouter);
   app.use('/api/products', productsRouter);
   app.use('/api/cart', cartRouter);
   app.use('/api/orders', ordersRouter);

@@ -19,5 +19,20 @@ export const config = {
   // 7.5% VAT (Nigeria). Set to 0 to disable.
   vatRate: Number(process.env.VAT_RATE ?? 0.075),
   // Comma separated list of serviceable cities/states for delivery.
-  serviceableCities: (process.env.SERVICEABLE_CITIES || 'Lagos,Abuja,Ibadan').split(',').map((c) => c.trim())
+  serviceableCities: (process.env.SERVICEABLE_CITIES || 'Lagos,Abuja,Ibadan')
+    .split(',')
+    .map((c) => c.trim()),
+
+  // Supabase credentials. Secret key is server-only and bypasses RLS.
+  supabase: {
+    url: process.env.SUPABASE_URL || '',
+    publishableKey:
+      process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || '',
+    secretKey:
+      process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  },
+
+  // When true, the app reads/writes through Supabase instead of the in-memory
+  // store. Falls back to memory automatically if credentials are missing.
+  useSupabase: (process.env.USE_SUPABASE || '').toLowerCase() === 'true'
 };

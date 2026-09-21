@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { store } from '../store.js';
+import * as db from '../db/index.js';
 import { asyncHandler, ok } from '../utils/http.js';
 
 /**
@@ -16,7 +16,7 @@ router.get(
   '/',
   asyncHandler(async (req, res) => {
     const { category, search, featured, sort, limit, offset } = req.query;
-    const { items, total } = store.listProducts({
+    const { items, total } = await db.listProducts({
       category,
       search,
       featured,
@@ -37,8 +37,8 @@ router.get(
 /** GET /api/products/featured -> homepage "featured" row */
 router.get(
   '/featured',
-  asyncHandler(async (req, res) => {
-    const { items } = store.listProducts({ featured: true });
+  asyncHandler(async (_req, res) => {
+    const { items } = await db.listProducts({ featured: true });
     return ok(res, items);
   })
 );
@@ -46,8 +46,8 @@ router.get(
 /** GET /api/products/categories -> filter chips */
 router.get(
   '/categories',
-  asyncHandler(async (req, res) => {
-    return ok(res, store.listCategories());
+  asyncHandler(async (_req, res) => {
+    return ok(res, await db.listCategories());
   })
 );
 
@@ -55,7 +55,7 @@ router.get(
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
-    const product = store.getProduct(req.params.id);
+    const product = await db.getProduct(req.params.id);
     return ok(res, product);
   })
 );
@@ -65,7 +65,7 @@ router.get(
   '/:id/related',
   asyncHandler(async (req, res) => {
     const limit = req.query.limit !== undefined ? Number(req.query.limit) : 4;
-    return ok(res, store.getRelatedProducts(req.params.id, limit));
+    return ok(res, await db.getRelatedProducts(req.params.id, limit));
   })
 );
 
