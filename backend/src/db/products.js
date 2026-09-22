@@ -3,12 +3,24 @@ import { slugify } from '../utils/slugify.js';
 import { ApiError } from '../utils/http.js';
 import { throwIfError } from './errors.js';
 
-const PRODUCT_SELECT = `
+const PRODUCT_COLUMNS = `
   id, title, slug, price, orig_price, currency, rating, reviews, availability,
-  short_description, description, features, specs, colors, sizes, featured,
-  categories ( name ),
-  product_images ( url, position )
+  short_description, description, features, specs, colors, sizes, featured
 `;
+
+/**
+ * Build the select clause for a product query.
+ * @param {{ filterByCategory?: boolean }} [opts] - when true, the category
+ *   embed uses an inner join so `.eq('categories.name', ...)` filters the
+ *   top-level product rows. A plain (left) join only filters the embedded
+ *   category and returns every product with `category: null` on non-matches.
+ */
+function productSelect({ filterByCategory = false } = {}) {
+  const categoryJoin = filterByCategory ? 'categories!inner(name)' : 'categories ( name )';
+  return `${PRODUCT_COLUMNS},
+  ${categoryJoin},
+  product_images ( url, position )`;
+}
 
 /** Map a DB row to the API shape used by the frontend. */
 function mapProduct(row) {
@@ -48,10 +60,10 @@ export async function listProducts({ category, search, featured, sort, limit, of
   const supabase = getSupabaseAdmin();
   let query = supabase
     .from('products')
-    .select(PRODUCT_SELECT, { count: 'exact' });
+    .select(productSelect({ filterByCategory: Boolean(category) }), { count: 'exact' });
 
   if (category) {
-    // Category filter joins on the categories table's name.
+    // Inner join (see productSelect) so this filters products, not just the embed.
     query = query.eq('categories.name', category);
   }
 
@@ -106,7 +118,7 @@ export async function getProduct(idOrSlug) {
   // Match by primary key first, then fall back to slug.
   const { data, error } = await supabase
     .from('products')
-    .select(PRODUCT_SELECT)
+    .select(productSelect())
     .or(`id.eq.${idOrSlug},slug.eq.${slug}`)
     .limit(1)
     .maybeSingle();
@@ -123,7 +135,7 @@ export async function getRelatedProducts(idOrSlug, limit = 4) {
 
   const { data, error } = await supabase
     .from('products')
-    .select('id, title, price, categories(name), product_images(url, position)')
+    .select('id, title, price, categories!inner(name), product_images(url, position)')
     .neq('id', product.id)
     .eq('categories.name', product.category)
     .limit(limit);
