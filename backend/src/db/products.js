@@ -1,11 +1,13 @@
 import { getSupabaseAdmin } from '../lib/supabase.js';
+import { config } from '../config.js';
 import { slugify } from '../utils/slugify.js';
 import { ApiError } from '../utils/http.js';
 import { throwIfError } from './errors.js';
 
 const PRODUCT_COLUMNS = `
   id, title, slug, price, orig_price, currency, rating, reviews, availability,
-  short_description, description, features, specs, colors, sizes, featured
+  short_description, description, features, specs, colors, sizes, featured,
+  seller_id
 `;
 
 /**
@@ -19,6 +21,7 @@ function productSelect({ filterByCategory = false } = {}) {
   const categoryJoin = filterByCategory ? 'categories!inner(name)' : 'categories ( name )';
   return `${PRODUCT_COLUMNS},
   ${categoryJoin},
+  sellers ( shop_name ),
   product_images ( url, position )`;
 }
 
@@ -48,7 +51,9 @@ function mapProduct(row) {
     colors: row.colors || [],
     sizes: row.sizes || [],
     images,
-    featured: row.featured
+    featured: row.featured,
+    sellerId: row.seller_id || null,
+    sellerName: row.sellers?.shop_name || null
   };
 }
 
@@ -56,7 +61,7 @@ function mapProduct(row) {
  * List products with optional filtering, sorting and pagination.
  * @returns {Promise<{ items: object[], total: number }>}
  */
-export async function listProducts({ category, search, featured, sort, limit, offset } = {}) {
+export async function listProducts({ category, search, featured, sort, limit, offset, sellerId } = {}) {
   const supabase = getSupabaseAdmin();
   let query = supabase
     .from('products')
@@ -65,6 +70,10 @@ export async function listProducts({ category, search, featured, sort, limit, of
   if (category) {
     // Inner join (see productSelect) so this filters products, not just the embed.
     query = query.eq('categories.name', category);
+  }
+
+  if (sellerId !== undefined) {
+    query = sellerId ? query.eq('seller_id', sellerId) : query.is('seller_id', null);
   }
 
   if (search) {
@@ -188,4 +197,137 @@ export async function listCategories() {
   return (data || [])
     .map((row) => ({ name: row.name, count: row.products?.[0]?.count ?? 0 }))
     .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/* ------------------------------------------------------------ write support */
+
+/** Find (or create) a category id by name. Returns null when no name given. */
+async function resolveCategoryId(name) {
+  if (!name) return null;
+  const supabase = getSupabaseAdmin();
+  const term = String(name).replace(/[%_,()]/g, (m) => `\\${m}`);
+  const slug = slugify(name);
+
+  const { data: existing, error: findError } = await supabase
+    .from('categories')
+    .select('id')
+    .or(`name.eq.${term},slug.eq.${slug}`)
+    .limit(1)
+    .maybeSingle();
+  throwIfError({ error: findError }, 'resolve category');
+  if (existing) return existing.id;
+
+  const { data: created, error: createError } = await supabase
+    .from('categories')
+    .insert({ name, slug })
+    .select('id')
+    .single();
+  throwIfError({ error: createError }, 'create category');
+  return created.id;
+}
+
+/** Allocate a unique slug-based product id (title -> "ikeja-console-2"...). */
+async function uniqueProductId(title, preferredSlug) {
+  const supabase = getSupabaseAdmin();
+  const baseId = slugify(preferredSlug || title);
+  if (!baseId) throw ApiError.badRequest('A product title is required');
+
+  let id = baseId;
+  let suffix = 2;
+  // Bounded probe loop; collisions are rare (slugified titles).
+  for (;;) {
+    const { data, error } = await supabase
+      .from('products')
+      .select('id')
+      .eq('id', id)
+      .maybeSingle();
+    throwIfError({ error }, 'check product id');
+    if (!data) return id;
+    id = `${baseId}-${suffix++}`;
+    if (suffix > 100) throw ApiError.conflict('Could not allocate a unique product id');
+  }
+}
+
+/** Create a product listing (seller or admin). */
+export async function createProduct(payload) {
+  const supabase = getSupabaseAdmin();
+  const id = await uniqueProductId(payload.title, payload.slug);
+  const categoryId = await resolveCategoryId(payload.category);
+
+  const { error } = await supabase.from('products').insert({
+    id,
+    title: payload.title,
+    slug: id,
+    category_id: categoryId,
+    price: Number(payload.price) || 0,
+    orig_price: payload.origPrice ?? null,
+    currency: payload.currency || config.currency,
+    availability: payload.availability || 'In stock',
+    short_description: payload.shortDescription || null,
+    description: payload.description || null,
+    features: payload.features || [],
+    specs: payload.specs || [],
+    colors: payload.colors || [],
+    sizes: payload.sizes || [],
+    featured: Boolean(payload.featured),
+    seller_id: payload.sellerId || null
+  });
+  throwIfError({ error }, 'create product');
+
+  const images = Array.isArray(payload.images) ? payload.images.filter(Boolean) : [];
+  if (images.length) {
+    const { error: imagesError } = await supabase
+      .from('product_images')
+      .insert(images.map((url, position) => ({ product_id: id, url, position })));
+    throwIfError({ error: imagesError }, 'create product images');
+  }
+
+  return getProduct(id);
+}
+
+/** Update editable fields on a product (owner or admin enforced upstream). */
+export async function updateProduct(idOrSlug, patch) {
+  const supabase = getSupabaseAdmin();
+  const existing = await getProduct(idOrSlug); // throws 404 when missing
+
+  const updates = {};
+  if (patch.title !== undefined) updates.title = patch.title;
+  if (patch.price !== undefined) updates.price = Number(patch.price) || 0;
+  if (patch.origPrice !== undefined) updates.orig_price = patch.origPrice;
+  if (patch.availability !== undefined) updates.availability = patch.availability;
+  if (patch.shortDescription !== undefined) updates.short_description = patch.shortDescription;
+  if (patch.description !== undefined) updates.description = patch.description;
+  if (patch.features !== undefined) updates.features = patch.features;
+  if (patch.specs !== undefined) updates.specs = patch.specs;
+  if (patch.colors !== undefined) updates.colors = patch.colors;
+  if (patch.sizes !== undefined) updates.sizes = patch.sizes;
+  if (patch.featured !== undefined) updates.featured = Boolean(patch.featured);
+  if (patch.category !== undefined) updates.category_id = await resolveCategoryId(patch.category);
+
+  if (Object.keys(updates).length > 0) {
+    const { error } = await supabase.from('products').update(updates).eq('id', existing.id);
+    throwIfError({ error }, `update product '${existing.id}'`);
+  }
+
+  if (Array.isArray(patch.images)) {
+    await supabase.from('product_images').delete().eq('product_id', existing.id);
+    const images = patch.images.filter(Boolean);
+    if (images.length) {
+      const { error: imagesError } = await supabase
+        .from('product_images')
+        .insert(images.map((url, position) => ({ product_id: existing.id, url, position })));
+      throwIfError({ error: imagesError }, 'update product images');
+    }
+  }
+
+  return getProduct(existing.id);
+}
+
+/** Delete a product listing (and its images, via FK cascade). */
+export async function deleteProduct(idOrSlug) {
+  const supabase = getSupabaseAdmin();
+  const existing = await getProduct(idOrSlug);
+  const { error } = await supabase.from('products').delete().eq('id', existing.id);
+  throwIfError({ error }, `delete product '${existing.id}'`);
+  return true;
 }

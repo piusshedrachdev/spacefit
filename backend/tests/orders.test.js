@@ -94,9 +94,18 @@ describe('GET /api/orders', () => {
   });
 
   it('lists orders', async () => {
-    await request(app).post('/api/orders').send(validOrder);
+    // The store seeds demo data (including a delivered demo order),
+    // so assert relative to the baseline instead of a fixed count.
+    const before = await request(app).get('/api/orders');
+    expect(before.status).toBe(200);
+    const baseline = before.body.data.length;
+
+    const created = await request(app).post('/api/orders').send(validOrder);
+    expect(created.status).toBe(201);
+
     const res = await request(app).get('/api/orders');
     expect(res.status).toBe(200);
-    expect(res.body.data.length).toBe(1);
+    expect(res.body.data.length).toBe(baseline + 1);
+    expect(res.body.data.map((o) => o.id)).toContain(created.body.data.id);
   });
 });

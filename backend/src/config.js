@@ -32,6 +32,15 @@ export const config = {
       process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
   },
 
+  // Brevo (ex-Sendinblue) transactional email. When the API key is missing the
+  // email service logs the payload it *would* send instead of failing, so
+  // local development and the test suite work without an account.
+  brevo: {
+    apiKey: process.env.BREVO_API_KEY || '',
+    senderEmail: process.env.BREVO_SENDER_EMAIL || 'no-reply@spacefit.ng',
+    senderName: process.env.BREVO_SENDER_NAME || 'SpaceFit'
+  },
+
   // When true, the app reads/writes through Supabase instead of the in-memory
   // store. Falls back to memory automatically if credentials are missing.
   useSupabase: (process.env.USE_SUPABASE || '').toLowerCase() === 'true'
