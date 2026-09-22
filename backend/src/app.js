@@ -11,6 +11,9 @@ import consultationsRouter from './routes/consultations.js';
 import newsletterRouter from './routes/newsletter.js';
 import authRouter from './routes/auth.js';
 import metaRouter from './routes/meta.js';
+import sellersRouter from './routes/sellers.js';
+import notificationsRouter from './routes/notifications.js';
+import returnsRouter from './routes/returns.js';
 import { attachUser } from './middleware/auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -79,6 +82,9 @@ export function createApp() {
   app.use('/api/products', productsRouter);
   app.use('/api/cart', cartRouter);
   app.use('/api/orders', ordersRouter);
+  app.use('/api/sellers', sellersRouter);
+  app.use('/api/notifications', notificationsRouter);
+  app.use('/api/returns', returnsRouter);
   app.use('/api/consultations', consultationsRouter);
   app.use('/api/newsletter', newsletterRouter);
 

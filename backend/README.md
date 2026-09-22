@@ -99,6 +99,81 @@ Frontend: `index.html` footer "Journal & Spatial Digest" email capture (currentl
 | --- | --- | --- |
 | POST | /api/newsletter | subscribe `{ email }`; idempotent, reports `alreadySubscribed` |
 
+### Seller applications & sellers — `src/routes/sellers.js`
+
+Frontend: `seller-apply.html` (application form + status), `admin.html` (application review, seller management), `seller-dashboard.html` (gating + shop profile).
+
+| Method | Path | Guard | Purpose |
+| --- | --- | --- | --- |
+| POST | /api/sellers/applications | auth | submit an application (validates fields + both accepted flags); notifies admins and emails the applicant |
+| GET | /api/sellers/applications?status= | admin | review queue, newest first |
+| GET | /api/sellers/applications/:id | admin | application detail |
+| PATCH | /api/sellers/applications/:id | admin | `{ decision: 'approved'\|"rejected", reviewNotes }` — approve creates the seller row + promotes `profiles.role`, then notifies + emails |
+| GET | /api/sellers | admin | seller list annotated with product counts |
+| PATCH | /api/sellers/:id | admin | `{ status: 'active'\|"blocked", reason? }` — notification + email |
+| GET | /api/sellers/me | auth | caller seller context + latest application (drives dashboard gating) |
+| PATCH | /api/sellers/me | seller | update `shopName` / `deliveryPlaces` / `bio` |
+| GET | /api/sellers/me/dashboard | seller | stats (products, units sold, revenue, avg rating, reviews, returns) + reviews + returns + notifications |
+
+### Notifications — `src/routes/notifications.js`
+
+Frontend: header notifications bell on every page.
+
+| Method | Path | Guard | Purpose |
+| --- | --- | --- | --- |
+| GET | /api/notifications | auth | own notifications newest first + `unreadCount` |
+| PATCH | /api/notifications/:id/read | auth | mark one read (scoped to the caller) |
+| POST | /api/notifications/read-all | auth | mark every notification read |
+
+### Returns — `src/routes/returns.js`
+
+Frontend: `seller-dashboard.html` returns tab, `admin.html` returns view.
+
+| Method | Path | Guard | Purpose |
+| --- | --- | --- | --- |
+| GET | /api/returns | seller/admin | seller's own returns, or all for an admin |
+| POST | /api/returns | auth | raise a return request `{ orderId, productId, reason }` |
+| PATCH | /api/returns/:id | seller/admin | `{ status, resolutionNotes? }` — owner-or-admin |
+
+### Product reviews & write endpoints — `src/routes/products.js`
+
+| Method | Path | Guard | Purpose |
+| --- | --- | --- | --- |
+| POST | /api/products | seller/admin | create a listing (full product schema); `sellerId` set from the caller |
+| PATCH | /api/products/:id | owner/admin | edit a listing (only admins may toggle `featured`) |
+| DELETE | /api/products/:id | owner/admin | remove a listing |
+| GET | /api/products/:id/reviews | public | published reviews for a product |
+| POST | /api/products/:id/reviews | auth | leave a review `{ rating (1-5), comment? }` |
+
+### Store settings — `src/routes/meta.js`
+
+| Method | Path | Guard | Purpose |
+| --- | --- | --- | --- |
+| GET | /api/meta/settings | public | `{ policies, discounts }` for the footer + `policies.html` + discount banner |
+| PUT | /api/meta/settings | admin | persist `{ policies?, discounts? }` edits from the admin dashboard |
+
+---
+
+## Authentication & dev mode
+
+The API integrates with Supabase Auth (`/api/auth/*`). When `USE_SUPABASE=true` and
+credentials are present, `requireAuth` / `requireAdmin` / `requireSeller` validate the
+caller's bearer token.
+
+In the default **in-memory mode** (no Supabase) the guards are relaxed so the whole
+seller flow can be exercised locally and in tests. Identify yourself with an
+`X-Dev-User` header using one of the seeded account ids:
+
+| Id | Email | Role |
+| --- | --- | --- |
+| `dev-user-admin` | admin@spacefit.ng | admin |
+| `dev-user-seller` | seller@spacefit.ng | seller (active) |
+| `dev-user-customer` | customer@spacefit.ng | customer |
+| `seed-user-amara` | amara@example.com | applicant (pending, no login) |
+
+All seeded accounts use the password `spacefit123`. The `X-Dev-User` header is ignored
+whenever Supabase is configured.
+
 ---
 
 ## Status codes
@@ -122,10 +197,14 @@ Frontend: `index.html` footer "Journal & Spatial Digest" email capture (currentl
 - `src/store.js` — in-memory data store + pricing logic
 - `src/data/products.js` — seed catalogue (mirrors frontend product data)
 - `src/middleware/errorHandler.js` — 404 + central error handling
-- `src/routes/` — products, cart, orders, consultations, newsletter, meta
+- `src/routes/` — products, cart, orders, consultations, newsletter, meta, sellers, notifications, returns
+- `src/db/` — Supabase repositories + the `db/index.js` backend facade
+- `src/services/` — auth (Supabase) and email (Brevo) services
+- `src/middleware/` — auth guards (attachUser/requireAuth/requireAdmin/requireSeller) + error handler
 - `src/utils/` — http (ApiError/asyncHandler/ok), validate, slugify
 - `tests/` — vitest + supertest suites
 - `vitest.config.js` — test configuration
+- `supabase/migrations/` — numbered SQL migrations (schema, RLS, storage, seed)
 
 ---
 
@@ -183,6 +262,14 @@ Copy `.env.example` to `.env`. All values have sensible defaults:
 | FREE_DELIVERY_THRESHOLD | 500000 | subtotal above which delivery is free |
 | VAT_RATE | 0.075 | VAT as a decimal (0 disables) |
 | SERVICEABLE_CITIES | Lagos,Abuja,Ibadan | checkout cities |
+| USE_SUPABASE | false | use Supabase instead of the in-memory store |
+| SUPABASE_URL | — | Supabase project URL |
+| SUPABASE_SECRET_KEY | — | service-role key (server only) |
+| SUPABASE_PUBLISHABLE_KEY | — | anon/publishable key |
+| BREVO_API_KEY | — | Brevo transactional email key (blank = log-only) |
+| BREVO_SENDER_EMAIL | no-reply@spacefit.ng | verified sender address |
+| BREVO_SENDER_NAME | SpaceFit | sender display name |
+| APP_URL | http://localhost:4000 | base URL used in email deep links |
 
 ---
 
@@ -194,6 +281,13 @@ Run `npm test` (or `npm run test:watch`). Suites live in `tests/`:
 - `cart.test.js` — cart lifecycle, quantity, removal, totals, validation
 - `orders.test.js` — order creation (nested + flat), cart-based orders, validation
 - `meta.test.js` — health, config, newsletter, consultations, 404 envelope
+- `meta-settings.test.js` — public settings GET + admin PUT round-trip
+- `sellers.test.js` — application submit/review/approve/reject, block/unblock, `/me` + dashboard
+- `products-write.test.js` — seller CRUD on own listings, cross-seller denial, admin override
+- `notifications.test.js` — per-user isolation, mark-one-read, read-all
+- `email.test.js` — template builders + no-key log-only fallback
+- `auth.test.js` — auth request validation
+- `db.test.js` — db facade + Supabase migration sanity checks
 
 `tests/setup.js` resets the in-memory store before each test for determinism.
 

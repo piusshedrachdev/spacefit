@@ -887,7 +887,7 @@ class Store {
     const reviews = this.productReviews.filter(
       (r) => productIds.has(r.productId) && r.status === 'published'
     );
-    const returns = this.returnRequests.filter((r) => r.sellerId === sellerId);
+    const returns = [...this.returnRequests.values()].filter((r) => r.sellerId === sellerId);
     const returnsByStatus = returns.reduce((acc, r) => {
       acc[r.status] = (acc[r.status] || 0) + 1;
       return acc;

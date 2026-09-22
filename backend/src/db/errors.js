@@ -41,7 +41,7 @@ export function toApiError(error, context = 'database operation') {
 
   // Unknown (network failures, auth issues, etc.): log the real cause so it is
   // not swallowed, but return a generic 500 so internals never leak to clients.
-  console.error(`[db] ${context} failed:`, { code, message, hint, details });
+  console.error(`[db] ${context} failed:`, { code, message, hint: error.hint, details: error.details });
   return new ApiError(500, `Failed to ${context}`);
 }
 
