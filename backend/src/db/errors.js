@@ -39,7 +39,9 @@ export function toApiError(error, context = 'database operation') {
     return ApiError.notFound(`Nothing found while trying to ${context}`);
   }
 
-  // Unknown: treat as internal server error but keep the original message for logs.
+  // Unknown (network failures, auth issues, etc.): log the real cause so it is
+  // not swallowed, but return a generic 500 so internals never leak to clients.
+  console.error(`[db] ${context} failed:`, { code, message, hint, details });
   return new ApiError(500, `Failed to ${context}`);
 }
 
