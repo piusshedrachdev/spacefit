@@ -441,16 +441,20 @@
   function boot() {
     if (!API.isAuthenticated()) return renderDenied('Sign in with an administrator account to open the dashboard.');
 
-    var role = API.getRole();
-    var devAdmin = API.getDevUser() === 'dev-user-admin';
-    if (role !== 'admin' && !devAdmin) return renderDenied('Your account does not have administrator access.');
-
-    // Refresh the profile so a Supabase admin's role is current.
-    API.getMe().catch(function () { return null; }).then(function () {
-      renderShell();
-      applyHash();
-      return refresh();
-    });
+    // Always refresh the profile first: `profiles.role` is the source of truth,
+    // so a freshly-promoted admin is recognised without a re-login.
+    API.getMe()
+      .catch(function () { return null; })
+      .then(function () {
+        var role = API.getRole();
+        var devAdmin = API.getDevUser() === 'dev-user-admin';
+        if (role !== 'admin' && !devAdmin) {
+          return renderDenied('Your account does not have administrator access.');
+        }
+        renderShell();
+        applyHash();
+        return refresh();
+      });
   }
 
   global.addEventListener('hashchange', applyHash);

@@ -174,6 +174,18 @@ seller flow can be exercised locally and in tests. Identify yourself with an
 All seeded accounts use the password `spacefit123`. The `X-Dev-User` header is ignored
 whenever Supabase is configured.
 
+### Roles
+
+`public.profiles.role` is the single source of truth for authorization. The guards
+(`requireAdmin`, `requireSeller`) and route-level ownership checks read the profile row
+via `resolveRole(req)`, so promoting a user is a one-line SQL update:
+
+    update public.profiles set role = 'admin' where id = '<user-uuid>';
+
+Valid roles are `customer`, `seller` and `admin`. Approving a seller application flips
+`profiles.role` to `seller` automatically. JWT metadata (app_metadata/user_metadata) is
+only a fallback when no profile row exists and is never required.
+
 ---
 
 ## Status codes

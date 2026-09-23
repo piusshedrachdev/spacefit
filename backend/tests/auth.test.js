@@ -78,3 +78,41 @@ describe('auth middleware', () => {
     expect([200, 401]).toContain(res.status);
   });
 });
+
+import { resolveRole } from '../src/middleware/auth.js';
+import { store } from '../src/store.js';
+
+describe('resolveRole', () => {
+  it('reads the role from profiles.role (single source of truth)', async () => {
+    store.setProfileRole('dev-user-customer', 'admin');
+    const req = {
+      user: {
+        id: 'dev-user-customer',
+        // Deliberately misleading metadata: the profile row must win.
+        app_metadata: { role: 'customer' },
+        user_metadata: { role: 'customer' }
+      }
+    };
+    expect(await resolveRole(req)).toBe('admin');
+  });
+
+  it('falls back to JWT metadata when no profile row exists', async () => {
+    const req = {
+      user: {
+        id: 'no-such-user',
+        app_metadata: { role: 'admin' },
+        user_metadata: {}
+      }
+    };
+    expect(await resolveRole(req)).toBe('admin');
+  });
+
+  it('defaults to customer when neither profile nor metadata is present', async () => {
+    const req = { user: { id: 'no-such-user', app_metadata: {}, user_metadata: {} } };
+    expect(await resolveRole(req)).toBe('customer');
+  });
+
+  it('returns null when there is no authenticated user', async () => {
+    expect(await resolveRole({ user: null })).toBeNull();
+  });
+});

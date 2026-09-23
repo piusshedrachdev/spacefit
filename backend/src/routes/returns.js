@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as db from '../db/index.js';
 import { asyncHandler, ok, ApiError } from '../utils/http.js';
 import { validate } from '../utils/validate.js';
-import { requireAuth, requireSeller } from '../middleware/auth.js';
+import { requireAuth, requireSeller, resolveRole } from '../middleware/auth.js';
 
 /**
  * Return-request routes (mounted at /api/returns).
@@ -16,8 +16,8 @@ function actingUserId(req) {
   return req.user?.id || req.headers['x-dev-user'] || null;
 }
 
-function isAdmin(req) {
-  const role = req.user?.app_metadata?.role || req.user?.user_metadata?.role;
+async function isAdmin(req) {
+  const role = req.role || (req.user ? await resolveRole(req) : null);
   return role === 'admin';
 }
 
@@ -29,7 +29,7 @@ router.get(
     const userId = actingUserId(req);
     const seller = req.seller || (userId ? await db.getSellerByUserId(userId) : null);
 
-    if (!seller && !isAdmin(req)) {
+    if (!seller && !(await isAdmin(req))) {
       throw ApiError.unauthorized('Seller access required');
     }
 
@@ -70,7 +70,7 @@ router.patch(
     const userId = actingUserId(req);
     const seller = req.seller || (userId ? await db.getSellerByUserId(userId) : null);
 
-    if (!isAdmin(req) && (!seller || record.sellerId !== seller.id)) {
+    if (!(await isAdmin(req)) && (!seller || record.sellerId !== seller.id)) {
       throw new ApiError(403, 'You can only manage returns for your own products');
     }
 

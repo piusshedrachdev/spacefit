@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as db from '../db/index.js';
 import { asyncHandler, ok, ApiError } from '../utils/http.js';
 import { validate } from '../utils/validate.js';
-import { requireAuth, requireAdmin, requireSeller } from '../middleware/auth.js';
+import { requireAuth, requireAdmin, requireSeller, resolveRole } from '../middleware/auth.js';
 
 /**
  * Product routes.
@@ -25,8 +25,8 @@ function actingUserId(req) {
  * only their own listings. Works in both memory and Supabase modes.
  */
 async function assertCanModify(req, product) {
-  const metaRole = req.user?.app_metadata?.role || req.user?.user_metadata?.role;
-  if (metaRole === 'admin') return;
+  const role = req.role || (req.user ? await resolveRole(req) : null);
+  if (role === 'admin') return;
 
   const userId = actingUserId(req);
   const seller = req.seller || (userId ? await db.getSellerByUserId(userId) : null);
@@ -100,7 +100,7 @@ router.post(
     const userId = actingUserId(req);
     const seller =
       req.seller || (userId ? await db.getSellerByUserId(userId) : null);
-    const metaRole = req.user?.app_metadata?.role || req.user?.user_metadata?.role;
+    const role = req.role || (req.user ? await resolveRole(req) : null);
 
     const product = await db.createProduct({
       ...payload,
@@ -109,7 +109,7 @@ router.post(
     });
 
     // Only admins may self-assign a featured flag; sellers get the default.
-    if (metaRole !== 'admin' && product.featured) {
+    if (role !== 'admin' && product.featured) {
       await db.updateProduct(product.id, { featured: false });
       product.featured = false;
     }
@@ -197,8 +197,8 @@ router.patch(
       throw ApiError.badRequest('No product fields to update');
     }
     if (patch.featured !== undefined) {
-      const metaRole = req.user?.app_metadata?.role || req.user?.user_metadata?.role;
-      if (metaRole !== 'admin') delete patch.featured;
+      const role = req.role || (req.user ? await resolveRole(req) : null);
+      if (role !== 'admin') delete patch.featured;
       else patch.featured = patch.featured === true || patch.featured === 'true';
     }
 

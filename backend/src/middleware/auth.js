@@ -79,9 +79,41 @@ export async function requireAuth(req, _res, next) {
  * Reject the request unless the authenticated user is an admin.
  * In in-memory mode this is a no-op so seeded local development still works.
  */
+/**
+ * Resolve the caller's effective role.
+ *
+ * `public.profiles.role` is the single source of truth. The JWT metadata is
+ * only consulted as a fallback when the profile row is missing (e.g. a user
+ * created before the profile trigger existed), so promoting an admin is a
+ * one-line `update public.profiles set role='admin'` — no app_metadata edit.
+ *
+ * In in-memory mode the store's profile row is used (dev users always have one).
+ *
+ * @returns {Promise<string>} one of 'customer' | 'seller' | 'admin'
+ */
+export async function resolveRole(req, userId = req.user?.id) {
+  if (!userId) return null;
+  const profile = await getProfileRow(userId);
+  if (profile?.role) return profile.role;
+  return req.user?.app_metadata?.role || req.user?.user_metadata?.role || 'customer';
+}
+
+/**
+ * Reject the request unless the authenticated user is an admin.
+ *
+ * The role is read from `profiles.role` (the authoritative store); the JWT
+ * metadata is only a fallback when no profile row exists. This means an admin
+ * can be promoted with a single SQL update — no Supabase dashboard edit needed.
+ *
+ * In in-memory mode the guard is relaxed (consistent with requireAuth) but
+ * `req.role` is still resolved so downstream handlers behave identically.
+ */
 export async function requireAdmin(req, _res, next) {
   try {
-    if (!usingSupabase()) return next();
+    if (!usingSupabase()) {
+      req.role = req.user ? await resolveRole(req) : null;
+      return next();
+    }
 
     if (!req.user) {
       const token = bearerToken(req);
@@ -90,7 +122,8 @@ export async function requireAdmin(req, _res, next) {
     }
     if (!req.user) return next(ApiError.unauthorized('Authentication required'));
 
-    const role = req.user.app_metadata?.role || req.user.user_metadata?.role;
+    const role = await resolveRole(req);
+    req.role = role;
     if (role !== 'admin') return next(ApiError.unauthorized('Admin access required'));
     next();
   } catch (err) {
@@ -124,11 +157,13 @@ export async function requireSeller(req, _res, next) {
     }
     if (!req.user) return next(ApiError.unauthorized('Authentication required'));
 
-    const profile = await getProfileRow(req.user.id);
-    const metaRole = req.user.app_metadata?.role || req.user.user_metadata?.role;
-    const seller = await getSellerByUserId(req.user.id);
+    const [profile, seller, role] = await Promise.all([
+      getProfileRow(req.user.id),
+      getSellerByUserId(req.user.id),
+      resolveRole(req)
+    ]);
 
-    if (!seller || (profile?.role !== 'seller' && metaRole !== 'seller')) {
+    if (!seller || role !== 'seller') {
       return next(ApiError.unauthorized('Seller access required'));
     }
     if (seller.status === 'blocked') {
@@ -137,6 +172,7 @@ export async function requireSeller(req, _res, next) {
 
     req.seller = seller;
     req.profile = profile || null;
+    req.role = role;
     next();
   } catch (err) {
     next(err);
