@@ -14,7 +14,10 @@ export default defineConfig({
       SUPABASE_SECRET_KEY: '',
       SUPABASE_SERVICE_ROLE_KEY: '',
       SUPABASE_PUBLISHABLE_KEY: '',
-      SUPABASE_ANON_KEY: ''
+      SUPABASE_ANON_KEY: '',
+      // Same reasoning: a developer's local .env may hold a real Brevo key;
+      // tests must exercise the logged (skipped) path and never hit the API.
+      BREVO_API_KEY: ''
     },
     setupFiles: ['./tests/setup.js'],
     include: ['tests/**/*.test.js']

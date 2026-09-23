@@ -8,8 +8,9 @@ import {
   buildSellerStatusEmail
 } from '../src/services/email.js';
 
-// BREVO_API_KEY is blank in the test environment, so every send resolves to
-// `{ skipped: true }` and logs the payload instead of hitting the network.
+// The vitest config blanks BREVO_API_KEY, so every send resolves to
+// `{ skipped: true }` and logs the payload instead of hitting the network —
+// regardless of a local .env holding a real key.
 
 describe('escapeHtml', () => {
   it('escapes HTML-significant characters', () => {
