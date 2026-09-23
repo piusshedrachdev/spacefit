@@ -3,14 +3,18 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe('App shell', () => {
-  it('renders the migration placeholder heading', () => {
+  it('renders the migration placeholder heading inside the shared chrome', async () => {
     render(<App />);
-    expect(screen.getByRole('heading', { name: /spacefit/i })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /spacefit/i, level: 1 })
+    ).toBeInTheDocument();
+    // Header brand from StorefrontLayout.
+    expect(screen.getByAltText('SpaceFit Brand Logo')).toBeInTheDocument();
   });
 
-  it('links back to the legacy site', () => {
+  it('links back to the legacy site', async () => {
     render(<App />);
-    expect(screen.getByRole('link', { name: /legacy site/i })).toHaveAttribute(
+    expect(await screen.findByRole('link', { name: /legacy site/i })).toHaveAttribute(
       'href',
       '/policies.html'
     );
