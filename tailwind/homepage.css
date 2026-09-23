@@ -1,0 +1,25 @@
+/* Custom Styles: Typography & Base Adjustments */
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #FBF9F5;
+  color: #1F1E1D;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Styles: Hero and Micro-Interactions */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hero-glow {
+  background: radial-gradient(circle at 75% 45%, rgba(245, 237, 222, 0.45) 0%, rgba(251, 249, 245, 0.98) 75%);
+}
