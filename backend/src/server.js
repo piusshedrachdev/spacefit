@@ -1,5 +1,6 @@
 import { createApp } from './app.js';
 import { config } from './config.js';
+import { isSupabaseConfigured } from './lib/supabase.js';
 
 const app = createApp();
 
@@ -10,7 +11,13 @@ server.on('listening', () => {
   const boundPort = typeof addr === 'object' && addr ? addr.port : config.port;
   console.log(`\n  SpaceFit API listening on http://localhost:${boundPort}`);
   console.log(`  Environment: ${config.nodeEnv}`);
-  console.log(`  CORS origin: ${config.corsOrigin}\n`);
+  console.log(`  CORS origin: ${config.corsOrigin}`);
+  const keyLen = (config.supabase.secretKey || '').length;
+  console.log(`  Supabase: ${isSupabaseConfigured ? `configured (secret key ${keyLen} chars)` : 'not configured \u2014 using in-memory store'}`);
+  if (isSupabaseConfigured && config.supabase.secretKey === config.supabase.publishableKey) {
+    console.warn('  \u26a0 SUPABASE_SECRET_KEY and SUPABASE_PUBLISHABLE_KEY are the same value \u2014 RLS will NOT be bypassed. This is the usual cause of 42501 "row-level security" errors on server-side writes.');
+  }
+  console.log('');
 });
 
 /**
