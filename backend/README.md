@@ -2,10 +2,14 @@
 
 REST API that powers the SpaceFit storefront in [`../frontend`](../frontend).
 It exposes endpoints for the product catalogue, cart, checkout/orders, spatial
-consultation bookings, newsletter signups and storefront configuration.
+consultation bookings, newsletter signups, storefront configuration, auth,
+seller onboarding (applications → approval → seller dashboard), notifications,
+product reviews and return requests.
 
 - **Stack:** Node.js 18+, Express 4, ESM modules
-- **Storage:** in-memory seed data (swap for a real DB — see [To Be Provided Later](#to-be-provided-later))
+- **Storage:** Supabase (PostgreSQL) via the `src/db` facade, with an
+  in-memory fallback so tests and local dev need no credentials
+  (see [Supabase setup](supabase/README.md))
 - **Tests:** Vitest + Supertest
 
 ---
@@ -98,6 +102,22 @@ Frontend: `index.html` footer "Journal & Spatial Digest" email capture (currentl
 | Method | Path | Purpose |
 | --- | --- | --- |
 | POST | /api/newsletter | subscribe `{ email }`; idempotent, reports `alreadySubscribed` |
+
+### Authentication — `src/routes/auth.js`
+
+Frontend: `auth.html` (sign in / create account), `js/api.js` session layer
+(persists the session in `localStorage` and auto-refreshes on `401`).
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| POST | /api/auth/signup | create an account `{ email, password, fullName, phone? }` |
+| POST | /api/auth/login | sign in `{ email, password }` → session tokens + profile |
+| POST | /api/auth/logout | revoke/forget the current session |
+| POST | /api/auth/refresh | exchange a refresh token for a new access token |
+| POST | /api/auth/forgot-password | request a reset link |
+| POST | /api/auth/reset-password | set a new password with the reset token |
+| GET | /api/auth/me | current user + profile (drives the header account menu) |
+| PATCH | /api/auth/me | update profile fields (`full_name`, `phone`, …) |
 
 ### Seller applications & sellers — `src/routes/sellers.js`
 
@@ -236,26 +256,35 @@ only a fallback when no profile row exists and is never required.
 | checkout.html | city/state + fee display | GET /api/meta/config |
 | checkout.html | place order | POST /api/orders |
 | order-succes.html | confirmation | GET /api/orders/:id |
+| auth.html | sign in / create account | POST /api/auth/login, /api/auth/signup |
+| seller-apply.html | application form + status | POST /api/sellers/applications, GET /api/sellers/me |
+| seller-dashboard.html | gating + KPIs | GET /api/sellers/me, /api/sellers/me/dashboard |
+| seller-dashboard.html | product CRUD | POST/PATCH/DELETE /api/products |
+| seller-dashboard.html | reviews / returns / notifications | GET /api/products/:id/reviews, /api/returns, /api/notifications |
+| admin.html | application review queue | GET/PATCH /api/sellers/applications(/:id) |
+| admin.html | block / unblock sellers | PATCH /api/sellers/:id |
+| admin.html | orders (read-only) | GET /api/orders |
+| admin.html | policies + discounts | GET/PUT /api/meta/settings |
+| all pages (js/chrome.js) | account menu, notifications bell, footer policy links, discount banner | GET /api/auth/me, /api/notifications, /api/meta/settings |
+| policies.html | rendered store policies + active discounts | GET /api/meta/settings, GET /api/meta/config |
 
 ---
 
 ## To Be Provided Later
 
-The endpoints are fully functional against in-memory data, but the following must be supplied before production:
+The API is fully functional against the in-memory store and Supabase. The following must be supplied before production:
 
-1. **Database / persistence** — replace `src/store.js` (currently a Map) with a real database (PostgreSQL + Prisma, MongoDB, etc.). Carts and orders must survive restarts.
-2. **Product catalogue source** — `src/data/products.js` is seed data hand-mirrored from the frontend. This should come from a PIM/CMS (e.g. Shopify, Sanity, Strapi) with real inventory, pricing and high-resolution images.
-3. **Authentication & accounts** — no auth exists yet. Customer accounts, order history and admin-only routes (`GET /api/orders`, `GET /api/consultations`) need JWT/session auth and role checks.
-4. **Payment integration** — `paymentMethod` is recorded but not charged. Integrate Paystack (NGN) and/or Stripe; add webhook endpoints to confirm payment status.
-5. **Order lifecycle** — order status is always `pending`. Add transitions (`paid`, `processing`, `shipped`, `delivered`, `cancelled`) and admin update endpoints.
-6. **Delivery pricing engine** — the flat fee / threshold is a placeholder. Needs per-city/state and per-item weight/dimension rules, plus real courier integration.
-7. **Inventory & stock** — availability strings are static; add stock counts, reservations and low-stock enforcement.
-8. **Email/notifications** — no emails are sent. Order confirmations, consultation replies and newsletter confirmations need a transactional email provider.
-9. **Rate limiting & security** — add rate limiting on public POSTs (newsletter, consultations), request size limits, helmet, and input sanitisation.
-10. **CORS lockdown** — `CORS_ORIGIN` defaults to `*`; set it to the real frontend origin(s) in production.
-11. **Observability** — structured logging, metrics and error tracking (e.g. Sentry).
-12. **Frontend wiring** — the frontend still reads/writes `localStorage`; it must be refactored to call these endpoints (cart id stored client-side, add-to-cart now hits the API).
-13. **Wishlist / favourites** — `toggleFavorite` in product-details.html is local-only; needs a persistence endpoint if it should survive sessions.
+1. **Product catalogue source** — `src/data/products.js` is seed data hand-mirrored from the frontend. This should come from a PIM/CMS (e.g. Shopify, Sanity, Strapi) with real inventory, pricing and high-resolution images (seller-created products already persist via Supabase).
+2. **Payment integration** — `paymentMethod` is recorded but not charged. Integrate Paystack (NGN) and/or Stripe; add webhook endpoints to confirm payment status.
+3. **Order lifecycle** — order status is always `pending`. Add transitions (`paid`, `processing`, `shipped`, `delivered`, `cancelled`) and admin update endpoints.
+4. **Delivery pricing engine** — the flat fee / threshold is a placeholder. Needs per-city/state and per-item weight/dimension rules, plus real courier integration.
+5. **Inventory & stock** — availability strings are static; add stock counts, reservations and low-stock enforcement.
+6. **Email coverage** — Brevo transactional email is implemented for the seller-ecosystem events (application received/approved/rejected, block/unblock). Order confirmations, consultation replies and newsletter confirmations still need templates (`src/services/email.js` is the single place to add them).
+7. **Rate limiting & security** — add rate limiting on public POSTs (newsletter, consultations), request size limits, helmet, and input sanitisation.
+8. **CORS lockdown** — `CORS_ORIGIN` defaults to `*`; set it to the real frontend origin(s) in production.
+9. **Observability** — structured logging, metrics and error tracking (e.g. Sentry).
+10. **Wishlist / favourites** — `toggleFavorite` in product-details.html is local-only; needs a persistence endpoint if it should survive sessions.
+11. **Email delivery in production** — set `BREVO_API_KEY`; without it emails are logged, not sent (graceful no-op for dev/tests).
 
 ---
 
@@ -301,7 +330,25 @@ Run `npm test` (or `npm run test:watch`). Suites live in `tests/`:
 - `auth.test.js` — auth request validation
 - `db.test.js` — db facade + Supabase migration sanity checks
 
+`server.test.js` covers port binding / `EADDRINUSE` handling and `static.test.js`
+covers static frontend serving (including that every page linked from the shared
+chrome — `policies.html` included — actually exists).
+
 `tests/setup.js` resets the in-memory store before each test for determinism.
+
+### End-to-end smoke pass
+
+`scripts/e2e-seller-flow.sh` walks the whole seller ecosystem over HTTP
+(apply → approve → list product → review → order → return → block/unblock,
+plus settings, notifications, `auth/me` and every linked page). It targets a
+memory-mode server:
+
+    # terminal 1
+    cd backend && USE_SUPABASE=false PORT=4010 npm start
+    # terminal 2
+    bash scripts/e2e-seller-flow.sh
+
+46 checks; exits non-zero on the first failure set.
 
 ---
 
@@ -334,9 +381,17 @@ The backend serves the static storefront from `../frontend` so the UI and API sh
 
 ### Frontend API client
 
-All pages load `frontend/js/api.js`, which exposes `window.SpaceFitAPI`: `getProducts`, `getFeaturedProducts`, `getProduct`, `getRelatedProducts`, `getCategories`, `ensureCart`, `addToCart`, `updateCartItem`, `removeCartItem`, `validateCart`, `placeOrder`, `getOrder`, `getConfig`, `subscribe`, `bookConsultation`, `formatPrice`.
+All pages load `frontend/js/api.js`, which exposes `window.SpaceFitAPI`:
 
-The server cart id is stored in `localStorage` under `spacefitCartId`. `ensureCart()` creates a server cart on first use.
+- **Catalogue & content:** `getProducts`, `getFeaturedProducts`, `getProduct`, `getRelatedProducts`, `getCategories`, `getConfig`, `getSettings`, `saveSettings`, `subscribe`, `bookConsultation`, `formatPrice`
+- **Cart & checkout:** `ensureCart`, `getCart`, `addToCart`, `updateCartItem`, `removeCartItem`, `validateCart`, `placeOrder`, `getOrder`, `getOrders`
+- **Auth & session:** `login`, `signup`, `logout`, `getMe`, `getSession`, `setSession`, `clearSession`, `isAuthenticated`, `getUser`, `getRole`, `getProfile`, `getDevUser`, `setDevUser`
+- **Seller onboarding:** `submitSellerApplication`, `getMySellerContext`, `updateMySellerProfile`, `getSellerDashboard`
+- **Admin:** `getApplications`, `getApplication`, `reviewApplication`, `getSellers`, `setSellerStatus`
+- **Catalogue writes (sellers):** `createProduct`, `updateProduct`, `deleteProduct`, `getProductReviews`, `createProductReview`
+- **Notifications & returns:** `getNotifications`, `markNotificationRead`, `markAllNotificationsRead`, `getReturns`, `updateReturnStatus`
+
+The server cart id is stored in `localStorage` under `spacefitCartId`. `ensureCart()` creates a server cart on first use. The auth session lives under `spacefitSession` (access + refresh token, user and profile).
 
 ### Page scripts
 
@@ -345,3 +400,10 @@ The server cart id is stored in `localStorage` under `spacefitCartId`. `ensureCa
 - `js/cart.js` — cart.html: list, quantity, remove, totals from the API
 - `js/checkout.js` — checkout.html: order summary + place order, redirect to success
 - `js/order-success.js` — order-succes.html: confirmation from `?id=`
+- `js/api.js` — session layer + API client used by every page
+- `js/chrome.js` — shared chrome on every page: account menu, notifications bell, footer policy links, discount banner, `SpaceFitChrome.toast()`
+- `js/auth.js` — auth.html: sign in / create account tabs, `?next=` redirect
+- `js/apply.js` — seller-apply.html: gated application form + application status states
+- `js/admin.js` — admin.html: overview, applications, sellers, products, orders, settings tabs
+- `js/seller-dashboard.js` — seller-dashboard.html: overview, products, reviews, returns, notifications, shop profile tabs
+- `js/policies.js` — policies.html: rendered policies + active discounts

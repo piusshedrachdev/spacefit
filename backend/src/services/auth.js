@@ -1,5 +1,7 @@
 import { getSupabaseAdmin, createUserClient } from '../lib/supabase.js';
 import { ApiError } from '../utils/http.js';
+import { usingSupabase } from '../db/index.js';
+import { store } from '../store.js';
 
 /**
  * Translate a Supabase auth error into an ApiError, keeping messages generic
@@ -102,8 +104,14 @@ export async function refreshSession(refreshToken) {
   };
 }
 
-/** Fetch the profile row for a given user id. */
+/**
+ * Fetch the profile row for a given user id.
+ * In memory mode the in-memory profile row is returned so `GET /api/auth/me`
+ * (admin gate, header account menu) works without a live Supabase project.
+ */
 export async function getProfile(userId) {
+  if (!usingSupabase()) return store.getProfileRow(userId);
+
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from('profiles')
@@ -117,7 +125,6 @@ export async function getProfile(userId) {
 
 /** Update the caller's own profile. */
 export async function updateProfile(userId, { fullName, phone, avatarPath }) {
-  const supabase = getSupabaseAdmin();
   const patch = {};
   if (fullName !== undefined) patch.full_name = fullName;
   if (phone !== undefined) patch.phone = phone;
@@ -127,6 +134,17 @@ export async function updateProfile(userId, { fullName, phone, avatarPath }) {
     throw ApiError.badRequest('No profile fields to update');
   }
 
+  if (!usingSupabase()) {
+    const updated = store.updateProfileRow(userId, {
+      fullName,
+      phone,
+      avatarPath
+    });
+    if (!updated) throw ApiError.notFound('Profile not found');
+    return updated;
+  }
+
+  const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from('profiles')
     .update(patch)

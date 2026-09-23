@@ -8,10 +8,16 @@ policies, Storage buckets and seed data for SpaceFit, following
 
     supabase/
       migrations/
-        0001_init_schema.sql   # tables, indexes, triggers, profile auto-create
-        0002_rls_policies.sql  # RLS enable + per-operation policies
-        0003_storage.sql       # product-images (public) + avatars (private)
-        0004_seed.sql          # categories + products
+        0001_init_schema.sql          # tables, indexes, triggers, profile auto-create
+        0002_rls_policies.sql         # RLS enable + per-operation policies
+        0003_storage.sql              # product-images (public) + avatars (private)
+        0004_seed.sql                 # categories + products
+        0005_seller_ecosystem.sql     # seller_applications, sellers, notifications,
+                                      # store_settings, product_reviews,
+                                      # return_requests, products.seller_id,
+                                      # profiles.role += 'seller'
+        0006_seller_rls.sql           # RLS for the seller-ecosystem tables
+        0007_seller_seed.sql          # default store_settings + demo seller data
 
 ## Applying the migrations
 
@@ -56,11 +62,32 @@ In Dashboard -> Authentication:
 
     auth.users
       |
-      +-- profiles          (1:1, auto-created by trigger)
+      +-- profiles            (1:1, auto-created by trigger; role: customer | seller | admin)
       +-- carts -- cart_items -- products
       +-- orders -- order_items -- products
       +-- consultations
+      +-- notifications       (type, title, body, link, read_at)
+      +-- product_reviews     (rating 1-5, comment, status: published | hidden)
+      +-- seller_applications (status: pending | approved | rejected)
+      |
+      +-- sellers  <----------+ (1 row per approved application; promotes profiles.role)
+            |
+            +-- products.seller_id   (null = platform-owned catalogue item)
+            +-- return_requests      (status: requested | approved | rejected | completed)
+
     products -- categories
     products -- product_images
-    newsletter_subscribers (standalone)
+    store_settings            (key/value: 'policies', 'discounts')
+    newsletter_subscribers    (standalone)
+
+### Notes
+
+- Approving a `seller_applications` row creates the `sellers` row and flips
+  `profiles.role` to `'seller'` in the same transaction (see
+  `0007_seller_seed.sql` for the promotion SQL and demo data).
+- Blocking a seller flips `sellers.status` only, so history is preserved.
+- `store_settings` is read publicly by `GET /api/meta/settings` (footer policy
+  links, discount banner) and written by admins from `admin.html`.
+- Seller stats (units, revenue, rating, returns) are derived from
+  `order_items` -> `products.seller_id`, `product_reviews` and `return_requests`.
 

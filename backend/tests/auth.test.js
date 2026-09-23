@@ -79,6 +79,45 @@ describe('auth middleware', () => {
   });
 });
 
+describe('GET /api/auth/me (memory mode)', () => {
+  it('returns the dev user profile without touching Supabase', async () => {
+    const res = await request(app).get('/api/auth/me').set('X-Dev-User', 'dev-user-admin');
+    expect(res.status).toBe(200);
+    expect(res.body.data.user.id).toBe('dev-user-admin');
+    expect(res.body.data.profile.role).toBe('admin');
+    expect(res.body.data.profile).toHaveProperty('full_name');
+  });
+
+  it('401s without any identity', async () => {
+    const res = await request(app).get('/api/auth/me');
+    expect(res.status).toBe(401);
+  });
+});
+
+describe('PATCH /api/auth/me (memory mode)', () => {
+  it('updates own profile fields in the in-memory store', async () => {
+    const res = await request(app)
+      .patch('/api/auth/me')
+      .set('X-Dev-User', 'dev-user-customer')
+      .send({ phone: '+2348011111111' });
+    expect(res.status).toBe(200);
+    expect(res.body.data.phone).toBe('+2348011111111');
+
+    const readBack = await request(app)
+      .get('/api/auth/me')
+      .set('X-Dev-User', 'dev-user-customer');
+    expect(readBack.body.data.profile.phone).toBe('+2348011111111');
+  });
+
+  it('rejects an empty patch', async () => {
+    const res = await request(app)
+      .patch('/api/auth/me')
+      .set('X-Dev-User', 'dev-user-customer')
+      .send({});
+    expect(res.status).toBe(400);
+  });
+});
+
 import { resolveRole } from '../src/middleware/auth.js';
 import { store } from '../src/store.js';
 
