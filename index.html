@@ -1,0 +1,683 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceFit — Marketplace for Buying &amp; Selling Furniture &amp; Home Products</title>
+
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="tailwind.config.js"></script>
+
+<!-- Custom Styles (extracted to styles.css) -->
+<link rel="stylesheet" href="./tailwind/homepage.css">
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-orange-100 selection:text-amber-900">
+<!-- BEGIN: AnnouncementBar -->
+<div class="bg-[#2B2927] text-stone-200 text-xs py-2 px-4 border-b border-stone-800" data-purpose="marketplace-notice">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">Sell Pre-loved</span>
+<span class="text-stone-300">Turn your space essentials into cash. Free buyer &amp; seller escrow protection on every order.</span>
+</div>
+<div class="hidden sm:flex items-center gap-4 text-xs shrink-0">
+<a class="font-medium text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1" href="#sell-section">
+          List your furniture 
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+<span class="text-stone-600">|</span>
+<span class="text-stone-400">Currency: <strong class="text-stone-200">NGN (₦)</strong></span>
+</div>
+</div>
+</div>
+<!-- END: AnnouncementBar -->
+<!-- BEGIN: MainHeader -->
+<header class="sticky top-0 z-40 bg-[#FBF9F5]/95 backdrop-blur-md border-b border-[#E7E3DC]" data-purpose="site-navigation">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3 flex items-center justify-between gap-4">
+<!-- Brand Logo Lockup -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-2.5 focus:outline-none group" href="#">
+<img alt="SpaceFit icon" class="h-9 w-auto object-contain transition-transform group-hover:scale-[1.02]" src="./assets/icon/SpaceFit_icon.png">
+<img alt="SpaceFit wordmark" class="h-5 w-auto object-contain transition-transform group-hover:scale-[1.02]" src="./assets/icon/SpaceFit_wordmark.png">
+</a>
+<!-- Primary Nav Links (Desktop) -->
+<nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-stone-700">
+<a class="hover:text-stone-950 transition-colors" href="#categories-section">Shop</a>
+<a class="hover:text-stone-950 transition-colors" href="#categories-section">Categories</a>
+<a class="hover:text-stone-950 transition-colors" href="#curated-spaces">Spaces</a>
+<a class="text-[#543A23] hover:text-amber-700 transition-colors flex items-center gap-1 font-semibold" href="#sell-section">
+            Sell
+            <span class="w-1.5 h-1.5 rounded-full bg-[#F38B00]"></span>
+</a>
+</nav>
+</div>
+<!-- Center Search Header (Desktop) -->
+<div class="hidden lg:flex flex-1 max-w-md mx-4">
+<div class="relative w-full">
+<input class="w-full bg-[#F5F2EB] border border-[#E7E3DC] rounded-full py-2 pl-10 pr-4 text-xs sm:text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#543A23]/20 focus:border-[#543A23] transition-all" placeholder="Tell us what you need..." type="text">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</div>
+<!-- Header Action Icons -->
+<div class="flex items-center space-x-3 sm:space-x-4">
+<!-- Wishlist -->
+<button aria-label="Saved items" class="p-2 text-stone-600 hover:text-stone-900 rounded-full hover:bg-stone-100 transition-colors" title="Saved items">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg>
+</button>
+<!-- Cart with indicator -->
+<button aria-label="Shopping Cart" class="relative p-2 text-stone-600 hover:text-stone-900 rounded-full hover:bg-stone-100 transition-colors" title="Cart">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="absolute top-1 right-1 w-4 h-4 bg-[#F38B00] text-white text-[10px] font-bold rounded-full flex items-center justify-center">2</span>
+</button>
+<!-- Profile/Account -->
+<div class="relative">
+<button aria-label="User profile" class="flex items-center gap-2 p-1.5 text-stone-700 hover:text-stone-950 rounded-full hover:bg-stone-100 transition-colors focus:outline-none">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg>
+</button>
+</div>
+<!-- Mobile Menu Toggle Button -->
+<button aria-label="Open mobile menu" class="md:hidden p-2 text-stone-700 hover:text-stone-950 focus:outline-none" id="mobileMenuBtn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- Mobile Nav Drawer -->
+<div class="hidden md:hidden border-t border-[#E7E3DC] bg-[#FBF9F5] px-4 pt-3 pb-6 space-y-3" id="mobileDrawer">
+<div class="relative w-full mb-3">
+<input class="w-full bg-[#F5F2EB] border border-[#E7E3DC] rounded-full py-2 pl-9 pr-3 text-sm text-stone-800 focus:outline-none" placeholder="Tell us what you need..." type="text">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<a class="block py-2 text-base font-medium text-stone-800" href="#categories-section">Shop Furniture</a>
+<a class="block py-2 text-base font-medium text-stone-800" href="#categories-section">Browse Categories</a>
+<a class="block py-2 text-base font-medium text-stone-800" href="#curated-spaces">Room Inspirations</a>
+<a class="block py-2 text-base font-semibold text-[#F38B00]" href="#sell-section">List an Item for Sale</a>
+</div>
+</header>
+<!-- END: MainHeader -->
+<main class="flex-1">
+<!-- BEGIN: HeroSection -->
+<section class="relative overflow-hidden bg-[#F5F2EB] border-b border-[#E7E3DC]" data-purpose="hero-search-container" id="heroCarouselSection">
+  <!-- Full-width Carousel Background Slides -->
+  <div class="relative w-full h-[700px] sm:h-[760px] lg:h-[840px] overflow-hidden bg-stone-900">
+    <!-- Slide 1 -->
+    <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-100 z-10" data-slide-index="0">
+      <img src="./assets/carousell/Contemporary%20Living%20Room%20Design.jpg" alt="Contemporary Living Room Design" class="w-full h-full object-cover object-center transform scale-100 transition-transform duration-1000">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#FBF9F5]/95 via-[#FBF9F5]/85 to-transparent sm:w-2/3 lg:w-3/5"></div>
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="absolute bottom-6 right-6 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/20 text-white px-4 py-2.5 rounded-2xl shadow-lg z-20">
+        <div>
+          <p class="font-semibold text-xs text-white">Contemporary Living Room Design</p>
+          <p class="text-[11px] text-stone-300">Modern living space with a cozy neutral palette</p>
+        </div>
+        <span class="bg-[#F38B00] text-white px-2.5 py-1 rounded-lg font-bold text-[11px] shrink-0">₦890k Room Set</span>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-0 z-0 pointer-events-none" data-slide-index="1">
+      <img src="./assets/carousell/Bedroom%20Wardrobe%20Design.jpg" alt="Bedroom Wardrobe Design" class="w-full h-full object-cover object-center transform scale-100 transition-transform duration-1000">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#FBF9F5]/95 via-[#FBF9F5]/85 to-transparent sm:w-2/3 lg:w-3/5"></div>
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="absolute bottom-6 right-6 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/20 text-white px-4 py-2.5 rounded-2xl shadow-lg z-20">
+        <div>
+          <p class="font-semibold text-xs text-white">Bedroom Wardrobe Design</p>
+          <p class="text-[11px] text-stone-300">Clever wardrobe design for out-of-the-box bedrooms</p>
+        </div>
+        <span class="bg-[#F38B00] text-white px-2.5 py-1 rounded-lg font-bold text-[11px] shrink-0">₦720k Wardrobe Set</span>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-0 z-0 pointer-events-none" data-slide-index="2">
+      <img src="./assets/carousell/Clever%20Wardrobe%20Design%20For%20Out-Of-The-Box%20Bedrooms.jpg" alt="Clever Wardrobe Design For Out-Of-The-Box Bedrooms" class="w-full h-full object-cover object-center transform scale-100 transition-transform duration-1000">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#FBF9F5]/95 via-[#FBF9F5]/85 to-transparent sm:w-2/3 lg:w-3/5"></div>
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="absolute bottom-6 right-6 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/20 text-white px-4 py-2.5 rounded-2xl shadow-lg z-20">
+        <div>
+          <p class="font-semibold text-xs text-white">Clever Wardrobe Design For Out-Of-The-Box Bedrooms</p>
+          <p class="text-[11px] text-stone-300">Smart storage styling built around a modern bedroom layout</p>
+        </div>
+        <span class="bg-[#F38B00] text-white px-2.5 py-1 rounded-lg font-bold text-[11px] shrink-0">₦760k Wardrobe Set</span>
+      </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-0 z-0 pointer-events-none" data-slide-index="3">
+      <img src="./assets/carousell/Cozy%20Wooden%20Desk%20Setup.jpg" alt="Cozy Wooden Desk Setup" class="w-full h-full object-cover object-center transform scale-100 transition-transform duration-1000">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#FBF9F5]/95 via-[#FBF9F5]/85 to-transparent sm:w-2/3 lg:w-3/5"></div>
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="absolute bottom-6 right-6 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/20 text-white px-4 py-2.5 rounded-2xl shadow-lg z-20">
+        <div>
+          <p class="font-semibold text-xs text-white">Cozy Wooden Desk Setup</p>
+          <p class="text-[11px] text-stone-300">A warm, compact desk arrangement for creative home work</p>
+        </div>
+        <span class="bg-[#F38B00] text-white px-2.5 py-1 rounded-lg font-bold text-[11px] shrink-0">₦510k Workspace Set</span>
+      </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-0 z-0 pointer-events-none" data-slide-index="4">
+      <img src="./assets/carousell/Modern%20living%20space.jpg" alt="Modern living space" class="w-full h-full object-cover object-center transform scale-100 transition-transform duration-1000">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#FBF9F5]/95 via-[#FBF9F5]/85 to-transparent sm:w-2/3 lg:w-3/5"></div>
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="absolute bottom-6 right-6 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/20 text-white px-4 py-2.5 rounded-2xl shadow-lg z-20">
+        <div>
+          <p class="font-semibold text-xs text-white">Modern living space</p>
+          <p class="text-[11px] text-stone-300">Clean lines, layered textures, and an airy apartment feel</p>
+        </div>
+        <span class="bg-[#F38B00] text-white px-2.5 py-1 rounded-lg font-bold text-[11px] shrink-0">₦850k Home Set</span>
+      </div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-0 z-0 pointer-events-none" data-slide-index="5">
+      <img src="./assets/carousell/Scandinavian-style%20home%20office%20with%20a%20minimalist%20desk,%20ergonomic%20chair,%20and%20built-in%20shelves.jpg" alt="Scandinavian-style home office with a minimalist desk, ergonomic chair, and built-in shelves" class="w-full h-full object-cover object-center transform scale-100 transition-transform duration-1000">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#FBF9F5]/95 via-[#FBF9F5]/85 to-transparent sm:w-2/3 lg:w-3/5"></div>
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="absolute bottom-6 right-6 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/20 text-white px-4 py-2.5 rounded-2xl shadow-lg z-20">
+        <div>
+          <p class="font-semibold text-xs text-white">Scandinavian-style home office with a minimalist desk, ergonomic chair, and built-in shelves</p>
+          <p class="text-[11px] text-stone-300">Minimalist workspace with built-in shelves and an ergonomic chair</p>
+        </div>
+        <span class="bg-[#F38B00] text-white px-2.5 py-1 rounded-lg font-bold text-[11px] shrink-0">₦510k Workspace Set</span>
+      </div>
+    </div>
+
+    <!-- Slide 7 -->
+    <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-0 z-0 pointer-events-none" data-slide-index="6">
+      <img src="./assets/carousell/Serene%20living%20room%20with%20sectional%20sofa%20and%20abstract%20art%20coffee%20table%20floor%20lamp.jpg" alt="Serene living room with sectional sofa and abstract art coffee table floor lamp" class="w-full h-full object-cover object-center transform scale-100 transition-transform duration-1000">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#FBF9F5]/95 via-[#FBF9F5]/85 to-transparent sm:w-2/3 lg:w-3/5"></div>
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="absolute bottom-6 right-6 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/20 text-white px-4 py-2.5 rounded-2xl shadow-lg z-20">
+        <div>
+          <p class="font-semibold text-xs text-white">Serene living room with sectional sofa and abstract art coffee table floor lamp</p>
+          <p class="text-[11px] text-stone-300">A calm modern lounge centered on texture, art, and comfort</p>
+        </div>
+        <span class="bg-[#F38B00] text-white px-2.5 py-1 rounded-lg font-bold text-[11px] shrink-0">₦930k Living Room Set</span>
+      </div>
+    </div>
+
+    <!-- Overlapping Foreground Search Content -->
+    <div class="absolute inset-0 z-20 pointer-events-none flex items-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pointer-events-auto">
+        <div class="max-w-xl lg:max-w-2xl bg-[#FBF9F5]/90 backdrop-blur-md border border-white/80 p-6 sm:p-10 rounded-3xl shadow-xl space-y-6" style="background-color: rgba(245, 242, 237, 0.85); backdrop-filter: blur(20px); border-color: rgba(231, 227, 220, 0.9);">
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#1F1E1D] leading-[1.18]">
+            Tell us what you need for your space.
+          </h1>
+          <p class="text-stone-600 text-base sm:text-lg leading-relaxed font-normal">
+            We'll help you find curated architectural pieces, sculptural ceramics, and mindful spatial furniture designed for deliberate contemporary living.
+          </p>
+
+          <!-- Interactive Smart Search Bar -->
+          <div class="bg-white rounded-2xl p-2 shadow-sm border border-[#E7E3DC] flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div class="relative flex-1 flex items-center pl-3">
+              <svg class="w-5 h-5 text-stone-400 shrink-0 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+              </svg>
+              <input class="w-full border-none focus:ring-0 text-sm sm:text-base text-stone-900 placeholder-stone-400 p-1.5 focus:outline-none bg-transparent" id="mainHeroSearch" placeholder="Tell us what you're looking for..." type="text">
+            </div>
+            <button class="bg-[#543A23] hover:bg-[#3d2919] text-white px-6 py-3 rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2 shrink-0 shadow-sm" id="searchExecuteBtn">
+              <span class="">Find matches</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Suggestion Quick-Pills -->
+          <div class="pt-1">
+            <p class="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2.5">Popular queries</p>
+            <div class="flex flex-wrap gap-2 text-xs font-medium text-stone-700">
+              <button class="suggestion-pill bg-white hover:bg-stone-50 border border-[#E7E3DC] hover:border-stone-400 px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-2xs">
+                <span class="text-stone-400">✦</span> Furnish my bedroom under ₦500k
+              </button>
+              <button class="suggestion-pill bg-white hover:bg-stone-50 border border-[#E7E3DC] hover:border-stone-400 px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-2xs">
+                <span class="text-stone-400">✦</span> A comfortable mattress under ₦150k
+              </button>
+              <button class="suggestion-pill bg-white hover:bg-stone-50 border border-[#E7E3DC] hover:border-stone-400 px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-2xs">
+                <span class="text-stone-400">✦</span> A desk for a small room
+              </button>
+              <button class="suggestion-pill bg-white hover:bg-stone-50 border border-[#E7E3DC] hover:border-stone-400 px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-2xs">
+                <span class="text-stone-400">✦</span> Help me furnish my first apartment
+              </button>
+            </div>
+          </div>
+
+          <!-- Carousel Navigation Controls -->
+          <div class="mt-1 flex items-center justify-center gap-4 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/60 shadow-md w-fit mx-auto">
+            <button aria-label="Previous slide" id="heroPrevBtn" class="p-1 text-stone-700 hover:text-stone-950 transition-colors focus:outline-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+            <div class="flex items-center gap-2" id="heroSlideDots">
+              <button aria-label="Go to slide 1" class="hero-dot w-6 h-2 rounded-full bg-[#543A23] transition-all" data-dot-index="0"></button>
+              <button aria-label="Go to slide 2" class="hero-dot w-2 h-2 rounded-full bg-stone-300 hover:bg-stone-400 transition-all" data-dot-index="1"></button>
+              <button aria-label="Go to slide 3" class="hero-dot w-2 h-2 rounded-full bg-stone-300 hover:bg-stone-400 transition-all" data-dot-index="2"></button>
+              <button aria-label="Go to slide 4" class="hero-dot w-2 h-2 rounded-full bg-stone-300 hover:bg-stone-400 transition-all" data-dot-index="3"></button>
+              <button aria-label="Go to slide 5" class="hero-dot w-2 h-2 rounded-full bg-stone-300 hover:bg-stone-400 transition-all" data-dot-index="4"></button>
+              <button aria-label="Go to slide 6" class="hero-dot w-2 h-2 rounded-full bg-stone-300 hover:bg-stone-400 transition-all" data-dot-index="5"></button>
+              <button aria-label="Go to slide 7" class="hero-dot w-2 h-2 rounded-full bg-stone-300 hover:bg-stone-400 transition-all" data-dot-index="6"></button>
+            </div>
+            <button aria-label="Next slide" id="heroNextBtn" class="p-1 text-stone-700 hover:text-stone-950 transition-colors focus:outline-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- END: HeroSection -->
+<!-- BEGIN: CategoriesSection -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16" data-purpose="category-browser" id="categories-section">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-xl sm:text-2xl font-bold tracking-tight text-stone-900">Categories</h2>
+<p class="text-xs sm:text-sm text-stone-500 mt-0.5">Explore essential furnishings tailored to every corner</p>
+</div>
+<a class="text-xs sm:text-sm font-semibold text-[#543A23] hover:text-[#F38B00] transition-colors flex items-center gap-1 group" href="#all-categories">
+          Explore all 
+          <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+</a>
+</div>
+<!-- Categories Grid matching layout from snapshot -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
+<!-- Category 1: Beds -->
+<a class="group flex flex-col items-center bg-white border border-[#E7E3DC] rounded-2xl p-3 hover:shadow-md transition-all hover:-translate-y-0.5" href="#beds">
+<div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-3">
+<img alt="bed frame" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500" src="./assets/shop%20by%20category/bed%20frame.jpg">
+</div>
+<span class="text-xs sm:text-sm font-semibold text-stone-800 group-hover:text-[#543A23]">Beds</span>
+<span class="text-[11px] text-stone-400 mt-0.5">84 models</span>
+</a>
+<!-- Category 2: Mattresses -->
+<a class="group flex flex-col items-center bg-white border border-[#E7E3DC] rounded-2xl p-3 hover:shadow-md transition-all hover:-translate-y-0.5" href="#mattresses">
+<div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-3">
+<img alt="mattress" class="w-full h-full object-cover object-bottom group-hover:scale-110 transition-transform duration-500" src="./assets/shop%20by%20category/mattress.jpg">
+</div>
+<span class="text-xs sm:text-sm font-semibold text-stone-800 group-hover:text-[#543A23]">Mattresses</span>
+<span class="text-[11px] text-stone-400 mt-0.5">42 models</span>
+</a>
+<!-- Category 3: Wardrobes -->
+<a class="group flex flex-col items-center bg-white border border-[#E7E3DC] rounded-2xl p-3 hover:shadow-md transition-all hover:-translate-y-0.5" href="#wardrobes">
+<div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-3">
+<img alt="wardrobe" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500" src="./assets/shop%20by%20category/wardrobe.jpg">
+</div>
+<span class="text-xs sm:text-sm font-semibold text-stone-800 group-hover:text-[#543A23]">Wardrobes</span>
+<span class="text-[11px] text-stone-400 mt-0.5">56 models</span>
+</a>
+<!-- Category 4: Desks -->
+<a class="group flex flex-col items-center bg-white border border-[#E7E3DC] rounded-2xl p-3 hover:shadow-md transition-all hover:-translate-y-0.5" href="#desks">
+<div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-3">
+<img alt="desk" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500" src="./assets/shop%20by%20category/desk.jpg">
+</div>
+<span class="text-xs sm:text-sm font-semibold text-stone-800 group-hover:text-[#543A23]">Desks</span>
+<span class="text-[11px] text-stone-400 mt-0.5">63 models</span>
+</a>
+<!-- Category 5: Nightstands -->
+<a class="group flex flex-col items-center bg-white border border-[#E7E3DC] rounded-2xl p-3 hover:shadow-md transition-all hover:-translate-y-0.5" href="#nightstands">
+<div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-3">
+<img alt="nightstand" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" src="./assets/shop%20by%20category/nightstand.jpg">
+</div>
+<span class="text-xs sm:text-sm font-semibold text-stone-800 group-hover:text-[#543A23]">Nightstands</span>
+<span class="text-[11px] text-stone-400 mt-0.5">38 models</span>
+</a>
+<!-- Category 6: Rugs -->
+<a class="group flex flex-col items-center bg-white border border-[#E7E3DC] rounded-2xl p-3 hover:shadow-md transition-all hover:-translate-y-0.5" href="#rugs">
+<div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 mb-3">
+<img alt="rugs" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500" src="./assets/shop%20by%20category/rugs.jpg">
+</div>
+<span class="text-xs sm:text-sm font-semibold text-stone-800 group-hover:text-[#543A23]">Rugs</span>
+<span class="text-[11px] text-stone-400 mt-0.5">29 models</span>
+</a>
+</div>
+</section>
+<!-- END: CategoriesSection -->
+<!-- BEGIN: FeaturedProductsSection -->
+<section class="bg-[#F5F2EB]/60 border-y border-[#E7E3DC] py-12 lg:py-16" data-purpose="featured-products">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-xl sm:text-2xl font-bold tracking-tight text-stone-900">In Stock (Fast Delivery)</h2>
+<p class="text-xs sm:text-sm text-stone-500 mt-0.5">Handpicked pieces verified for durability and aesthetics</p>
+</div>
+<a class="text-xs sm:text-sm font-semibold text-[#543A23] hover:text-[#F38B00] transition-colors flex items-center gap-1 group" href="#all-featured">
+            View all 
+            <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+</a>
+</div>
+<!-- 4 Column Product Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Product Card 1: Luna Bed -->
+<article class="bg-white rounded-2xl border border-[#E7E3DC] overflow-hidden flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="product-card">
+<div>
+<div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden">
+<img alt="lunabedframe" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" src="./assets/featured%20product/lunabedframe.jpg">
+<span class="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-stone-700 px-2 py-1 rounded-md uppercase tracking-wider">
+                  Handcrafted Oak
+                </span>
+<button aria-label="Add to wishlist" class="absolute top-3 right-3 p-1.5 rounded-full bg-white/90 text-stone-600 hover:text-red-500 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<div class="p-4">
+<div class="text-[11px] text-[#543A23] font-semibold uppercase tracking-wider mb-1">Bedroom • Lagos</div>
+<h3 class="font-bold text-stone-900 text-sm group-hover:text-[#F38B00] transition-colors">Luna Bed Frame</h3>
+<p class="text-xs text-stone-500 mt-1 line-clamp-1">Natural solid oak with curved headboard</p>
+</div>
+</div>
+<div class="p-4 pt-0 flex items-center justify-between border-t border-stone-100 mt-2">
+<div>
+<span class="text-xs text-stone-400 block font-medium">Price</span>
+<span class="text-base font-extrabold text-stone-900">₦450,000</span>
+</div>
+<button aria-label="Add to cart" class="p-2.5 rounded-xl bg-[#F5F2EB] text-stone-800 hover:bg-[#543A23] hover:text-white transition-colors" title="Add to cart">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- Product Card 2: Comfort Mattress -->
+<article class="bg-white rounded-2xl border border-[#E7E3DC] overflow-hidden flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="product-card">
+<div>
+<div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden">
+<img alt="cloud bedding" class="w-full h-full object-cover object-bottom group-hover:scale-105 transition-transform duration-500" src="./assets/featured%20product/cloud%20bedding.jpg">
+<span class="absolute top-3 left-3 bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider border border-emerald-200">
+                  Verified Seller
+                </span>
+<button aria-label="Add to wishlist" class="absolute top-3 right-3 p-1.5 rounded-full bg-white/90 text-stone-600 hover:text-red-500 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<div class="p-4">
+<div class="text-[11px] text-[#543A23] font-semibold uppercase tracking-wider mb-1">Mattresses • Abuja</div>
+<h3 class="font-bold text-stone-900 text-sm group-hover:text-[#F38B00] transition-colors">Comfort Cloud Mattress</h3>
+<p class="text-xs text-stone-500 mt-1 line-clamp-1">Orthopedic dual-layer high density foam</p>
+</div>
+</div>
+<div class="p-4 pt-0 flex items-center justify-between border-t border-stone-100 mt-2">
+<div>
+<span class="text-xs text-stone-400 block font-medium">Price</span>
+<span class="text-base font-extrabold text-stone-900">₦180,000</span>
+</div>
+<button aria-label="Add to cart" class="p-2.5 rounded-xl bg-[#F5F2EB] text-stone-800 hover:bg-[#543A23] hover:text-white transition-colors" title="Add to cart">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- Product Card 3: Aspen Wardrobe -->
+<article class="bg-white rounded-2xl border border-[#E7E3DC] overflow-hidden flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="product-card">
+<div>
+<div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden">
+<img alt="solid wardrobe" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" src="./assets/featured%20product/solid%20wardrobe.jpg">
+<span class="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-stone-700 px-2 py-1 rounded-md uppercase tracking-wider">
+                  3-Door Minimal
+                </span>
+<button aria-label="Add to wishlist" class="absolute top-3 right-3 p-1.5 rounded-full bg-white/90 text-stone-600 hover:text-red-500 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<div class="p-4">
+<div class="text-[11px] text-[#543A23] font-semibold uppercase tracking-wider mb-1">Storage • Ibadan</div>
+<h3 class="font-bold text-stone-900 text-sm group-hover:text-[#F38B00] transition-colors">Aspen Solid Wardrobe</h3>
+<p class="text-xs text-stone-500 mt-1 line-clamp-1">Ash wood finish with integrated hangers</p>
+</div>
+</div>
+<div class="p-4 pt-0 flex items-center justify-between border-t border-stone-100 mt-2">
+<div>
+<span class="text-xs text-stone-400 block font-medium">Price</span>
+<span class="text-base font-extrabold text-stone-900">₦320,000</span>
+</div>
+<button aria-label="Add to cart" class="p-2.5 rounded-xl bg-[#F5F2EB] text-stone-800 hover:bg-[#543A23] hover:text-white transition-colors" title="Add to cart">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- Product Card 4: Novo Desk -->
+<article class="bg-white rounded-2xl border border-[#E7E3DC] overflow-hidden flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="product-card">
+<div>
+<div class="relative aspect-4/3 w-full bg-stone-100 overflow-hidden">
+<img alt="novo workdesk" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" src="./assets/featured%20product/novo%20workdesk.jpg">
+<span class="absolute top-3 left-3 bg-amber-50 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider border border-amber-200">
+                  Popular Compact
+                </span>
+<button aria-label="Add to wishlist" class="absolute top-3 right-3 p-1.5 rounded-full bg-white/90 text-stone-600 hover:text-red-500 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<div class="p-4">
+<div class="text-[11px] text-[#543A23] font-semibold uppercase tracking-wider mb-1">Workspaces • Lagos</div>
+<h3 class="font-bold text-stone-900 text-sm group-hover:text-[#F38B00] transition-colors">Novo Work Desk</h3>
+<p class="text-xs text-stone-500 mt-1 line-clamp-1">Slender tapered legs with cable routing</p>
+</div>
+</div>
+<div class="p-4 pt-0 flex items-center justify-between border-t border-stone-100 mt-2">
+<div>
+<span class="text-xs text-stone-400 block font-medium">Price</span>
+<span class="text-base font-extrabold text-stone-900">₦150,000</span>
+</div>
+<button aria-label="Add to cart" class="p-2.5 rounded-xl bg-[#F5F2EB] text-stone-800 hover:bg-[#543A23] hover:text-white transition-colors" title="Add to cart">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- END: FeaturedProductsSection -->
+<!-- BEGIN: CuratedSpacesSection -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16" data-purpose="room-scenarios" id="curated-spaces">
+<!-- Container with soft warm frame -->
+<div class="bg-[#F5F2EB] border border-[#E7E3DC] rounded-3xl p-6 sm:p-8 lg:p-10">
+<div class="max-w-2xl mb-8">
+<h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900">Create Your Perfect Space</h2>
+<p class="text-stone-600 text-sm sm:text-base mt-1">Furnish your bedroom, workspace or new home with ease and coordinated curation.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Scenario Card 1 -->
+<div class="bg-white rounded-2xl overflow-hidden border border-[#E7E3DC] flex flex-col group hover:shadow-md transition-shadow">
+<div class="aspect-16/10 overflow-hidden bg-stone-100">
+<img alt="bedroom" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" src="./assets/create%20your%20perfect%20workspace/bedroom.jpg">
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-base text-stone-900 mb-1">Furnish My Bedroom</h3>
+<p class="text-xs text-stone-500">Beds, blackout lamps, rugs and organizers bundled for peaceful rest.</p>
+</div>
+<a class="inline-flex items-center text-xs font-bold text-[#543A23] group-hover:text-[#F38B00] mt-4 transition-colors" href="#furnish-bedroom">
+                Shop bedroom essentials <span class="ml-1 transition-transform group-hover:translate-x-1">→</span>
+</a>
+</div>
+</div>
+<!-- Scenario Card 2 -->
+<div class="bg-white rounded-2xl overflow-hidden border border-[#E7E3DC] flex flex-col group hover:shadow-md transition-shadow">
+<div class="aspect-16/10 overflow-hidden bg-stone-100">
+<img alt="workspace" class="w-full h-full object-cover object-bottom group-hover:scale-105 transition-transform duration-500" src="./assets/create%20your%20perfect%20workspace/workspace.jpg">
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-base text-stone-900 mb-1">Build My Workspace</h3>
+<p class="text-xs text-stone-500">Find clean desks, ergonomic chairs &amp; storage made for focus and comfort.</p>
+</div>
+<a class="inline-flex items-center text-xs font-bold text-[#543A23] group-hover:text-[#F38B00] mt-4 transition-colors" href="#build-workspace">
+                Find desks, chairs &amp; more <span class="ml-1 transition-transform group-hover:translate-x-1">→</span>
+</a>
+</div>
+</div>
+<!-- Scenario Card 3 -->
+<div class="bg-white rounded-2xl overflow-hidden border border-[#E7E3DC] flex flex-col group hover:shadow-md transition-shadow">
+<div class="aspect-16/10 overflow-hidden bg-stone-100">
+<img alt="apartment" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" src="./assets/create%20your%20perfect%20workspace/apartment.jpg">
+</div>
+<div class="p-5 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-base text-stone-900 mb-1">First Apartment Starter</h3>
+<p class="text-xs text-stone-500">Everything you need to set up home on a smart budget without sacrificing charm.</p>
+</div>
+<a class="inline-flex items-center text-xs font-bold text-[#543A23] group-hover:text-[#F38B00] mt-4 transition-colors" href="#first-apartment">
+                Everything you need <span class="ml-1 transition-transform group-hover:translate-x-1">→</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: CuratedSpacesSection -->
+<!-- BEGIN: MarketplaceSellSection -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-12" data-purpose="seller-value-proposition" id="sell-section">
+<div class="relative rounded-3xl bg-[#2B2927] text-white overflow-hidden p-8 sm:p-12 shadow-lg">
+<!-- Subtle background texture / shape -->
+<div class="absolute right-0 top-0 -mt-10 -mr-10 w-80 h-80 bg-amber-600/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<div class="lg:col-span-8 space-y-4">
+<span class="inline-block px-3 py-1 bg-amber-400/20 text-amber-300 rounded-full text-xs font-semibold tracking-wide">
+              Marketplace Seller Network
+            </span>
+<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-stone-100">
+              Have furniture to sell or relocate?
+            </h2>
+<p class="text-stone-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+              List your quality pre-loved or artisan crafted furniture on SpaceFit. Connect directly with verified buyers, enjoy managed door-to-door delivery assistance, and receive secure escrow payouts.
+            </p>
+<!-- Badges -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+<div class="flex items-center gap-2 text-stone-300 text-xs font-medium">
+<span class="p-1 rounded-md bg-stone-800 text-amber-400">✓</span>
+                Verified Nigerian Buyers
+              </div>
+<div class="flex items-center gap-2 text-stone-300 text-xs font-medium">
+<span class="p-1 rounded-md bg-stone-800 text-amber-400">✓</span>
+                Pickup &amp; Logistics Support
+              </div>
+<div class="flex items-center gap-2 text-stone-300 text-xs font-medium">
+<span class="p-1 rounded-md bg-stone-800 text-amber-400">✓</span>
+                Zero Upfront Listing Fee
+              </div>
+</div>
+</div>
+<div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center">
+<a class="w-full text-center bg-[#F38B00] hover:bg-[#d97706] text-white font-bold py-3.5 px-6 rounded-xl text-sm transition-colors shadow-md" href="#start-selling">
+              Start Selling Today
+            </a>
+<a class="w-full text-center bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold py-3 px-6 rounded-xl text-sm transition-colors" href="#how-it-works">
+              How selling works
+            </a>
+</div>
+</div>
+</div>
+</section>
+<!-- END: MarketplaceSellSection -->
+</main>
+<!-- BEGIN: SiteFooter -->
+<footer class="bg-[#F5F2EB] border-t border-[#E7E3DC] text-stone-600 text-xs sm:text-sm" data-purpose="site-footer">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-8">
+<!-- Brand Summary Column -->
+<div class="col-span-2 space-y-4 pr-4">
+<a class="inline-flex items-center gap-2.5" href="#">
+<img alt="SpaceFit icon" class="h-8 w-auto object-contain" src="./assets/icon/SpaceFit_icon.png">
+<img alt="SpaceFit wordmark" class="h-5 w-auto object-contain" src="./assets/icon/SpaceFit_wordmark.png">
+</a>
+<p class="text-stone-500 text-xs leading-relaxed max-w-sm">
+            SpaceFit is Nigeria’s modern furniture marketplace. We connect conscious homemakers, interior lovers, and makers to trade beautiful furniture for every space.
+          </p>
+<div class="flex items-center space-x-3 text-stone-500 pt-2">
+<!-- Twitter/X -->
+<a aria-label="Twitter" class="p-2 bg-white rounded-full border border-stone-200 hover:text-stone-900 transition-colors" href="#">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+</a>
+<!-- Instagram -->
+<a aria-label="Instagram" class="p-2 bg-white rounded-full border border-stone-200 hover:text-stone-900 transition-colors" href="#">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</a>
+<!-- Facebook -->
+<a aria-label="Facebook" class="p-2 bg-white rounded-full border border-stone-200 hover:text-stone-900 transition-colors" href="#">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 22v-8h2.5l.5-3h-3V7.5c0-.9.5-1.5 1.5-1.5H16V3.1c-.4-.1-1.4-.1-2.5-.1-2.5 0-4.5 1.5-4.5 4.5V11H7v3h2.5v8h4z"></path></svg>
+</a>
+</div>
+</div>
+<!-- Links Column 1: Shop -->
+<div>
+<h4 class="font-bold text-stone-900 mb-3 uppercase tracking-wider text-xs">Shop</h4>
+<ul class="space-y-2 text-xs">
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#all-products">All Furniture</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#beds">Beds &amp; Frames</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#mattresses">Mattresses</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#desks">Desks &amp; Tables</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#living">Sofas &amp; Chairs</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#rugs">Decor &amp; Rugs</a></li>
+</ul>
+</div>
+<!-- Links Column 2: Marketplace Sell -->
+<div>
+<h4 class="font-bold text-stone-900 mb-3 uppercase tracking-wider text-xs">Sell</h4>
+<ul class="space-y-2 text-xs">
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#sell">Sell on SpaceFit</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#seller-guidelines">Seller Guidelines</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#fee-calculator">Payout Calculator</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#escrow-protection">Escrow Protection</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#shipping-help">Pickup Logistics</a></li>
+</ul>
+</div>
+<!-- Links Column 3: Company & Help -->
+<div>
+<h4 class="font-bold text-stone-900 mb-3 uppercase tracking-wider text-xs">Company</h4>
+<ul class="space-y-2 text-xs">
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#about">About Us</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#reviews">Customer Stories</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#contact">Contact Support</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#terms">Terms of Service</a></li>
+<li class=""><a class="hover:text-stone-950 transition-colors" href="#privacy">Privacy Policy</a></li>
+</ul>
+</div>
+</div>
+<!-- Bottom Subfooter -->
+<div class="mt-10 pt-6 border-t border-stone-200/80">
+<div class="flex flex-col lg:flex-row items-center justify-between gap-4 text-xs text-stone-500">
+<p class="text-center lg:text-left">© 2025 SpaceFit Studio Limited. Handcrafted for space harmony.</p>
+<div class="flex flex-wrap items-center justify-center gap-3 lg:justify-end">
+<div class="inline-flex items-center gap-2 bg-white border border-stone-200 rounded-md px-3 py-1.5 shadow-sm">
+<span class="inline-flex h-5 w-5 items-center justify-center rounded bg-emerald-100 text-emerald-700">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M12 3l7 4v5c0 5-3.5 9-7 10-3.5-1-7-5-7-10V7l7-4z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+<span class="font-medium text-stone-700">Encrypted Checkout</span>
+</div>
+<div class="inline-flex items-center gap-2 bg-white border border-stone-200 rounded-md px-3 py-1.5 shadow-sm">
+<span class="inline-flex h-5 w-5 items-center justify-center rounded bg-amber-100 text-amber-700">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M12 3l7 4v5c0 5-3.5 9-7 10-3.5-1-7-5-7-10V7l7-4z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+<span class="font-medium text-stone-700">Insured Nationwide</span>
+</div>
+<div class="inline-flex items-center justify-center bg-white border border-stone-200 rounded-md px-3 py-1.5 shadow-sm">
+<span class="text-[10px] font-bold tracking-[0.22em] text-[#5A3D2C]">PAYSTACK</span>
+</div>
+<div class="inline-flex items-center justify-center bg-white border border-stone-200 rounded-md px-3 py-1.5 shadow-sm">
+<span class="text-[10px] font-bold tracking-[0.18em] text-[#1A1F71]">VISA</span>
+</div>
+<div class="inline-flex items-center justify-center bg-white border border-stone-200 rounded-md px-3 py-1.5 shadow-sm">
+<span class="text-[10px] font-bold tracking-[0.18em] text-[#EB001B]">MASTERCARD</span>
+</div>
+</div>
+</div>
+<div class="mt-4 flex justify-center text-xs text-stone-500">
+<div class="flex items-center justify-center space-x-4">
+<a class="hover:text-stone-800" href="#privacy">Privacy</a>
+<a class="hover:text-stone-800" href="#terms">Terms</a>
+<a class="hover:text-stone-800" href="#sitemap">Sitemap</a>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: SiteFooter -->
+
+<!-- JavaScript (extracted to script.js) -->
+<script src="script.js"></script>
+
+</body></html>
