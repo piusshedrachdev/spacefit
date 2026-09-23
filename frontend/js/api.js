@@ -329,6 +329,7 @@
   }
 
   function placeOrder(payload) { return request('/api/orders', { method: 'POST', body: payload }); }
+  function getOrders(userId) { return request('/api/orders' + qs(userId ? { userId: userId } : null)); }
   function getOrder(id) { return request('/api/orders/' + encodeURIComponent(id)); }
   function getConfig() { return request('/api/meta/config'); }
   function subscribe(email) { return request('/api/newsletter', { method: 'POST', body: { email: email } }); }
@@ -355,6 +356,7 @@
     validateCart: validateCart,
     placeOrder: placeOrder,
     getOrder: getOrder,
+    getOrders: getOrders,
     getConfig: getConfig,
     subscribe: subscribe,
     bookConsultation: bookConsultation,
