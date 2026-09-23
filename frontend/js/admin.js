@@ -17,7 +17,7 @@
   var main = document.getElementById('adminMain');
   if (!main) return;
 
-  var state = { tab: 'overview', applications: [], sellers: [], products: [], orders: [], settings: null };
+  var state = { tab: 'overview', applications: [], sellers: [], products: [], orders: [], settings: null, failures: [] };
 
   var TABS = [
     { id: 'overview', label: 'Overview', icon: 'dashboard' },
@@ -80,11 +80,19 @@
     return overlay;
   }
 
+  /**
+   * Render a data table. `rows` may be an array of `<tr>` strings or a single
+   * already-joined string — both are accepted so callers can pass either.
+   */
   function table(headers, rows) {
+    var body;
+    if (Array.isArray(rows)) body = rows.join('');
+    else if (typeof rows === 'string') body = rows;
+    else body = '';
     return '<div class="overflow-x-auto bg-surface rounded-xl border border-outline-variant/60">' +
       '<table class="w-full text-left font-body-sm"><thead class="bg-surface-container-low"><tr>' +
       headers.map(function (h) { return '<th class="px-space-md py-space-sm font-label-md text-on-surface-variant">' + esc(h) + '</th>'; }).join('') +
-      '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
+      '</tr></thead><tbody>' + body + '</tbody></table></div>';
   }
 
   /* --------------------------------------------------------------- shell */
@@ -394,12 +402,29 @@
 
   function renderTab() {
     setActiveTab(state.tab);
-    if (state.tab === 'overview') return renderOverview();
-    if (state.tab === 'applications') return renderApplications();
-    if (state.tab === 'sellers') return renderSellers();
-    if (state.tab === 'products') return renderProducts();
-    if (state.tab === 'orders') return renderOrders();
-    return renderSettings();
+    if (state.tab === 'overview') renderOverview();
+    else if (state.tab === 'applications') renderApplications();
+    else if (state.tab === 'sellers') renderSellers();
+    else if (state.tab === 'products') renderProducts();
+    else if (state.tab === 'orders') renderOrders();
+    else renderSettings();
+    renderFailures();
+  }
+
+  /**
+   * Surface any fetch failures that `refresh()` collected. Without this the
+   * dashboard silently renders empty tables when the API calls fail (e.g. a
+   * cross-origin/file:// session, an expired token, or a non-admin role).
+   */
+  function renderFailures() {
+    if (!state.failures || !state.failures.length) return;
+    var host = panel();
+    var banner = document.createElement('div');
+    banner.className = 'mb-space-md rounded-xl border border-error/40 bg-error-container text-on-error-container p-space-md font-body-sm';
+    banner.innerHTML = '<strong>Some data could not be loaded.</strong> ' +
+      esc(state.failures.join('  \u00b7  ')) +
+      '  \u2014  open this page via http://localhost:4000/admin.html (not file://) and make sure you are signed in as an admin.';
+    host.insertBefore(banner, host.firstChild);
   }
 
   function applyHash() {
@@ -410,19 +435,36 @@
 
   /* ------------------------------------------------------------------- data */
 
+  function label(fn, name) {
+    return fn().then(
+      function (value) { return { name: name, value: value }; },
+      function (err) { return { name: name, error: (err && err.message) || 'request failed' }; }
+    );
+  }
+
   function refresh() {
     return Promise.all([
-      API.getApplications().catch(function () { return []; }),
-      API.getSellers().catch(function () { return []; }),
-      API.getProducts({ limit: 200 }).catch(function () { return []; }),
-      API.getOrders().catch(function () { return []; }),
-      API.getSettings().catch(function () { return null; })
-    ]).then(function (r) {
-      state.applications = Array.isArray(r[0]) ? r[0] : [];
-      state.sellers = Array.isArray(r[1]) ? r[1] : [];
-      state.products = Array.isArray(r[2]) ? r[2] : [];
-      state.orders = Array.isArray(r[3]) ? r[3] : [];
-      state.settings = r[4];
+      label(API.getApplications, 'applications'),
+      label(API.getSellers, 'sellers'),
+      label(function () { return API.getProducts({ limit: 200 }); }, 'products'),
+      label(API.getOrders, 'orders'),
+      label(API.getSettings, 'settings')
+    ]).then(function (results) {
+      var byName = {};
+      state.failures = [];
+      results.forEach(function (r) {
+        if (r.error) {
+          state.failures.push(r.name + ': ' + r.error);
+          byName[r.name] = r.name === 'settings' ? null : [];
+        } else {
+          byName[r.name] = r.value;
+        }
+      });
+      state.applications = Array.isArray(byName.applications) ? byName.applications : [];
+      state.sellers = Array.isArray(byName.sellers) ? byName.sellers : [];
+      state.products = Array.isArray(byName.products) ? byName.products : [];
+      state.orders = Array.isArray(byName.orders) ? byName.orders : [];
+      state.settings = byName.settings || null;
       renderTab();
     });
   }
@@ -438,18 +480,33 @@
       '<a href="auth.html?next=admin.html" class="inline-block mt-space-lg bg-primary text-on-primary px-space-xl py-space-md rounded-lg font-label-lg hover:opacity-95">Sign in</a></div>';
   }
 
+  function renderLoading() {
+    main.innerHTML = '<div class="text-center py-space-2xl text-on-surface-variant">' +
+      '<span class="material-symbols-outlined animate-spin">progress_activity</span>' +
+      '<p class="mt-space-sm font-body-sm">Loading dashboard\u2026</p></div>';
+  }
+
   function boot() {
-    if (!API.isAuthenticated()) return renderDenied('Sign in with an administrator account to open the dashboard.');
+    renderLoading();
+
+    if (!API.isAuthenticated()) {
+      return renderDenied('You are not signed in on this page\u2019s origin. Open http://localhost:4000/admin.html and sign in there \u2014 a session saved under file:// or a different port is not visible here.');
+    }
 
     // Always refresh the profile first: `profiles.role` is the source of truth,
     // so a freshly-promoted admin is recognised without a re-login.
     API.getMe()
-      .catch(function () { return null; })
-      .then(function () {
+      .catch(function (err) {
+        return { error: (err && err.message) || 'Could not load your profile' };
+      })
+      .then(function (result) {
+        if (result && result.error) {
+          return renderDenied('Could not load your profile (' + result.error + '). Your session may have expired \u2014 please sign in again.');
+        }
         var role = API.getRole();
         var devAdmin = API.getDevUser() === 'dev-user-admin';
         if (role !== 'admin' && !devAdmin) {
-          return renderDenied('Your account does not have administrator access.');
+          return renderDenied('Your account role is "' + role + '". An administrator account is required.');
         }
         renderShell();
         applyHash();
