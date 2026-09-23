@@ -438,9 +438,15 @@ export async function listProductReviews(productId, { includeHidden = false } = 
 /** Reviews across every product belonging to a seller (dashboard tab). */
 export async function listSellerReviews(sellerId) {
   const supabase = getSupabaseAdmin();
+  // NOTE: `products` may only be embedded once — combining the title from
+  // REVIEW_COLUMNS with a second `products!inner` join makes PostgREST emit
+  // two joins with the same alias (`table name ... specified more than once`).
+  // Use a single inner join that pulls both columns and drives the filter.
   const { data, error } = await supabase
     .from('product_reviews')
-    .select(`${REVIEW_COLUMNS}, products!inner ( seller_id )`)
+    .select(
+      'id, product_id, user_id, rating, comment, status, created_at, products!inner ( title, seller_id )'
+    )
     .eq('products.seller_id', sellerId)
     .eq('status', 'published')
     .order('created_at', { ascending: false })
