@@ -27,6 +27,9 @@ The dev server listens on http://localhost:4000.
 
 Health probe: `GET /api/health`.
 
+To run the API and the storefront together, use the quick start in the
+[root README](../README.md) (`npm run dev` starts both).
+
 ### Response envelope
 
 Every response uses a consistent envelope:
@@ -45,22 +48,22 @@ Amounts are integers in the store base currency unit (NGN).
 | Method | Path | Frontend coverage | How it is used |
 | --- | --- | --- | --- |
 | GET | /api/health | ops / monitoring | uptime + readiness probe |
-| GET | /api/meta/config | checkout.html, cart.html, footer | currency symbol, delivery fee, free-delivery threshold, VAT rate, serviceable cities, payment methods |
-| GET | /api/meta/categories | index.html shop filter | category list with counts |
+| GET | /api/meta/config | `/checkout`, `/cart`, footer | currency symbol, delivery fee, free-delivery threshold, VAT rate, serviceable cities, payment methods |
+| GET | /api/meta/categories | `/` shop filter | category list with counts |
 
 ### Products — `src/routes/products.js`
 
 | Method | Path | Frontend coverage | How it is used |
 | --- | --- | --- | --- |
-| GET | /api/products | index.html product grid | supports `category`, `search`, `featured`, `sort` (price_asc, price_desc, rating), `limit`, `offset` |
-| GET | /api/products/featured | index.html homepage row | returns only `featured: true` products |
-| GET | /api/products/categories | index.html filter chips | category names + counts |
-| GET | /api/products/:id | product-details.html?id=... | full PDP: gallery, colours, sizes, specs, features, availability |
-| GET | /api/products/:id/related | product-details.html "You may also like" | up to `limit` (default 4) related products |
+| GET | /api/products | `/` product grid | supports `category`, `search`, `featured`, `sort` (price_asc, price_desc, rating), `limit`, `offset` |
+| GET | /api/products/featured | `/` homepage row | returns only `featured: true` products |
+| GET | /api/products/categories | `/` filter chips | category names + counts |
+| GET | /api/products/:id | `/products/:id` | full PDP: gallery, colours, sizes, specs, features, availability |
+| GET | /api/products/:id/related | `/products/:id` "You may also like" | up to `limit` (default 4) related products |
 
 ### Cart — `src/routes/cart.js`
 
-Frontend: `index.html` (`triggerAddToCart`), `cart.html` (`displayCart`, `changeQuantity`, `removeItem`, `saveCart`, `goToCheckout`), `checkout.html` order summary. Today the cart lives in `localStorage` under `spacefitCart`; these endpoints move it server-side.
+Frontend: `/` (add-to-cart buttons), `/cart` (list, quantity, remove, totals), `/checkout` (order summary). Cart contents are server-side; the cart id is kept in `localStorage` under `spacefitCartId`.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
@@ -76,7 +79,7 @@ Cart totals: `delivery = 0` when `subtotal >= FREE_DELIVERY_THRESHOLD`, otherwis
 
 ### Orders — `src/routes/orders.js`
 
-Frontend: `checkout.html` (customer info, delivery info, payment method radio) and `order-succes.html` (order reference / lookup).
+Frontend: `/checkout` (customer info, delivery info, payment method) and `/order-success/:id` (confirmation; the legacy `order-succes.html` typo URL still redirects there).
 
 | Method | Path | Purpose |
 | --- | --- | --- |
@@ -88,7 +91,7 @@ Frontend: `checkout.html` (customer info, delivery info, payment method radio) a
 
 ### Consultations — `src/routes/consultations.js`
 
-Frontend: `index.html` "Book Spatial Measurement (Free)" CTA and the "Ask SpaceFit" concierge widget (currently static buttons with no handler).
+Frontend: `/` "Book Spatial Measurement (Free)" CTA (wired through `frontend/src/api/forms.ts`). The old "Ask SpaceFit" concierge buttons were not part of the React port.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
@@ -97,7 +100,7 @@ Frontend: `index.html` "Book Spatial Measurement (Free)" CTA and the "Ask SpaceF
 
 ### Newsletter — `src/routes/newsletter.js`
 
-Frontend: `index.html` footer "Journal & Spatial Digest" email capture (currently a hidden/static input).
+Frontend: no visible form yet — the legacy footer capture was hidden/static; `frontend/src/api/forms.ts` exposes `subscribe()` for when a form ships.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
@@ -105,8 +108,9 @@ Frontend: `index.html` footer "Journal & Spatial Digest" email capture (currentl
 
 ### Authentication — `src/routes/auth.js`
 
-Frontend: `auth.html` (sign in / create account), `js/api.js` session layer
-(persists the session in `localStorage` and auto-refreshes on `401`).
+Frontend: `/auth` (sign in / create account) — session layer in
+`frontend/src/lib/session.ts` (persists `spacefitSession` in `localStorage`);
+the typed fetch client (`frontend/src/lib/api.ts`) auto-refreshes once on `401`.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
@@ -121,7 +125,7 @@ Frontend: `auth.html` (sign in / create account), `js/api.js` session layer
 
 ### Seller applications & sellers — `src/routes/sellers.js`
 
-Frontend: `seller-apply.html` (application form + status), `admin.html` (application review, seller management), `seller-dashboard.html` (gating + shop profile).
+Frontend: `/seller-apply` (application form + status), `/admin/:tab` (application review, seller management), `/seller-dashboard/:tab` (gating + shop profile).
 
 | Method | Path | Guard | Purpose |
 | --- | --- | --- | --- |
@@ -147,7 +151,7 @@ Frontend: header notifications bell on every page.
 
 ### Returns — `src/routes/returns.js`
 
-Frontend: `seller-dashboard.html` returns tab, `admin.html` returns view.
+Frontend: `/seller-dashboard` returns tab, `/admin` returns view.
 
 | Method | Path | Guard | Purpose |
 | --- | --- | --- | --- |
@@ -169,7 +173,7 @@ Frontend: `seller-dashboard.html` returns tab, `admin.html` returns view.
 
 | Method | Path | Guard | Purpose |
 | --- | --- | --- | --- |
-| GET | /api/meta/settings | public | `{ policies, discounts }` for the footer + `policies.html` + discount banner |
+| GET | /api/meta/settings | public | `{ policies, discounts }` for the footer + `/policies` + discount banner |
 | PUT | /api/meta/settings | admin | persist `{ policies?, discounts? }` edits from the admin dashboard |
 
 ---
@@ -242,31 +246,34 @@ only a fallback when no profile row exists and is never required.
 
 ## Frontend integration map
 
-| Frontend page | Feature | Backend endpoint(s) |
+Routes are React paths (the Vite SPA); the legacy `.html` URLs still resolve
+and redirect client-side.
+
+| Route | Feature | Backend endpoint(s) |
 | --- | --- | --- |
-| index.html | product grid / shop | GET /api/products, /api/products/categories |
-| index.html | featured row | GET /api/products/featured |
-| index.html | Add to cart button | POST /api/cart/:cartId/items |
-| index.html | Book Spatial Measurement CTA | POST /api/consultations |
-| index.html | footer newsletter | POST /api/newsletter |
-| product-details.html | PDP data | GET /api/products/:id |
-| product-details.html | related row | GET /api/products/:id/related |
-| product-details.html | Add to cart | POST /api/cart/:cartId/items |
-| cart.html | list / qty / remove / totals | GET/PATCH/DELETE /api/cart/:cartId(/items/:key) |
-| checkout.html | city/state + fee display | GET /api/meta/config |
-| checkout.html | place order | POST /api/orders |
-| order-succes.html | confirmation | GET /api/orders/:id |
-| auth.html | sign in / create account | POST /api/auth/login, /api/auth/signup |
-| seller-apply.html | application form + status | POST /api/sellers/applications, GET /api/sellers/me |
-| seller-dashboard.html | gating + KPIs | GET /api/sellers/me, /api/sellers/me/dashboard |
-| seller-dashboard.html | product CRUD | POST/PATCH/DELETE /api/products |
-| seller-dashboard.html | reviews / returns / notifications | GET /api/products/:id/reviews, /api/returns, /api/notifications |
-| admin.html | application review queue | GET/PATCH /api/sellers/applications(/:id) |
-| admin.html | block / unblock sellers | PATCH /api/sellers/:id |
-| admin.html | orders (read-only) | GET /api/orders |
-| admin.html | policies + discounts | GET/PUT /api/meta/settings |
-| all pages (js/chrome.js) | account menu, notifications bell, footer policy links, discount banner | GET /api/auth/me, /api/notifications, /api/meta/settings |
-| policies.html | rendered store policies + active discounts | GET /api/meta/settings, GET /api/meta/config |
+| `/` | product grid / shop | GET /api/products, /api/products/categories |
+| `/` | featured row | GET /api/products/featured |
+| `/` | Add to cart button | POST /api/cart/:cartId/items |
+| `/` | Book Spatial Measurement CTA | POST /api/consultations |
+| `/` | footer newsletter | POST /api/newsletter |
+| `/products/:id` | PDP data | GET /api/products/:id |
+| `/products/:id` | related row | GET /api/products/:id/related |
+| `/products/:id` | Add to cart | POST /api/cart/:cartId/items |
+| `/cart` | list / qty / remove / totals | GET/PATCH/DELETE /api/cart/:cartId(/items/:key) |
+| `/checkout` | city/state + fee display | GET /api/meta/config |
+| `/checkout` | place order | POST /api/orders |
+| `/order-success/:id` | confirmation | GET /api/orders/:id |
+| `/auth` | sign in / create account | POST /api/auth/login, /api/auth/signup |
+| `/seller-apply` | application form + status | POST /api/sellers/applications, GET /api/sellers/me |
+| `/seller-dashboard/:tab` | gating + KPIs | GET /api/sellers/me, /api/sellers/me/dashboard |
+| `/seller-dashboard/:tab` | product CRUD | POST/PATCH/DELETE /api/products |
+| `/seller-dashboard/:tab` | reviews / returns / notifications | GET /api/products/:id/reviews, /api/returns, /api/notifications |
+| `/admin/:tab` | application review queue | GET/PATCH /api/sellers/applications(/:id) |
+| `/admin/:tab` | block / unblock sellers | PATCH /api/sellers/:id |
+| `/admin/:tab` | orders (read-only) | GET /api/orders |
+| `/admin/:tab` | policies + discounts | GET/PUT /api/meta/settings |
+| shared chrome (`layout/Chrome.tsx`, `layout/Header.tsx`) | account menu, notifications bell, footer policy links, discount banner | GET /api/auth/me, /api/notifications, /api/meta/settings |
+| `/policies` | rendered store policies + active discounts | GET /api/meta/settings, GET /api/meta/config |
 
 ---
 
@@ -283,7 +290,7 @@ The API is fully functional against the in-memory store and Supabase. The follow
 7. **Rate limiting & security** — add rate limiting on public POSTs (newsletter, consultations), request size limits, helmet, and input sanitisation.
 8. **CORS lockdown** — `CORS_ORIGIN` defaults to `*`; set it to the real frontend origin(s) in production.
 9. **Observability** — structured logging, metrics and error tracking (e.g. Sentry).
-10. **Wishlist / favourites** — `toggleFavorite` in product-details.html is local-only; needs a persistence endpoint if it should survive sessions.
+10. **Wishlist / favourites** — the wishlist toggle on `/products/:id` is local-only; needs a persistence endpoint if it should survive sessions.
 11. **Email delivery in production** — set `BREVO_API_KEY`; without it emails are logged, not sent (graceful no-op for dev/tests).
 
 ---
@@ -331,8 +338,9 @@ Run `npm test` (or `npm run test:watch`). Suites live in `tests/`:
 - `db.test.js` — db facade + Supabase migration sanity checks
 
 `server.test.js` covers port binding / `EADDRINUSE` handling and `static.test.js`
-covers static frontend serving (including that every page linked from the shared
-chrome — `policies.html` included — actually exists).
+covers static frontend serving (the `dist` entry + a hashed asset, the SPA shell
+at every legacy `.html` URL and clean path, and the JSON 404 envelope for
+unknown `/api/*` routes and missing assets).
 
 `tests/setup.js` resets the in-memory store before each test for determinism.
 
@@ -377,33 +385,58 @@ orphaned listener behind.
 
 ## Serving the frontend
 
-The backend serves the static storefront from `../frontend` so the UI and API share an origin (no CORS setup needed). Run `npm run dev` and open http://localhost:4000/ . Clean URLs work: `/cart`, `/checkout`, `/product-details?id=luna-bed`. Override the directory with `FRONTEND_DIR`.
+The backend serves the built storefront from `../frontend/dist` so the UI and API share an origin (no CORS setup needed). Build it first (`npm run build` in `../frontend`), then run the API and open http://localhost:4000/ . Clean URLs work: `/cart`, `/checkout`, `/products/luna-bed`, and every legacy `.html` URL (`/product-details.html?id=luna-bed`, `/policies.html#returns`, …) receives the SPA shell — `frontend/src/appRoutes.tsx` redirects or renders on the client. Override the directory with `FRONTEND_DIR`.
+
+For live development prefer the Vite dev server (below), which proxies `/api` to the API and hot-reloads the UI.
 
 ### Frontend API client
 
-All pages load `frontend/js/api.js`, which exposes `window.SpaceFitAPI`:
+The React app talks to this API through a typed fetch client (`frontend/src/lib/api.ts`, a port of the legacy `js/api.js`) with thin endpoint modules in `frontend/src/api/`:
 
-- **Catalogue & content:** `getProducts`, `getFeaturedProducts`, `getProduct`, `getRelatedProducts`, `getCategories`, `getConfig`, `getSettings`, `saveSettings`, `subscribe`, `bookConsultation`, `formatPrice`
-- **Cart & checkout:** `ensureCart`, `getCart`, `addToCart`, `updateCartItem`, `removeCartItem`, `validateCart`, `placeOrder`, `getOrder`, `getOrders`
-- **Auth & session:** `login`, `signup`, `logout`, `getMe`, `getSession`, `setSession`, `clearSession`, `isAuthenticated`, `getUser`, `getRole`, `getProfile`, `getDevUser`, `setDevUser`
-- **Seller onboarding:** `submitSellerApplication`, `getMySellerContext`, `updateMySellerProfile`, `getSellerDashboard`
-- **Admin:** `getApplications`, `getApplication`, `reviewApplication`, `getSellers`, `setSellerStatus`
-- **Catalogue writes (sellers):** `createProduct`, `updateProduct`, `deleteProduct`, `getProductReviews`, `createProductReview`
-- **Notifications & returns:** `getNotifications`, `markNotificationRead`, `markAllNotificationsRead`, `getReturns`, `updateReturnStatus`
+- **Catalogue & content:** `products.ts` (`getProducts`, `getFeaturedProducts`, `getProduct`, `getRelatedProducts`, `getCategories`, reviews), `meta.ts` (`getConfig`, `getSettings`, `saveSettings`), `forms.ts` (`subscribe`, `bookConsultation`)
+- **Cart & checkout:** `cart.ts` (`ensureCart`, `getCart`, `addToCart`, `updateCartItem`, `removeCartItem`, `validateCart`), `orders.ts` (`placeOrder`, `getOrder`, `getOrders`)
+- **Auth & session:** `auth.ts` (`login`, `signup`, `logout`, `getMe`, `updateMe`) + `frontend/src/lib/session.ts`
+- **Seller onboarding & admin:** `sellers.ts` (`submitSellerApplication`, `getMySellerContext`, `getSellerDashboard`, admin `getApplications`/`reviewApplication`/`getSellers`/`setSellerStatus`)
+- **Returns & notifications:** `returns.ts`, `notifications.ts`
 
-The server cart id is stored in `localStorage` under `spacefitCartId`. `ensureCart()` creates a server cart on first use. The auth session lives under `spacefitSession` (access + refresh token, user and profile).
+The server cart id is stored in `localStorage` under `spacefitCartId`. `ensureCart()` creates a server cart on first use. The auth session lives under `spacefitSession` (access + refresh token, user and profile) — both keys are unchanged from the legacy site, so existing visitors keep their sessions and carts. The client unwraps the response envelope, refreshes once on `401`, and attaches `X-Dev-User` in dev mode.
 
-### Page scripts
+### Architecture (Vite / React)
 
-- `js/index.js` — index.html: product grid/categories, add-to-cart, newsletter, consultation
-- `js/product-details.js` — product-details.html: product + related by `?id=`, add-to-cart
-- `js/cart.js` — cart.html: list, quantity, remove, totals from the API
-- `js/checkout.js` — checkout.html: order summary + place order, redirect to success
-- `js/order-success.js` — order-succes.html: confirmation from `?id=`
-- `js/api.js` — session layer + API client used by every page
-- `js/chrome.js` — shared chrome on every page: account menu, notifications bell, footer policy links, discount banner, `SpaceFitChrome.toast()`
-- `js/auth.js` — auth.html: sign in / create account tabs, `?next=` redirect
-- `js/apply.js` — seller-apply.html: gated application form + application status states
-- `js/admin.js` — admin.html: overview, applications, sellers, products, orders, settings tabs
-- `js/seller-dashboard.js` — seller-dashboard.html: overview, products, reviews, returns, notifications, shop profile tabs
-- `js/policies.js` — policies.html: rendered policies + active discounts
+`../frontend` is a Vite + React + TypeScript SPA. The legacy static pages and
+their per-page scripts were ported phase-by-phase and deleted at cutover
+(`frontend_react_migration_plan.md`); the migration plan doc stays untracked.
+
+- `frontend/index.html` → `src/main.tsx` — entry; Google Fonts + Material
+  Symbols load here, Tailwind v3 tokens live in `tailwind.config.js`
+  (compiled locally — no CDN scripts)
+- `src/appRoutes.tsx` — route table **and** the legacy-URL redirects
+  (`.html` aliases, `#hash` links from seeded notifications, email deep
+  links `/seller-apply` and `/seller-dashboard`, the `order-succes` typo)
+- `src/pages/` — `/`, `/products/:id`, `/cart`, `/checkout`,
+  `/order-success/:id`, `/auth`, `/seller-apply`, `/seller-dashboard/:tab`,
+  `/admin/:tab`, `/policies`
+- `src/layout/` — `StorefrontLayout` / `AuthLayout` / `AdminLayout` /
+  `SellerLayout` + shared chrome (`Chrome.tsx`: discount banner, footer,
+  toast host; `Header.tsx`: nav, account menu, notifications bell)
+- `src/context/` — Auth, Toast, Settings, Notifications, Cart providers
+- `src/ui/` — primitives (Button, Input/Select/Textarea/Checkbox, Modal,
+  Table, Tabs, StatusPill, Spinner, EmptyState)
+- `src/lib/` — typed API client (`api.ts`), `session.ts`, `routes.ts`
+  (central nav targets), formatting / permissions helpers
+- `src/api/` — endpoint modules listed above
+
+**Dev:** `cd ../frontend && npm install && npm run dev` → http://localhost:5173
+with `/api` proxied to the API on `:4000` (run the API in a second terminal —
+or from the repo root, `npm run dev` starts both via `concurrently`).
+
+**Build:** `npm run build` in `../frontend` — typecheck (`tsc --noEmit`) +
+bundle to `frontend/dist`.
+
+**Serve:** this API serves `frontend/dist` plus the SPA fallback described
+above, so production is a single Node process.
+
+**Test:** `npm test` in `../frontend` (Vitest + React Testing Library).
+
+**Optional follow-ups** (port first, refactor after): Playwright browser E2E,
+`@tanstack/react-query` for data fetching, Tailwind v4.
