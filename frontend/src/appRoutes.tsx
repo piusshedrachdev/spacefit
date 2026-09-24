@@ -1,21 +1,34 @@
 import { Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
+import { AuthLayout } from '@/layout/AuthLayout';
+import { AuthPage } from '@/pages/AuthPage';
 import { CartPage } from '@/pages/CartPage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { HomePage } from '@/pages/HomePage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { OrderSuccessPage } from '@/pages/OrderSuccessPage';
 import { ProductDetailsPage } from '@/pages/ProductDetailsPage';
+import { SellerApplyPage } from '@/pages/SellerApplyPage';
 import { StorefrontLayout } from '@/layout/StorefrontLayout';
 
 /**
- * Route table (Phase 3): ported storefront pages + redirects that keep the
+ * Route table (Phases 3–4): ported storefront pages + redirects that keep the
  * legacy URLs/deep links working — `.html` variants, the clean paths stored
  * in notifications/emails, and the typo'd `order-succes.html?id=…` links.
  *
  * While legacy files still exist the server serves them directly; these
  * redirects take over once a page is pruned from frontend/legacy/ (Phase 7),
  * and cover the clean paths (`/cart`, `/products/:id`, …) right away.
+ *
+ * `/auth` renders in its own minimal AuthLayout (the legacy auth page had no
+ * store chrome); `/seller-apply` keeps the full storefront shell.
  */
+
+/** `/auth.html?next=…` → `/auth?next=…` — the query string is the point. */
+function LegacyAuthRedirect() {
+  const [params] = useSearchParams();
+  const qs = params.toString();
+  return <Navigate to={qs ? `/auth?${qs}` : '/auth'} replace />;
+}
 
 /** `/product-details.html?id=…` (and the clean variant) → `/products/:id`. */
 function LegacyProductRedirect() {
@@ -48,6 +61,12 @@ function LegacyOrderSuccessRedirect() {
 export function AppRoutes() {
   return (
     <Routes>
+      {/* Auth stands alone (legacy auth.html had no store chrome). */}
+      <Route element={<AuthLayout />}>
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth.html" element={<LegacyAuthRedirect />} />
+      </Route>
+
       <Route element={<StorefrontLayout />}>
         {/* Ported storefront (Phase 3) */}
         <Route path="/" element={<HomePage />} />
@@ -56,6 +75,13 @@ export function AppRoutes() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-success" element={<OrderSuccessPage />} />
         <Route path="/order-success/:id" element={<OrderSuccessPage />} />
+
+        {/* Seller application (Phase 4) */}
+        <Route path="/seller-apply" element={<SellerApplyPage />} />
+        <Route
+          path="/seller-apply.html"
+          element={<Navigate to="/seller-apply" replace />}
+        />
 
         {/* Legacy URL compatibility */}
         <Route path="/index.html" element={<Navigate to="/" replace />} />

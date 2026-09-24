@@ -5,16 +5,17 @@ import { useAuth } from '@/context/AuthProvider';
 import { useCart } from '@/context/CartProvider';
 import { useNotifications } from '@/context/NotificationsProvider';
 import { IfCan, useVisibility } from '@/components/Visibility';
+import { SmartLink } from '@/components/SmartLink';
 import { can } from '@/lib/permissions';
-import { isSpaHref, routes } from '@/lib/routes';
+import { routes } from '@/lib/routes';
 
 /**
  * Storefront header — a port of the legacy header markup plus the chrome.js
  * decorations (account control, notification bell), in that order of
  * operations: wishlist, bell (authed only), cart, divider, account.
  *
- * Nav targets use react-router <Link> when they belong to the SPA and a
- * plain <a> for legacy `.html` pages; role/visibility rules live in
+ * Nav targets go through <SmartLink> (react-router <Link> for SPA routes,
+ * plain <a> for legacy `.html` pages); role/visibility rules live in
  * src/lib/permissions.ts and are applied through <IfCan>.
  */
 
@@ -22,17 +23,10 @@ const NAV_CLASS =
   'relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full';
 
 function NavAnchor({ href, children }: { href: string; children: ReactNode }) {
-  if (isSpaHref(href)) {
-    return (
-      <Link to={href} className={NAV_CLASS}>
-        {children}
-      </Link>
-    );
-  }
   return (
-    <a href={href} className={NAV_CLASS}>
+    <SmartLink href={href} className={NAV_CLASS}>
       {children}
-    </a>
+    </SmartLink>
   );
 }
 
@@ -60,19 +54,11 @@ function IconButtonLink({
     </span>
   ) : null;
 
-  if (isSpaHref(href)) {
-    return (
-      <Link to={href} aria-label={label} className={ICON_LINK_CLASS}>
-        {children}
-        {badgeNode}
-      </Link>
-    );
-  }
   return (
-    <a href={href} aria-label={label} className={ICON_LINK_CLASS}>
+    <SmartLink href={href} aria-label={label} className={ICON_LINK_CLASS}>
       {children}
       {badgeNode}
-    </a>
+    </SmartLink>
   );
 }
 
@@ -114,14 +100,14 @@ function AccountControl() {
 
   if (!isAuthenticated) {
     return (
-      <a
+      <SmartLink
         href={routes.auth}
         title="Sign in"
         aria-label="Sign in"
         className="p-0.5 rounded-full ring-1 ring-outline-variant/50 hover:ring-primary transition-all flex items-center justify-center"
       >
         <span className="material-symbols-outlined text-2xl">person</span>
-      </a>
+      </SmartLink>
     );
   }
 
@@ -159,23 +145,23 @@ function AccountControl() {
           <p className="font-body-sm text-on-surface-variant capitalize">{role}</p>
         </div>
         {dashboard ? (
-          <a
+          <SmartLink
             href={dashboard.href}
             className="flex items-center gap-space-sm px-space-md py-space-sm hover:bg-surface-container-high"
           >
             <span className="material-symbols-outlined text-xl">dashboard</span>
             {dashboard.label}
-          </a>
+          </SmartLink>
         ) : null}
         {/* The seller pitch is for customers only — sellers/admins skip it. */}
         <IfCan rule="applyAsSeller">
-          <a
+          <SmartLink
             href={routes.sellerApply}
             className="flex items-center gap-space-sm px-space-md py-space-sm hover:bg-surface-container-high"
           >
             <span className="material-symbols-outlined text-xl">storefront</span>
             Become a Seller
-          </a>
+          </SmartLink>
         </IfCan>
         <button
           type="button"

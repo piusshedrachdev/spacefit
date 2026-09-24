@@ -83,6 +83,9 @@ export interface SignupPayload {
   email: string;
   password: string;
   fullName?: string;
+  phone?: string;
+  /** Supabase confirmation return target (legacy sent /auth.html). */
+  emailRedirectTo?: string;
 }
 
 /* --------------------------------------------------------------- catalog */

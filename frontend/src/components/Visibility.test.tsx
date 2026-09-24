@@ -38,14 +38,14 @@ function LocationProbe() {
 }
 
 /** Render `element` at /gated with the full provider stack + a route table
- * that can observe the RequireRole redirect to the legacy auth page. */
+ * that can observe the RequireRole redirect to the auth page. */
 function renderGated(element: ReactElement) {
   return render(
     <MemoryRouter initialEntries={['/gated']}>
       <AppProviders>
         <Routes>
           <Route path="/gated" element={element} />
-          <Route path="/auth.html" element={<LocationProbe />} />
+          <Route path="/auth" element={<LocationProbe />} />
         </Routes>
       </AppProviders>
     </MemoryRouter>
@@ -150,7 +150,7 @@ describe('RequireRole', () => {
       </RequireRole>
     );
     const location = await screen.findByTestId('location');
-    expect(location).toHaveTextContent('/auth.html?next=%2Fgated');
+    expect(location).toHaveTextContent('/auth?next=%2Fgated');
     expect(screen.queryByText('secret')).not.toBeInTheDocument();
   });
 

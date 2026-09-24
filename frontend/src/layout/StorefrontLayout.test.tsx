@@ -79,9 +79,8 @@ describe('StorefrontLayout (signed out)', () => {
     renderLayout();
 
     expect(screen.getByTestId('page-body')).toBeInTheDocument();
-    // Sign-in control (aria label from chrome.js). Legacy targets are now
-    // root-absolute so they resolve from nested SPA routes.
-    expect(await screen.findByLabelText('Sign in')).toHaveAttribute('href', '/auth.html');
+    // Sign-in control (aria label from chrome.js) — now an SPA route.
+    expect(await screen.findByLabelText('Sign in')).toHaveAttribute('href', '/auth');
     // chrome.js footer policy links.
     expect(screen.getByRole('link', { name: 'Policies' })).toHaveAttribute(
       'href',
@@ -164,7 +163,7 @@ describe('StorefrontLayout (signed in)', () => {
     expect(screen.getByText('Chu Customer')).toBeInTheDocument();
     expect(screen.getByText('Become a Seller')).toHaveAttribute(
       'href',
-      '/seller-apply.html'
+      '/seller-apply'
     );
     // Customers have no dashboard entry point.
     expect(screen.queryByText('Admin dashboard')).not.toBeInTheDocument();
