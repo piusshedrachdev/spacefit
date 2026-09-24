@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { getProduct, getRelatedProducts } from '@/api/products';
 import { ProductGrid, ProductImage, QuantityStepper } from '@/components/commerce';
 import { useSettings } from '@/context/SettingsProvider';
+import { useWishlist } from '@/context/WishlistProvider';
 import { useAddToCart, useAsync } from '@/hooks';
 import { formatPrice } from '@/lib/format';
 import { routes } from '@/lib/routes';
@@ -36,7 +37,8 @@ export function ProductDetailsPage() {
   const [colorIndex, setColorIndex] = useState(0);
   const [size, setSize] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [favorite, setFavorite] = useState(false);
+  const { has, toggle } = useWishlist();
+  const favorite = has(product?.id ?? '');
 
   useEffect(() => {
     setImageIndex(0);
@@ -90,8 +92,8 @@ export function ProductDetailsPage() {
               />
               <button
                 type="button"
-                aria-label="Add to wishlist"
-                onClick={() => setFavorite((current) => !current)}
+                aria-label={favorite ? 'Remove from wishlist' : 'Add to wishlist'}
+                onClick={() => void toggle(product.id)}
                 className="absolute top-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 hover:bg-surface-container-lowest text-on-surface flex items-center justify-center transition-transform active:scale-90 shadow-sm"
               >
                 <span

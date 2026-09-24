@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { ProductDetailsPage } from '@/pages/ProductDetailsPage';
 import { AppProviders } from '@/context/AppProviders';
 import { ToastHost } from '@/layout/Chrome';
-import type { Cart, Product } from '@/types/api';
+import type { Cart, Product, Profile } from '@/types/api';
 
 vi.mock('@/api/meta', () => ({
   getConfig: vi.fn(),
@@ -45,10 +45,18 @@ vi.mock('@/api/cart', () => ({
   removeCartItem: vi.fn(),
   validateCart: vi.fn()
 }));
+vi.mock('@/api/wishlist', () => ({
+  getWishlist: vi.fn(),
+  addWishlistItem: vi.fn(),
+  removeWishlistItem: vi.fn()
+}));
 
 import { addToCart } from '@/api/cart';
+import { getMe } from '@/api/auth';
 import { getConfig, getSettings } from '@/api/meta';
 import { getProduct, getRelatedProducts } from '@/api/products';
+import { addWishlistItem, getWishlist } from '@/api/wishlist';
+import { setSession } from '@/lib/session';
 
 const PRODUCT: Product = {
   id: 'luna-bed',
@@ -136,6 +144,17 @@ function renderPdp(initial = '/products/luna-bed') {
   );
 }
 
+/** Sign in as a customer (getMe persists the profile, like the client). */
+function signIn() {
+  const user = { id: 'u1', email: 'ada@spacefit.ng' };
+  const profile: Profile = { id: 'u1', role: 'customer', full_name: 'Ada Customer', phone: '08030011122' };
+  setSession({ accessToken: 'token', refreshToken: 'refresh', user, profile: null });
+  vi.mocked(getMe).mockImplementation(async () => {
+    setSession({ accessToken: 'token', refreshToken: 'refresh', user, profile });
+    return { user, profile };
+  });
+}
+
 beforeEach(() => {
   localStorage.clear();
   vi.mocked(getSettings).mockReset().mockResolvedValue({ ...BASIC_SETTINGS });
@@ -143,6 +162,9 @@ beforeEach(() => {
   vi.mocked(getProduct).mockReset().mockResolvedValue({ ...PRODUCT });
   vi.mocked(getRelatedProducts).mockReset().mockResolvedValue([{ ...RELATED }]);
   vi.mocked(addToCart).mockReset().mockResolvedValue({ ...ADDED_CART });
+  vi.mocked(getMe).mockReset().mockRejectedValue(new Error('signed out'));
+  vi.mocked(getWishlist).mockReset().mockResolvedValue([]);
+  vi.mocked(addWishlistItem).mockReset().mockResolvedValue({ ...PRODUCT });
 });
 
 describe('ProductDetailsPage', () => {
@@ -217,5 +239,34 @@ describe('ProductDetailsPage', () => {
     renderPdp('/pdp');
     await screen.findByRole('heading', { name: 'Luna Bed', level: 1 });
     expect(getProduct).toHaveBeenCalledWith('luna-bed');
+  });
+
+  it('saves the product to the wishlist when the heart is clicked (signed in)', async () => {
+    signIn();
+    renderPdp();
+    await screen.findByRole('heading', { name: 'Luna Bed', level: 1 });
+
+    // The PDP heart plus one per related card share the label; the page's own
+    // heart renders first (the related row sits after the purchase column).
+    const [heart] = screen.getAllByRole('button', { name: 'Add to wishlist' });
+    fireEvent.click(heart);
+
+    await vi.waitFor(() => expect(addWishlistItem).toHaveBeenCalledWith('luna-bed'));
+    expect(
+      await screen.findByRole('button', { name: 'Remove from wishlist' })
+    ).toBeInTheDocument();
+  });
+
+  it('prompts sign-in instead of saving when signed out', async () => {
+    renderPdp();
+    await screen.findByRole('heading', { name: 'Luna Bed', level: 1 });
+
+    const [heart] = screen.getAllByRole('button', { name: 'Add to wishlist' });
+    fireEvent.click(heart);
+
+    expect(
+      await screen.findByText('Sign in to save items to your wishlist.')
+    ).toBeInTheDocument();
+    expect(addWishlistItem).not.toHaveBeenCalled();
   });
 });

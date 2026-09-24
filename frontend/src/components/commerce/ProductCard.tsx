@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSettings } from '@/context/SettingsProvider';
+import { useWishlist } from '@/context/WishlistProvider';
 import { ProductImage } from '@/components/commerce/ProductImage';
 import { useAddToCart } from '@/hooks';
 import { formatPrice } from '@/lib/format';
@@ -19,10 +19,11 @@ interface ProductCardProps {
 
 /**
  * The one product card. Shared by the home catalogue and the PDP related
- * row; wishlist toggle is local UI state (same as legacy toggleFavorite).
+ * row; wishlist toggle is backed by /api/wishlist via WishlistProvider.
  */
 export function ProductCard({ product, variant = 'grid' }: ProductCardProps) {
-  const [favorite, setFavorite] = useState(false);
+  const { has, toggle } = useWishlist();
+  const favorite = has(product.id);
   const { addToCart } = useAddToCart();
   const { config } = useSettings();
   const symbol = config?.currencySymbol;
@@ -33,8 +34,8 @@ export function ProductCard({ product, variant = 'grid' }: ProductCardProps) {
   const favoriteButton = (
     <button
       type="button"
-      aria-label="Add to wishlist"
-      onClick={() => setFavorite((current) => !current)}
+      aria-label={favorite ? 'Remove from wishlist' : 'Add to wishlist'}
+      onClick={() => void toggle(product.id)}
       className={
         variant === 'related'
           ? 'absolute top-2 right-2 w-7 h-7 rounded-full bg-surface-container-lowest/90 hover:bg-surface-container-lowest text-on-surface flex items-center justify-center transition-transform active:scale-90 shadow-xs'

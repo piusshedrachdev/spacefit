@@ -21,7 +21,8 @@ export const routes = {
   sellerApply: '/seller-apply',
   sellerDashboard: '/seller-dashboard',
   admin: '/admin',
-  policies: '/policies'
+  policies: '/policies',
+  wishlist: '/wishlist'
 } as const;
 
 /** True when a nav target is served by the React router (vs a legacy page). */

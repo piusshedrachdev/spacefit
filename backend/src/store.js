@@ -89,6 +89,7 @@ class Store {
     this.settings = new Map(); // key -> value
     this.productReviews = []; // review rows
     this.returnRequests = new Map(); // id -> return request
+    this.wishlist = new Map(); // userId -> [{ productId, createdAt }] (newest first)
 
     this.seed();
   }
@@ -745,6 +746,41 @@ class Store {
     return [...this.profiles.values()].filter((p) => p.role === 'admin').map((p) => p.id);
   }
 
+  /* --------------------------------------------------------------- wishlist */
+
+  /** Saved products for a user, newest first (deleted products skipped). */
+  listWishlist(userId) {
+    const items = this.wishlist.get(userId) || [];
+    return items
+      .map((item) => this.findProduct(item.productId))
+      .filter(Boolean)
+      .map((product) => ({ ...product }));
+  }
+
+  /** Save a product for a user (idempotent). Returns the resolved product. */
+  addWishlistItem(userId, productId) {
+    if (!userId) throw ApiError.unauthorized('Authentication required');
+    const product = this.getProduct(productId); // 404 when unknown (id or slug)
+    const items = this.wishlist.get(userId) || [];
+    if (!items.some((item) => item.productId === product.id)) {
+      items.unshift({ productId: product.id, createdAt: new Date().toISOString() });
+      this.wishlist.set(userId, items);
+    }
+    return { ...product };
+  }
+
+  /** Remove a saved product (idempotent). Returns `{ productId, removed }`. */
+  removeWishlistItem(userId, productId) {
+    if (!userId) throw ApiError.unauthorized('Authentication required');
+    const product = this.findProduct(productId);
+    const id = product ? product.id : productId;
+    const items = this.wishlist.get(userId) || [];
+    const remaining = items.filter((item) => item.productId !== id);
+    const removed = remaining.length !== items.length;
+    if (removed) this.wishlist.set(userId, remaining);
+    return { productId: id, removed };
+  }
+
   /* ---------------------------------------------------------------- settings */
 
   getSettings() {
@@ -1183,6 +1219,7 @@ class Store {
     this.settings.clear();
     this.productReviews = [];
     this.returnRequests.clear();
+    this.wishlist.clear();
     this.seed();
   }
 }

@@ -159,6 +159,16 @@ Frontend: `/seller-dashboard` returns tab, `/admin` returns view.
 | POST | /api/returns | auth | raise a return request `{ orderId, productId, reason }` |
 | PATCH | /api/returns/:id | seller/admin | `{ status, resolutionNotes? }` — owner-or-admin |
 
+### Wishlist — `src/routes/wishlist.js`
+
+Frontend: heart toggle on product cards and `/products/:id`, header wishlist icon, `/wishlist` page.
+
+| Method | Path | Guard | Purpose |
+| --- | --- | --- | --- |
+| GET | /api/wishlist | auth | the caller's saved products, newest first |
+| POST | /api/wishlist/:productId | auth | save a product (idempotent) → the saved product |
+| DELETE | /api/wishlist/:productId | auth | remove a saved product → `{ productId, removed }` |
+
 ### Product reviews & write endpoints — `src/routes/products.js`
 
 | Method | Path | Guard | Purpose |
@@ -274,6 +284,7 @@ and redirect client-side.
 | `/admin/:tab` | policies + discounts | GET/PUT /api/meta/settings |
 | shared chrome (`layout/Chrome.tsx`, `layout/Header.tsx`) | account menu, notifications bell, footer policy links, discount banner | GET /api/auth/me, /api/notifications, /api/meta/settings |
 | `/policies` | rendered store policies + active discounts | GET /api/meta/settings, GET /api/meta/config |
+| `/wishlist`, PDP/card hearts, header icon | save / list / remove wishlist items | GET/POST/DELETE /api/wishlist(/:productId) |
 
 ---
 
@@ -290,8 +301,7 @@ The API is fully functional against the in-memory store and Supabase. The follow
 7. **Rate limiting & security** — add rate limiting on public POSTs (newsletter, consultations), request size limits, helmet, and input sanitisation.
 8. **CORS lockdown** — `CORS_ORIGIN` defaults to `*`; set it to the real frontend origin(s) in production.
 9. **Observability** — structured logging, metrics and error tracking (e.g. Sentry).
-10. **Wishlist / favourites** — the wishlist toggle on `/products/:id` is local-only; needs a persistence endpoint if it should survive sessions.
-11. **Email delivery in production** — set `BREVO_API_KEY`; without it emails are logged, not sent (graceful no-op for dev/tests).
+10. **Email delivery in production** — set `BREVO_API_KEY`; without it emails are logged, not sent (graceful no-op for dev/tests).
 
 ---
 
