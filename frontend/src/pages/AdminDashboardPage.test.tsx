@@ -383,7 +383,7 @@ describe('AdminDashboardPage shell', () => {
       await screen.findByText('Some data could not be loaded.')
     ).toBeInTheDocument();
     expect(screen.getByText(/applications: queue down/)).toBeInTheDocument();
-    expect(screen.getByText(/open this page via/)).toBeInTheDocument();
+    expect(screen.getByText(/make sure you are signed in as an admin/)).toBeInTheDocument();
     // The rest of the dashboard still renders.
     expect(screen.getByRole('heading', { name: 'Overview' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Sellers' })).toBeInTheDocument();

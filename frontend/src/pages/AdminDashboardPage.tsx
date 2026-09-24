@@ -917,7 +917,7 @@ export function AdminDashboardPage() {
             <strong>Some data could not be loaded.</strong>{' '}
             {failures.join('  \u00b7  ')}
             {
-              '  \u2014  open this page via http://localhost:4000/admin.html (not file://) and make sure you are signed in as an admin.'
+              '  \u2014  make sure you are signed in as an admin and that the API is running.'
             }
           </div>
         ) : null}

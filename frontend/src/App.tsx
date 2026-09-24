@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from '@/appRoutes';
 import { AppProviders } from '@/context/AppProviders';
+import SwiftAgentWidget from './components/SwiftAgentWidget';
 
 /**
  * App shell: router + provider stack + route table (src/appRoutes.tsx).
@@ -10,6 +11,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppProviders>
+        <SwiftAgentWidget />
         <AppRoutes />
       </AppProviders>
     </BrowserRouter>

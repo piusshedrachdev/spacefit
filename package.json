@@ -4,7 +4,7 @@
   "description": "SpaceFit — Express API (backend/) + Vite/React storefront (frontend/)",
   "scripts": {
     "dev": "concurrently -n api,web -c blue,green \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
-    "build": "npm --prefix frontend run build",
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
     "start": "npm --prefix backend start",
     "test": "npm --prefix backend test && npm --prefix frontend test"
   },

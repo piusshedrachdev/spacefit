@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as db from '../db/index.js';
 import { asyncHandler, ok, ApiError } from '../utils/http.js';
 import { validate } from '../utils/validate.js';
-import { requireAuth, requireAdmin, requireSeller, resolveRole } from '../middleware/auth.js';
+import { requireAuth, requireAdmin, requireSellerOrAdmin, resolveRole } from '../middleware/auth.js';
 
 /**
  * Product routes.
@@ -79,7 +79,7 @@ router.get(
 /** POST /api/products -> create a listing (seller or admin) */
 router.post(
   '/',
-  requireSeller,
+  requireSellerOrAdmin,
   asyncHandler(async (req, res) => {
     const payload = validate(req.body, {
       title: { required: true, type: 'string', minLength: 2 },
@@ -173,7 +173,7 @@ router.get(
 /** PATCH /api/products/:id -> edit a listing (owner or admin) */
 router.patch(
   '/:id',
-  requireSeller,
+  requireSellerOrAdmin,
   asyncHandler(async (req, res) => {
     const product = await db.getProduct(req.params.id);
     await assertCanModify(req, product);
@@ -209,7 +209,7 @@ router.patch(
 /** DELETE /api/products/:id -> remove a listing (owner or admin) */
 router.delete(
   '/:id',
-  requireSeller,
+  requireSellerOrAdmin,
   asyncHandler(async (req, res) => {
     const product = await db.getProduct(req.params.id);
     await assertCanModify(req, product);
