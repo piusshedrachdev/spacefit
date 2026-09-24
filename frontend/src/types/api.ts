@@ -274,6 +274,11 @@ export interface SellerApplicationPayload {
 
 export type SellerStatus = 'active' | 'blocked';
 
+/** GET /api/sellers (admin list) — rows carry a storefront product count. */
+export interface SellerListRow extends Seller {
+  products?: number;
+}
+
 export interface Seller {
   id: string;
   userId: string;

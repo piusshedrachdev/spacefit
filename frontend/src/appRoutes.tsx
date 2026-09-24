@@ -1,4 +1,6 @@
 import { Navigate, Route, Routes, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { AdminLayout } from '@/layout/AdminLayout';
+import { AdminDashboardPage, ADMIN_TABS } from '@/pages/AdminDashboardPage';
 import { AuthLayout } from '@/layout/AuthLayout';
 import { AuthPage } from '@/pages/AuthPage';
 import { CartPage } from '@/pages/CartPage';
@@ -13,18 +15,19 @@ import { SellerLayout } from '@/layout/SellerLayout';
 import { StorefrontLayout } from '@/layout/StorefrontLayout';
 
 /**
- * Route table (Phases 3–5): ported storefront + auth + seller pages and the
- * redirects that keep the legacy URLs/deep links working — `.html` variants,
- * the clean paths stored in notifications/emails, the `#tab` hash links from
- * seeded notifications, and the typo'd `order-succes.html?id=…` links.
+ * Route table (Phases 3–6): ported storefront + auth + seller + admin pages
+ * and the redirects that keep the legacy URLs/deep links working — `.html`
+ * variants, the clean paths stored in notifications/emails, the `#tab` hash
+ * links from seeded notifications (`admin.html#applications`), and the typo'd
+ * `order-succes.html?id=…` links.
  *
  * While legacy files still exist the server serves them directly; these
  * redirects take over once a page is pruned from frontend/legacy/ (Phase 7),
  * and cover the clean paths (`/cart`, `/products/:id`, …) right away.
  *
  * `/auth` renders in its own minimal AuthLayout (the legacy auth page had no
- * store chrome); `/seller-dashboard` gets the SellerLayout console shell;
- * `/seller-apply` keeps the full storefront shell.
+ * store chrome); `/seller-dashboard` and `/admin` get their own console
+ * shells; `/seller-apply` keeps the full storefront shell.
  */
 
 /** `/auth.html?next=…` → `/auth?next=…` — the query string is the point. */
@@ -76,6 +79,18 @@ function LegacySellerDashboardRedirect() {
   );
 }
 
+/**
+ * `/admin.html#tab` (stored notification links, e.g. `#applications`) → the
+ * path form `/admin/:tab`; without a known hash, the bare dashboard. The hash
+ * is never sent to the server, so it reads it client-side here.
+ */
+function LegacyAdminRedirect() {
+  const location = useLocation();
+  const hash = location.hash.replace('#', '');
+  const tab = ADMIN_TABS.find((item) => item.id === hash && item.id !== 'overview');
+  return <Navigate to={tab ? `/admin/${tab.id}` : '/admin'} replace />;
+}
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -93,6 +108,13 @@ export function AppRoutes() {
           path="/seller-dashboard.html"
           element={<LegacySellerDashboardRedirect />}
         />
+      </Route>
+
+      {/* Admin console (Phase 6) — its own chrome, like the legacy page. */}
+      <Route element={<AdminLayout />}>
+        <Route path="/admin" element={<AdminDashboardPage />} />
+        <Route path="/admin/:tab" element={<AdminDashboardPage />} />
+        <Route path="/admin.html" element={<LegacyAdminRedirect />} />
       </Route>
 
       <Route element={<StorefrontLayout />}>

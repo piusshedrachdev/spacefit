@@ -11,7 +11,7 @@
  * (`order-succes.html?id=…`) is preserved via a redirect in src/appRoutes.tsx.
  */
 export const routes = {
-  /** Ported in Phases 3–5 — served by the React app. */
+  /** Ported in Phases 3–6 — served by the React app. */
   home: '/',
   shop: '/#shop',
   cart: '/cart',
@@ -21,8 +21,8 @@ export const routes = {
   auth: '/auth',
   sellerApply: '/seller-apply',
   sellerDashboard: '/seller-dashboard',
-  /** Legacy pages — ported in Phases 6–7 (flip one line each). */
-  admin: '/admin.html',
+  admin: '/admin',
+  /** Legacy page — ported in Phase 7 (flip this line). */
   policies: '/policies.html'
 } as const;
 

@@ -62,7 +62,7 @@ function IconButtonLink({
   );
 }
 
-export function NotificationBell() {
+export function NotificationBell({ href }: { href?: string } = {}) {
   const { isAuthenticated } = useAuth();
   const { unreadCount } = useNotifications();
   if (!isAuthenticated) return null;
@@ -71,7 +71,7 @@ export function NotificationBell() {
 
   return (
     <IconButtonLink
-      href={`${routes.sellerDashboard}#notifications`}
+      href={href ?? `${routes.sellerDashboard}#notifications`}
       label="Notifications"
       badge={badge}
     >

@@ -51,7 +51,8 @@ export function Modal({
   title,
   onClose,
   children,
-  footer
+  footer,
+  wide = false
 }: {
   open: boolean;
   title: ReactNode;
@@ -59,6 +60,8 @@ export function Modal({
   children: ReactNode;
   /** Optional action row (Cancel/Confirm) — the legacy modal() footer. */
   footer?: ReactNode;
+  /** max-w-2xl instead of max-w-lg (legacy application detail modal). */
+  wide?: boolean;
 }) {
   // Escape to close, like the legacy modal helpers.
   useEffect(() => {
@@ -82,7 +85,7 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={typeof title === 'string' ? title : 'Dialog'}
-        className="w-full max-w-lg bg-surface-container-lowest rounded-xl shadow-xl max-h-[85vh] overflow-y-auto"
+        className={`w-full ${wide ? 'max-w-2xl' : 'max-w-lg'} bg-surface-container-lowest rounded-xl shadow-xl max-h-[85vh] overflow-y-auto`}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-space-md px-space-lg py-space-md border-b border-outline-variant/40">

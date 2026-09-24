@@ -139,7 +139,7 @@ describe('StorefrontLayout (signed in)', () => {
     // Open the account menu.
     fireEvent.click(screen.getByLabelText('Account menu'));
     expect(screen.getByText('Ada Admin')).toBeInTheDocument();
-    expect(screen.getByText('Admin dashboard')).toHaveAttribute('href', '/admin.html');
+    expect(screen.getByText('Admin dashboard')).toHaveAttribute('href', '/admin');
     expect(screen.getByText('Sign out')).toBeInTheDocument();
     // "Who sees what": admins already have a dashboard — no seller pitch.
     expect(screen.queryByText('Become a Seller')).not.toBeInTheDocument();

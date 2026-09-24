@@ -6,6 +6,7 @@ import type {
   SellerApplicationPayload,
   SellerContext,
   SellerDashboard,
+  SellerListRow,
   SellerStatus
 } from '@/types/api';
 
@@ -43,10 +44,10 @@ export function getApplication(id: string): Promise<SellerApplication> {
   return request<SellerApplication>(`/api/sellers/applications/${encodeURIComponent(id)}`);
 }
 
-/** approve | reject — returns the updated application (plus seller on approve). */
+/** approve|reject decisions are stored verbatim as statuses. */
 export function reviewApplication(
   id: string,
-  decision: 'approve' | 'reject',
+  decision: 'approved' | 'rejected',
   reviewNotes?: string | null
 ): Promise<{ application: SellerApplication; seller?: Seller }> {
   return request<{ application: SellerApplication; seller?: Seller }>(
@@ -55,8 +56,9 @@ export function reviewApplication(
   );
 }
 
-export function getSellers(): Promise<Seller[]> {
-  return request<Seller[]>('/api/sellers');
+/** Admin list — rows are enriched with a product count. */
+export function getSellers(): Promise<SellerListRow[]> {
+  return request<SellerListRow[]>('/api/sellers');
 }
 
 export function setSellerStatus(
