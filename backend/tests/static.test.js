@@ -19,16 +19,29 @@ describe('static frontend serving', () => {
     expect(res.text).toMatch(/SpaceFit/i);
   });
 
-  it('serves the API client script', async () => {
-    const res = await request(app).get('/js/api.js');
+  // Post-cutover replacement for the legacy `/js/api.js` assertion: the entry
+  // HTML plus a hashed asset from dist/assets are what actually gets served.
+  it('serves the entry HTML and a built asset', async () => {
+    const html = await request(app).get('/index.html');
+    expect(html.status).toBe(200);
+    expect(html.text).toMatch(/SpaceFit/i);
+
+    const assets = fs.readdirSync(path.join(frontendDir, 'assets'));
+    const bundle = assets.find((name) => name.endsWith('.js'));
+    expect(bundle, 'dist/assets should contain a JS bundle').toBeTruthy();
+    const res = await request(app).get('/assets/' + bundle);
     expect(res.status).toBe(200);
-    expect(res.text).toMatch(/SpaceFitAPI/);
+    expect(res.headers['content-type']).toMatch(/javascript/);
   });
 
-  it('serves a page by clean path (cart.html via /cart)', async () => {
+  // A clean path with no file behind it is a client-side route: the SPA shell
+  // renders it (the client renders the cart UI, so the shell itself carries
+  // the app title, not the word "cart").
+  it('serves a client-side route by clean path (/cart via the SPA shell)', async () => {
     const res = await request(app).get('/cart');
     expect(res.status).toBe(200);
-    expect(res.text).toMatch(/cart/i);
+    expect(res.headers['content-type']).toMatch(/html/);
+    expect(res.text).toMatch(/SpaceFit/i);
   });
 
   it('does not shadow API routes with static files', async () => {
@@ -37,6 +50,8 @@ describe('static frontend serving', () => {
     expect(res.body.data.status).toBe('ok');
   });
 
+  // Safety net: every legacy `.html` URL stays resolvable — the shell is
+  // served directly (entry) or through the SPA fallback (client redirect).
   it('serves every page linked from the shared chrome / navigation', async () => {
     const pages = [
       'index.html',
@@ -57,20 +72,24 @@ describe('static frontend serving', () => {
     }
   });
 
-  it('serves the policies page script and its policy sections', async () => {
-    const script = await request(app).get('/js/policies.js');
-    expect(script.status).toBe(200);
-    expect(script.text).toMatch(/getSettings/);
-
-    const page = await request(app).get('/policies.html');
-    for (const anchor of ['id="returns"', 'id="delivery"', 'id="sellers"', 'id="privacy"', 'id="discounts"']) {
-      expect(page.text, anchor).toContain(anchor);
-    }
+  // Plan §2: the `/totally-missing` expectation flips from the 404 envelope
+  // to the SPA shell at cutover — the client router renders its own 404 page.
+  it('hands unknown paths the SPA shell (the client router renders its 404 page)', async () => {
+    const res = await request(app).get('/totally-missing');
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch(/html/);
+    expect(res.text).toMatch(/SpaceFit/i);
   });
 
-  it('returns a 404 envelope for unknown non-file routes', async () => {
-    const res = await request(app).get('/totally-missing');
-    expect(res.status).toBe(404);
-    expect(res.body.success).toBe(false);
+  // ...while the 404 envelope stays for unknown /api/* routes and for
+  // missing assets (the fallback only covers extensionless + .html paths).
+  it('keeps the JSON 404 envelope for unknown API routes and missing assets', async () => {
+    const api = await request(app).get('/api/totally-missing');
+    expect(api.status).toBe(404);
+    expect(api.body.success).toBe(false);
+
+    const asset = await request(app).get('/assets/missing.js');
+    expect(asset.status).toBe(404);
+    expect(asset.body.success).toBe(false);
   });
 });

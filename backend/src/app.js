@@ -29,46 +29,22 @@ const frontendRoot = process.env.FRONTEND_DIR
   : path.resolve(__dirname, '..', '..', 'frontend');
 
 /**
- * Static serving roots, checked in order (first match wins).
+ * Static serving root (the Vite migration is complete — frontend_react_
+ * migration_plan.md Phase 7 deleted frontend/legacy/, so the built SPA is
+ * authoritative for every client URL):
  *
- * During the Vite/React migration (see frontend_react_migration_plan.md):
- *   1. `legacy/`    — the pre-migration static site stays authoritative for
- *                     every URL until its file is pruned after porting (so a
- *                     mid-migration `npm run build` never shadows e.g. the
- *                     real home page with the SPA shell).
- *   2. `dist/`      — the built SPA; takes over each route as legacy shrinks
- *                     and is the only root left once `legacy/` is deleted.
- *   3. the root     — fallback for layouts that keep pages at the app root.
- *
- * When neither `dist/` nor `legacy/` exists (e.g. FRONTEND_DIR overrides),
- * the root itself is served as before.
+ *   1. `dist/`    — the built SPA; real files first, then the SPA fallback
+ *                   below hands client-side paths the shell.
+ *   2. the root   — fallback for FRONTEND_DIR layouts that keep pages at
+ *                   the app root (e.g. a pre-build checkout).
  */
 const distDir = path.join(frontendRoot, 'dist');
-const legacyDir = path.join(frontendRoot, 'legacy');
 const hasDist = fs.existsSync(path.join(distDir, 'index.html'));
-const hasLegacy = fs.existsSync(legacyDir);
 
-export const staticRoots = hasLegacy
-  ? [legacyDir, ...(hasDist ? [distDir] : [])]
-  : hasDist
-    ? [distDir]
-    : [frontendRoot];
+export const staticRoots = hasDist ? [distDir] : [frontendRoot];
 
 /** Primary static directory (what tests and docs point at). */
 export const frontendDir = staticRoots[0];
-
-/**
- * Client-side routes that should receive the SPA shell. Kept as an explicit
- * manifest so unknown paths (e.g. `/totally-missing`) and missing assets
- * still fall through to the 404 envelope.
- */
-const SPA_ROUTES = [
-  /^\/$/,
-  /^\/(index|cart|checkout|product-details|order-succes|order-success|auth|seller-apply|seller-dashboard|admin|policies)(\.html)?$/,
-  /^\/(products|product-details)\/[^/]+$/,
-  /^\/order-success\/[^/]+$/
-];
-const isSpaRoute = (p) => SPA_ROUTES.some((re) => re.test(p));
 
 /**
  * Build the Express application.
@@ -132,19 +108,22 @@ export function createApp() {
   app.use('/api/newsletter', newsletterRouter);
 
   // Serve the storefront from the same origin (removes CORS friction).
-  // Built SPA first, then the legacy static site (migration), then the root.
   for (const root of staticRoots) {
     app.use(express.static(root, { extensions: ['html'] }));
   }
 
-  // SPA fallback: hand client-side routes the React shell when it has been
-  // built. Gated on the route manifest so unknown paths stay 404s.
+  // SPA fallback (post-cutover): every non-API GET/HEAD that found no file
+  // gets the built shell — the client router renders the page (`.html`
+  // aliases like /policies.html land here too and redirect client-side) or
+  // its 404 page. Unknown /api/* paths skip this and keep the JSON 404
+  // envelope; missing assets (any other extension) also stay on it.
   if (hasDist) {
     app.use((req, res, next) => {
       if (req.method !== 'GET' && req.method !== 'HEAD') return next();
       if (req.path.startsWith('/api')) return next();
-      if (isSpaRoute(req.path)) return res.sendFile(path.join(distDir, 'index.html'));
-      next();
+      const ext = path.extname(req.path);
+      if (ext && ext !== '.html') return next();
+      res.sendFile(path.join(distDir, 'index.html'));
     });
   }
 

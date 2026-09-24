@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "SpaceFit storefront — Vite + React + TypeScript (migrating from the legacy static site in frontend/legacy)",
+  "description": "SpaceFit storefront — Vite + React + TypeScript (migrated from the legacy static site; legacy URL redirects live in src/appRoutes.tsx)",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

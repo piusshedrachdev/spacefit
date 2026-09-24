@@ -1,17 +1,16 @@
 /**
  * Navigation targets.
  *
- * While the Vite migration is in progress (frontend_react_migration_plan.md)
- * pages that are not yet ported point at their legacy `.html` URL — the backend
- * still serves them from `frontend/legacy/`. Flip a value to the SPA path in
- * the same phase that ported the page (one-line change per route).
+ * Every target is served by the React app (the Vite migration finished in
+ * Phase 7 — `frontend/legacy/` is gone); legacy URLs (`.html` paths, clean
+ * paths, `#hash` links from seeded notifications and emails) keep resolving
+ * through the redirects in src/appRoutes.tsx.
  *
- * Legacy targets are root-absolute (`/auth.html`) so they keep resolving from
- * nested SPA routes like `/products/:id`; the old typo'd confirmation URL
+ * Targets are root-absolute (`/auth`) so they resolve from nested SPA routes
+ * like `/products/:id`; the old typo'd confirmation URL
  * (`order-succes.html?id=…`) is preserved via a redirect in src/appRoutes.tsx.
  */
 export const routes = {
-  /** Ported in Phases 3–6 — served by the React app. */
   home: '/',
   shop: '/#shop',
   cart: '/cart',
@@ -22,8 +21,7 @@ export const routes = {
   sellerApply: '/seller-apply',
   sellerDashboard: '/seller-dashboard',
   admin: '/admin',
-  /** Legacy page — ported in Phase 7 (flip this line). */
-  policies: '/policies.html'
+  policies: '/policies'
 } as const;
 
 /** True when a nav target is served by the React router (vs a legacy page). */

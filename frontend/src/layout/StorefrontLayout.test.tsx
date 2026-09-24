@@ -81,14 +81,14 @@ describe('StorefrontLayout (signed out)', () => {
     expect(screen.getByTestId('page-body')).toBeInTheDocument();
     // Sign-in control (aria label from chrome.js) — now an SPA route.
     expect(await screen.findByLabelText('Sign in')).toHaveAttribute('href', '/auth');
-    // chrome.js footer policy links.
+    // chrome.js footer policy links — now SPA routes (Phase 7).
     expect(screen.getByRole('link', { name: 'Policies' })).toHaveAttribute(
       'href',
-      '/policies.html'
+      '/policies'
     );
     expect(screen.getByRole('link', { name: 'Returns' })).toHaveAttribute(
       'href',
-      '/policies.html#returns'
+      '/policies#returns'
     );
     // No notification bell when signed out.
     expect(screen.queryByLabelText('Notifications')).not.toBeInTheDocument();

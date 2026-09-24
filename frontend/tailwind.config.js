@@ -1,7 +1,7 @@
 /**
  * Tailwind tokens ported verbatim from the legacy Tailwind-CDN config
- * (frontend/legacy/index.html, id="tailwind-config"). Keep in sync with any
- * token change there until the legacy site is deleted (Phase 7).
+ * (the pre-migration frontend/legacy/index.html, id="tailwind-config";
+ * deleted at cutover — this file is now the source of truth).
  */
 const tokens = {
   "darkMode": "class",

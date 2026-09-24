@@ -114,11 +114,11 @@ describe('App shell (Phase 3 home)', () => {
     expect(getProducts).toHaveBeenCalled();
   });
 
-  it('keeps the footer policy links pointing at the legacy policies page', async () => {
+  it('links the footer policies entry through the SPA', async () => {
     render(<App />);
     expect(await screen.findByRole('link', { name: 'Policies' })).toHaveAttribute(
       'href',
-      '/policies.html'
+      '/policies'
     );
   });
 });

@@ -8,6 +8,7 @@ import { CheckoutPage } from '@/pages/CheckoutPage';
 import { HomePage } from '@/pages/HomePage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { OrderSuccessPage } from '@/pages/OrderSuccessPage';
+import { PoliciesPage } from '@/pages/PoliciesPage';
 import { ProductDetailsPage } from '@/pages/ProductDetailsPage';
 import { SellerApplyPage } from '@/pages/SellerApplyPage';
 import { SELLER_TABS, SellerDashboardPage } from '@/pages/SellerDashboardPage';
@@ -15,19 +16,19 @@ import { SellerLayout } from '@/layout/SellerLayout';
 import { StorefrontLayout } from '@/layout/StorefrontLayout';
 
 /**
- * Route table (Phases 3–6): ported storefront + auth + seller + admin pages
- * and the redirects that keep the legacy URLs/deep links working — `.html`
- * variants, the clean paths stored in notifications/emails, the `#tab` hash
- * links from seeded notifications (`admin.html#applications`), and the typo'd
+ * Route table (Phases 3–7): ported storefront + auth + seller + admin +
+ * policies pages and the redirects that keep the legacy URLs/deep links
+ * working — `.html` variants, the clean paths stored in notifications/emails,
+ * the `#tab` hash links from seeded notifications (`admin.html#applications`),
+ * the policy section anchors (`policies.html#returns`), and the typo'd
  * `order-succes.html?id=…` links.
  *
- * While legacy files still exist the server serves them directly; these
- * redirects take over once a page is pruned from frontend/legacy/ (Phase 7),
- * and cover the clean paths (`/cart`, `/products/:id`, …) right away.
+ * frontend/legacy/ was deleted at the Phase 7 cutover: the server hands every
+ * non-API path the SPA shell, so these client routes ARE the pages now.
  *
  * `/auth` renders in its own minimal AuthLayout (the legacy auth page had no
  * store chrome); `/seller-dashboard` and `/admin` get their own console
- * shells; `/seller-apply` keeps the full storefront shell.
+ * shells; `/seller-apply` and `/policies` keep the full storefront shell.
  */
 
 /** `/auth.html?next=…` → `/auth?next=…` — the query string is the point. */
@@ -76,6 +77,19 @@ function LegacySellerDashboardRedirect() {
   const tab = SELLER_TABS.find((item) => item.id === hash && item.id !== 'overview');
   return (
     <Navigate to={tab ? `/seller-dashboard/${tab.id}` : '/seller-dashboard'} replace />
+  );
+}
+
+/**
+ * `/policies.html#returns|delivery|…` (footer + stored links) → `/policies`
+ * with the same section id; without a hash, the bare page. The hash is read
+ * client-side (never sent to the server) and preserved so the section still
+ * resolves after the redirect.
+ */
+function LegacyPoliciesRedirect() {
+  const location = useLocation();
+  return (
+    <Navigate to={{ pathname: '/policies', hash: location.hash }} replace />
   );
 }
 
@@ -132,6 +146,10 @@ export function AppRoutes() {
           path="/seller-apply.html"
           element={<Navigate to="/seller-apply" replace />}
         />
+
+        {/* Store policies (Phase 7 — final page port) */}
+        <Route path="/policies" element={<PoliciesPage />} />
+        <Route path="/policies.html" element={<LegacyPoliciesRedirect />} />
 
         {/* Legacy URL compatibility */}
         <Route path="/index.html" element={<Navigate to="/" replace />} />
