@@ -199,6 +199,8 @@ export interface OrderLine {
   quantity: number;
   size: string | null;
   color: string | null;
+  /** Present on some order payloads (legacy order-success rendered it). */
+  image?: string | null;
 }
 
 export interface Order {

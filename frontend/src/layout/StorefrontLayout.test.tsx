@@ -79,16 +79,17 @@ describe('StorefrontLayout (signed out)', () => {
     renderLayout();
 
     expect(screen.getByTestId('page-body')).toBeInTheDocument();
-    // Sign-in control (aria label from chrome.js).
-    expect(await screen.findByLabelText('Sign in')).toHaveAttribute('href', 'auth.html');
+    // Sign-in control (aria label from chrome.js). Legacy targets are now
+    // root-absolute so they resolve from nested SPA routes.
+    expect(await screen.findByLabelText('Sign in')).toHaveAttribute('href', '/auth.html');
     // chrome.js footer policy links.
     expect(screen.getByRole('link', { name: 'Policies' })).toHaveAttribute(
       'href',
-      'policies.html'
+      '/policies.html'
     );
     expect(screen.getByRole('link', { name: 'Returns' })).toHaveAttribute(
       'href',
-      'policies.html#returns'
+      '/policies.html#returns'
     );
     // No notification bell when signed out.
     expect(screen.queryByLabelText('Notifications')).not.toBeInTheDocument();
@@ -133,17 +134,41 @@ describe('StorefrontLayout (signed in)', () => {
 
     // Bell with unread badge (links to the notifications tab, like chrome.js).
     const bell = await screen.findByLabelText('Notifications');
-    expect(bell).toHaveAttribute('href', 'seller-dashboard.html#notifications');
+    expect(bell).toHaveAttribute('href', '/seller-dashboard.html#notifications');
     expect(await screen.findByText('7')).toBeInTheDocument();
 
     // Open the account menu.
     fireEvent.click(screen.getByLabelText('Account menu'));
     expect(screen.getByText('Ada Admin')).toBeInTheDocument();
-    expect(screen.getByText('Admin dashboard')).toHaveAttribute('href', 'admin.html');
+    expect(screen.getByText('Admin dashboard')).toHaveAttribute('href', '/admin.html');
+    expect(screen.getByText('Sign out')).toBeInTheDocument();
+    // "Who sees what": admins already have a dashboard — no seller pitch.
+    expect(screen.queryByText('Become a Seller')).not.toBeInTheDocument();
+  });
+
+  it('shows the seller pitch to customers (who have no dashboard yet)', async () => {
+    setSession({
+      accessToken: 'token',
+      refreshToken: 'refresh',
+      user: { id: 'u2', email: 'chu@spacefit.ng' },
+      profile: { id: 'u2', role: 'customer', full_name: 'Chu Customer' }
+    });
+    vi.mocked(getMe).mockResolvedValue({
+      user: { id: 'u2', email: 'chu@spacefit.ng' },
+      profile: { id: 'u2', role: 'customer', full_name: 'Chu Customer' }
+    });
+
+    renderLayout();
+
+    fireEvent.click(await screen.findByLabelText('Account menu'));
+    expect(screen.getByText('Chu Customer')).toBeInTheDocument();
     expect(screen.getByText('Become a Seller')).toHaveAttribute(
       'href',
-      'seller-apply.html'
+      '/seller-apply.html'
     );
+    // Customers have no dashboard entry point.
+    expect(screen.queryByText('Admin dashboard')).not.toBeInTheDocument();
+    expect(screen.queryByText('Seller dashboard')).not.toBeInTheDocument();
     expect(screen.getByText('Sign out')).toBeInTheDocument();
   });
 });

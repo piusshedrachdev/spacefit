@@ -1,32 +1,43 @@
 import { useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthProvider';
 import { useCart } from '@/context/CartProvider';
 import { useNotifications } from '@/context/NotificationsProvider';
-import { routes } from '@/lib/routes';
+import { IfCan, useVisibility } from '@/components/Visibility';
+import { can } from '@/lib/permissions';
+import { isSpaHref, routes } from '@/lib/routes';
 
 /**
  * Storefront header — a port of the legacy header markup plus the chrome.js
  * decorations (account control, notification bell), in that order of
  * operations: wishlist, bell (authed only), cart, divider, account.
+ *
+ * Nav targets use react-router <Link> when they belong to the SPA and a
+ * plain <a> for legacy `.html` pages; role/visibility rules live in
+ * src/lib/permissions.ts and are applied through <IfCan>.
  */
 
-function NavAnchor({
-  href,
-  children
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
+const NAV_CLASS =
+  'relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full';
+
+function NavAnchor({ href, children }: { href: string; children: ReactNode }) {
+  if (isSpaHref(href)) {
+    return (
+      <Link to={href} className={NAV_CLASS}>
+        {children}
+      </Link>
+    );
+  }
   return (
-    <a
-      href={href}
-      className="relative py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
-    >
+    <a href={href} className={NAV_CLASS}>
       {children}
     </a>
   );
 }
+
+const ICON_LINK_CLASS =
+  'relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center';
 
 function IconButtonLink({
   href,
@@ -39,22 +50,28 @@ function IconButtonLink({
   label: string;
   badge?: string;
   badgeClass?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  return (
-    <a
-      aria-label={label}
-      href={href}
-      className="relative p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all flex items-center justify-center"
+  const badgeNode = badge ? (
+    <span
+      className={`absolute top-1 right-1 min-w-4 h-4 px-1 font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold ${badgeClass}`}
     >
+      {badge}
+    </span>
+  ) : null;
+
+  if (isSpaHref(href)) {
+    return (
+      <Link to={href} aria-label={label} className={ICON_LINK_CLASS}>
+        {children}
+        {badgeNode}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} aria-label={label} className={ICON_LINK_CLASS}>
       {children}
-      {badge ? (
-        <span
-          className={`absolute top-1 right-1 min-w-4 h-4 px-1 font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold ${badgeClass}`}
-        >
-          {badge}
-        </span>
-      ) : null}
+      {badgeNode}
     </a>
   );
 }
@@ -79,6 +96,7 @@ function NotificationBell() {
 
 function AccountControl() {
   const { isAuthenticated, profile, user, role, logout } = useAuth();
+  const visibility = useVisibility();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -108,12 +126,12 @@ function AccountControl() {
   }
 
   const label = profile?.full_name || user?.email || 'Account';
-  const dashboard =
-    role === 'admin'
-      ? { href: routes.admin, label: 'Admin dashboard' }
-      : role === 'seller'
-        ? { href: routes.sellerDashboard, label: 'Seller dashboard' }
-        : null;
+  // "Who sees what": only sellers/admins get a dashboard entry point.
+  const dashboard = can.openAdmin(visibility)
+    ? { href: routes.admin, label: 'Admin dashboard' }
+    : can.openSellerDashboard(visibility)
+      ? { href: routes.sellerDashboard, label: 'Seller dashboard' }
+      : null;
 
   const onSignOut = () => {
     void logout().then(() => {
@@ -149,13 +167,16 @@ function AccountControl() {
             {dashboard.label}
           </a>
         ) : null}
-        <a
-          href={routes.sellerApply}
-          className="flex items-center gap-space-sm px-space-md py-space-sm hover:bg-surface-container-high"
-        >
-          <span className="material-symbols-outlined text-xl">storefront</span>
-          Become a Seller
-        </a>
+        {/* The seller pitch is for customers only — sellers/admins skip it. */}
+        <IfCan rule="applyAsSeller">
+          <a
+            href={routes.sellerApply}
+            className="flex items-center gap-space-sm px-space-md py-space-sm hover:bg-surface-container-high"
+          >
+            <span className="material-symbols-outlined text-xl">storefront</span>
+            Become a Seller
+          </a>
+        </IfCan>
         <button
           type="button"
           onClick={onSignOut}

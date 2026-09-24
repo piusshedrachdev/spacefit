@@ -13,6 +13,8 @@ export interface ConsultationPayload {
   fullName: string;
   email: string;
   phone?: string;
+  /** Legacy booking prompt collected the visitor's city too. */
+  city?: string;
   notes?: string;
 }
 

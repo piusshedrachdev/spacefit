@@ -25,7 +25,7 @@ interface CartContextValue {
   /** Guarantee a cart exists server-side (checkout-style flows). */
   ensure: () => Promise<Cart>;
   /** Create-or-load the cart, then add an item (legacy addToCart flow). */
-  add: (productIdOrTitle: string, quantity?: number) => Promise<Cart>;
+  add: (productIdOrTitle: string, quantity?: number, size?: string, color?: string) => Promise<Cart>;
   updateItem: (itemKey: string, quantity: number) => Promise<Cart>;
   removeItem: (itemKey: string) => Promise<Cart>;
   /** Drop the cart locally (after checkout, like legacy clearCartId). */
@@ -65,11 +65,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   }, [refresh]);
 
-  const add = useCallback(async (productIdOrTitle: string, quantity = 1) => {
-    const updated = await apiAddToCart(productIdOrTitle, quantity);
-    setCart(updated);
-    return updated;
-  }, []);
+  const add = useCallback(
+    async (productIdOrTitle: string, quantity = 1, size?: string, color?: string) => {
+      const updated = await apiAddToCart(productIdOrTitle, quantity, size, color);
+      setCart(updated);
+      return updated;
+    },
+    []
+  );
 
   const updateItem = useCallback(
     async (itemKey: string, quantity: number) => {
