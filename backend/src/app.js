@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
@@ -19,13 +20,31 @@ import { attachUser } from './middleware/auth.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * Directory containing the static storefront. Defaults to the repo's
- * `frontend/` folder (two levels up from `backend/src`), overridable via
- * FRONTEND_DIR for deployment layouts.
+ * App root of the static storefront. Defaults to the repo's `frontend/`
+ * folder (two levels up from `backend/src`), overridable via FRONTEND_DIR
+ * for deployment layouts.
  */
-export const frontendDir = process.env.FRONTEND_DIR
+const frontendRoot = process.env.FRONTEND_DIR
   ? path.resolve(process.env.FRONTEND_DIR)
   : path.resolve(__dirname, '..', '..', 'frontend');
+
+/**
+ * Static serving root (the Vite migration is complete — frontend_react_
+ * migration_plan.md Phase 7 deleted frontend/legacy/, so the built SPA is
+ * authoritative for every client URL):
+ *
+ *   1. `dist/`    — the built SPA; real files first, then the SPA fallback
+ *                   below hands client-side paths the shell.
+ *   2. the root   — fallback for FRONTEND_DIR layouts that keep pages at
+ *                   the app root (e.g. a pre-build checkout).
+ */
+const distDir = path.join(frontendRoot, 'dist');
+const hasDist = fs.existsSync(path.join(distDir, 'index.html'));
+
+export const staticRoots = hasDist ? [distDir] : [frontendRoot];
+
+/** Primary static directory (what tests and docs point at). */
+export const frontendDir = staticRoots[0];
 
 /**
  * Build the Express application.
@@ -89,7 +108,24 @@ export function createApp() {
   app.use('/api/newsletter', newsletterRouter);
 
   // Serve the storefront from the same origin (removes CORS friction).
-  app.use(express.static(frontendDir, { extensions: ['html'] }));
+  for (const root of staticRoots) {
+    app.use(express.static(root, { extensions: ['html'] }));
+  }
+
+  // SPA fallback (post-cutover): every non-API GET/HEAD that found no file
+  // gets the built shell — the client router renders the page (`.html`
+  // aliases like /policies.html land here too and redirect client-side) or
+  // its 404 page. Unknown /api/* paths skip this and keep the JSON 404
+  // envelope; missing assets (any other extension) also stay on it.
+  if (hasDist) {
+    app.use((req, res, next) => {
+      if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+      if (req.path.startsWith('/api')) return next();
+      const ext = path.extname(req.path);
+      if (ext && ext !== '.html') return next();
+      res.sendFile(path.join(distDir, 'index.html'));
+    });
+  }
 
   app.use(notFoundHandler);
   app.use(errorHandler);

@@ -1,1 +1,8 @@
 .forge-permissions.json
+
+# Node (root tooling scripts)
+node_modules/
+
+# Frontend (Vite + React)
+frontend/node_modules/
+frontend/dist/
