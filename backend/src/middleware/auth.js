@@ -178,3 +178,54 @@ export async function requireSeller(req, _res, next) {
     next(err);
   }
 }
+
+/**
+ * Reject the request unless the caller is an active seller OR an admin.
+ *
+ * `requireSeller` also rejects admins (role must be 'seller'), which broke
+ * admin-only overrides on endpoints documented as "seller or admin" when
+ * running against Supabase — e.g. GET/PATCH /api/returns and the product
+ * management routes. This variant lets `role === 'admin'` through while
+ * keeping every other rule (session required, seller row + seller role,
+ * blocked sellers rejected) and every error message identical.
+ *
+ * In in-memory mode this behaves exactly like `requireSeller` (relaxed no-op
+ * that attaches the dev caller's seller row), so local dev and the test suite
+ * are unaffected.
+ */
+export async function requireSellerOrAdmin(req, _res, next) {
+  try {
+    if (!usingSupabase()) {
+      req.seller = req.user ? await getSellerByUserId(req.user.id) : null;
+      return next();
+    }
+
+    if (!req.user) {
+      const token = bearerToken(req);
+      req.accessToken = token;
+      req.user = token ? await getUserFromToken(token) : null;
+    }
+    if (!req.user) return next(ApiError.unauthorized('Authentication required'));
+
+    const [profile, seller, role] = await Promise.all([
+      getProfileRow(req.user.id),
+      getSellerByUserId(req.user.id),
+      resolveRole(req)
+    ]);
+
+    req.seller = seller || null;
+    req.profile = profile || null;
+    req.role = role;
+
+    if (role === 'admin') return next();
+    if (!seller || role !== 'seller') {
+      return next(ApiError.unauthorized('Seller access required'));
+    }
+    if (seller.status === 'blocked') {
+      return next(new ApiError(403, 'Seller account is blocked'));
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
