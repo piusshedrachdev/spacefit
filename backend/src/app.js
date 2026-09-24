@@ -15,6 +15,7 @@ import metaRouter from './routes/meta.js';
 import sellersRouter from './routes/sellers.js';
 import notificationsRouter from './routes/notifications.js';
 import returnsRouter from './routes/returns.js';
+import wishlistRouter from './routes/wishlist.js';
 import { attachUser } from './middleware/auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -104,6 +105,7 @@ export function createApp() {
   app.use('/api/sellers', sellersRouter);
   app.use('/api/notifications', notificationsRouter);
   app.use('/api/returns', returnsRouter);
+  app.use('/api/wishlist', wishlistRouter);
   app.use('/api/consultations', consultationsRouter);
   app.use('/api/newsletter', newsletterRouter);
 

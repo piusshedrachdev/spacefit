@@ -7,6 +7,7 @@ import * as ordersRepo from './orders.js';
 import * as consultationsRepo from './consultations.js';
 import * as newsletterRepo from './newsletter.js';
 import * as sellersRepo from './sellers.js';
+import * as wishlistRepo from './wishlist.js';
 
 /**
  * Data-access facade used by the route handlers.
@@ -322,4 +323,21 @@ export async function getReturn(id) {
 export async function updateReturn(id, patch) {
   if (backend() === 'supabase') return sellersRepo.updateReturn(id, patch);
   return store.updateReturn(id, patch);
+}
+
+/* ---------------------------------------------------------------- wishlist */
+
+export async function listWishlist(userId) {
+  if (backend() === 'supabase') return wishlistRepo.listWishlist(userId);
+  return store.listWishlist(userId);
+}
+
+export async function addWishlistItem(userId, productId) {
+  if (backend() === 'supabase') return wishlistRepo.addWishlistItem(userId, productId);
+  return store.addWishlistItem(userId, productId);
+}
+
+export async function removeWishlistItem(userId, productId) {
+  if (backend() === 'supabase') return wishlistRepo.removeWishlistItem(userId, productId);
+  return store.removeWishlistItem(userId, productId);
 }

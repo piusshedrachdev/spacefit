@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthProvider';
 import { useCart } from '@/context/CartProvider';
 import { useNotifications } from '@/context/NotificationsProvider';
+import { useWishlist } from '@/context/WishlistProvider';
 import { IfCan, useVisibility } from '@/components/Visibility';
 import { SmartLink } from '@/components/SmartLink';
 import { can } from '@/lib/permissions';
@@ -12,7 +13,7 @@ import { routes } from '@/lib/routes';
 /**
  * Storefront header — a port of the legacy header markup plus the chrome.js
  * decorations (account control, notification bell), in that order of
- * operations: wishlist, bell (authed only), cart, divider, account.
+ * operations: wishlist, bell (both authed only), cart, divider, account.
  *
  * Nav targets go through <SmartLink> (react-router <Link> for SPA routes,
  * plain <a> for legacy `.html` pages); role/visibility rules live in
@@ -76,6 +77,22 @@ export function NotificationBell({ href }: { href?: string } = {}) {
       badge={badge}
     >
       <span className="material-symbols-outlined text-2xl">notifications</span>
+    </IconButtonLink>
+  );
+}
+
+/** Wishlist icon — authed only (like the bell), with the saved-count badge. */
+function WishlistLink() {
+  const { isAuthenticated } = useAuth();
+  const { items } = useWishlist();
+  if (!isAuthenticated) return null;
+
+  const count = items.length;
+  const badge = count > 0 ? (count > 9 ? '9+' : String(count)) : undefined;
+
+  return (
+    <IconButtonLink href={routes.wishlist} label="Wishlist" badge={badge}>
+      <span className="material-symbols-outlined text-2xl">favorite</span>
     </IconButtonLink>
   );
 }
@@ -153,6 +170,13 @@ export function AccountControl() {
             {dashboard.label}
           </SmartLink>
         ) : null}
+        <SmartLink
+          href={routes.wishlist}
+          className="flex items-center gap-space-sm px-space-md py-space-sm hover:bg-surface-container-high"
+        >
+          <span className="material-symbols-outlined text-xl">favorite</span>
+          Wishlist
+        </SmartLink>
         {/* The seller pitch is for customers only — sellers/admins skip it. */}
         <IfCan rule="applyAsSeller">
           <SmartLink
@@ -201,9 +225,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-space-sm">
-            <IconButtonLink href="#" label="Wishlist" badge="2">
-              <span className="material-symbols-outlined text-2xl">favorite</span>
-            </IconButtonLink>
+            <WishlistLink />
 
             <NotificationBell />
 

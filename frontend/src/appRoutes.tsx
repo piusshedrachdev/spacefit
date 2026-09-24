@@ -14,6 +14,7 @@ import { SellerApplyPage } from '@/pages/SellerApplyPage';
 import { SELLER_TABS, SellerDashboardPage } from '@/pages/SellerDashboardPage';
 import { SellerLayout } from '@/layout/SellerLayout';
 import { StorefrontLayout } from '@/layout/StorefrontLayout';
+import { WishlistPage } from '@/pages/WishlistPage';
 
 /**
  * Route table (Phases 3–7): ported storefront + auth + seller + admin +
@@ -139,6 +140,10 @@ export function AppRoutes() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-success" element={<OrderSuccessPage />} />
         <Route path="/order-success/:id" element={<OrderSuccessPage />} />
+
+        {/* Wishlist (server-backed per account) */}
+        <Route path="/wishlist" element={<WishlistPage />} />
+        <Route path="/wishlist.html" element={<Navigate to="/wishlist" replace />} />
 
         {/* Seller application (Phase 4) */}
         <Route path="/seller-apply" element={<SellerApplyPage />} />
