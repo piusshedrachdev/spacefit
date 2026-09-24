@@ -50,12 +50,15 @@ export function Modal({
   open,
   title,
   onClose,
-  children
+  children,
+  footer
 }: {
   open: boolean;
   title: ReactNode;
   onClose: () => void;
   children: ReactNode;
+  /** Optional action row (Cancel/Confirm) — the legacy modal() footer. */
+  footer?: ReactNode;
 }) {
   // Escape to close, like the legacy modal helpers.
   useEffect(() => {
@@ -94,6 +97,11 @@ export function Modal({
           </button>
         </div>
         <div className="p-space-lg">{children}</div>
+        {footer ? (
+          <div className="px-space-lg py-space-md border-t border-outline-variant/40 flex justify-end gap-space-sm">
+            {footer}
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -262,7 +262,7 @@ describe('SellerApplyPage', () => {
     expect(screen.getByText(/has been approved/)).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: 'Open seller dashboard' })
-    ).toHaveAttribute('href', '/seller-dashboard.html');
+    ).toHaveAttribute('href', '/seller-dashboard');
   });
 
   it('shows the rejected shell and reopens a prefilled form via Reapply', async () => {
@@ -318,7 +318,7 @@ describe('SellerApplyPage', () => {
     expect(screen.getByText(/Your shop/)).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: 'Open seller dashboard' })
-    ).toHaveAttribute('href', '/seller-dashboard.html');
+    ).toHaveAttribute('href', '/seller-dashboard');
   });
 
   it('falls back to the prefilled form for an unknown application status', async () => {

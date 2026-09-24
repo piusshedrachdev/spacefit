@@ -62,7 +62,7 @@ function IconButtonLink({
   );
 }
 
-function NotificationBell() {
+export function NotificationBell() {
   const { isAuthenticated } = useAuth();
   const { unreadCount } = useNotifications();
   if (!isAuthenticated) return null;
@@ -80,7 +80,7 @@ function NotificationBell() {
   );
 }
 
-function AccountControl() {
+export function AccountControl() {
   const { isAuthenticated, profile, user, role, logout } = useAuth();
   const visibility = useVisibility();
   const [open, setOpen] = useState(false);

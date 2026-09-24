@@ -133,7 +133,7 @@ describe('StorefrontLayout (signed in)', () => {
 
     // Bell with unread badge (links to the notifications tab, like chrome.js).
     const bell = await screen.findByLabelText('Notifications');
-    expect(bell).toHaveAttribute('href', '/seller-dashboard.html#notifications');
+    expect(bell).toHaveAttribute('href', '/seller-dashboard#notifications');
     expect(await screen.findByText('7')).toBeInTheDocument();
 
     // Open the account menu.

@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { AuthLayout } from '@/layout/AuthLayout';
 import { AuthPage } from '@/pages/AuthPage';
 import { CartPage } from '@/pages/CartPage';
@@ -8,19 +8,23 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
 import { OrderSuccessPage } from '@/pages/OrderSuccessPage';
 import { ProductDetailsPage } from '@/pages/ProductDetailsPage';
 import { SellerApplyPage } from '@/pages/SellerApplyPage';
+import { SELLER_TABS, SellerDashboardPage } from '@/pages/SellerDashboardPage';
+import { SellerLayout } from '@/layout/SellerLayout';
 import { StorefrontLayout } from '@/layout/StorefrontLayout';
 
 /**
- * Route table (Phases 3–4): ported storefront pages + redirects that keep the
- * legacy URLs/deep links working — `.html` variants, the clean paths stored
- * in notifications/emails, and the typo'd `order-succes.html?id=…` links.
+ * Route table (Phases 3–5): ported storefront + auth + seller pages and the
+ * redirects that keep the legacy URLs/deep links working — `.html` variants,
+ * the clean paths stored in notifications/emails, the `#tab` hash links from
+ * seeded notifications, and the typo'd `order-succes.html?id=…` links.
  *
  * While legacy files still exist the server serves them directly; these
  * redirects take over once a page is pruned from frontend/legacy/ (Phase 7),
  * and cover the clean paths (`/cart`, `/products/:id`, …) right away.
  *
  * `/auth` renders in its own minimal AuthLayout (the legacy auth page had no
- * store chrome); `/seller-apply` keeps the full storefront shell.
+ * store chrome); `/seller-dashboard` gets the SellerLayout console shell;
+ * `/seller-apply` keeps the full storefront shell.
  */
 
 /** `/auth.html?next=…` → `/auth?next=…` — the query string is the point. */
@@ -58,6 +62,20 @@ function LegacyOrderSuccessRedirect() {
   );
 }
 
+/**
+ * `/seller-dashboard.html#tab` (stored notification links) → the path form
+ * `/seller-dashboard/:tab`; without a known hash, the bare dashboard.
+ * The hash is never sent to the server, so it reads it client-side here.
+ */
+function LegacySellerDashboardRedirect() {
+  const location = useLocation();
+  const hash = location.hash.replace('#', '');
+  const tab = SELLER_TABS.find((item) => item.id === hash && item.id !== 'overview');
+  return (
+    <Navigate to={tab ? `/seller-dashboard/${tab.id}` : '/seller-dashboard'} replace />
+  );
+}
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -65,6 +83,16 @@ export function AppRoutes() {
       <Route element={<AuthLayout />}>
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth.html" element={<LegacyAuthRedirect />} />
+      </Route>
+
+      {/* Seller console (Phase 5) — its own chrome, like the legacy page. */}
+      <Route element={<SellerLayout />}>
+        <Route path="/seller-dashboard" element={<SellerDashboardPage />} />
+        <Route path="/seller-dashboard/:tab" element={<SellerDashboardPage />} />
+        <Route
+          path="/seller-dashboard.html"
+          element={<LegacySellerDashboardRedirect />}
+        />
       </Route>
 
       <Route element={<StorefrontLayout />}>
