@@ -217,7 +217,7 @@ export function Header() {
           <img
             alt="SpaceFit Brand Logo"
             className="h-8 w-auto object-contain"
-            src="/logo.jpeg"
+            src="/logo.png"
           />
           <span className="font-headline-md text-headline-md text-primary tracking-tight">
             SpaceFit

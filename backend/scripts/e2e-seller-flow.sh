@@ -92,7 +92,7 @@ PROD=$(curl -s -X POST "$B/api/products" -H "$CUST" \
   -F 'colors=["Amber"]' \
   -F 'sizes=[]' \
   -F 'featured=false' \
-  -F 'images=@../frontend/public/logo.jpeg;type=image/jpeg')
+  -F 'images=@../frontend/public/logo.png;type=image/jpeg')
 PROD_ID=$(echo "$PROD" | jqv data.id)
 check "product id returned" "false" "$([ "$PROD_ID" = "MISSING" -o "$PROD_ID" = "PARSE_ERR" ] && echo true || echo false)"
 check "product owned by the new seller" "$SELLER_ID" "$(echo "$PROD" | jqv data.sellerId)"

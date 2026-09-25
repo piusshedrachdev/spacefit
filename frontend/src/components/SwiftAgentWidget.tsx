@@ -9,7 +9,7 @@ export default function SwiftAgentWidget() {
     script.setAttribute("data-company-id", "3e4d88fc-0c23-4d7b-895b-7b0e64a1ad3a");
     script.setAttribute(
       "data-api-key",
-      "swa_live_b678ddb78b510252023b6666a93c2130473004f2524dbda45da53d6bff947a41"
+      "swa_live_b96b1fe6ad496e9beeaf3e99d0fbccaccac05c04ff075cc72c05a88deec24fc0"
     );
 
     document.body.appendChild(script);
