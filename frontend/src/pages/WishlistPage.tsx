@@ -1,73 +1,17 @@
-import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { ProductGrid } from '@/components/commerce';
-import { useAuth } from '@/context/AuthProvider';
+import { RequireAuth } from '@/components/Visibility';
 import { useWishlist } from '@/context/WishlistProvider';
 import { routes } from '@/lib/routes';
 
 /**
  * `/wishlist` — the signed-in caller's saved products (server-backed via
- * /api/wishlist). Signed-out visitors get the branded sign-in gate the
- * seller/admin dashboards use.
+ * /api/wishlist). Guests are sent to auth by the route guard instead of a
+ * separate wishlist gate page.
  */
 
-const GATE_CTA_CLASS =
-  'inline-block bg-primary text-on-primary px-space-xl py-space-md rounded-lg font-label-lg hover:opacity-95';
-
-/** Same shell the seller/admin gates use (kept local — pages stay self-contained). */
-function GateShell({
-  title,
-  icon,
-  tone,
-  children,
-  cta
-}: {
-  title: string;
-  icon: string;
-  tone: string;
-  children: ReactNode;
-  cta?: ReactNode;
-}) {
-  return (
-    <div className="max-w-lg mx-auto text-center bg-surface rounded-2xl border border-outline-variant/60 shadow-sm p-space-2xl">
-      <span
-        className={`material-symbols-outlined text-5xl ${tone}`}
-        style={{ fontVariationSettings: "'FILL' 1" }}
-      >
-        {icon}
-      </span>
-      <h1 className="font-headline-lg text-headline-lg mt-space-md">{title}</h1>
-      <div className="font-body-lg text-body-lg text-on-surface-variant mt-space-sm">
-        {children}
-      </div>
-      {cta ? <div className="mt-space-lg">{cta}</div> : null}
-    </div>
-  );
-}
-
-export function WishlistPage() {
-  const { isAuthenticated } = useAuth();
+function WishlistContent() {
   const { items, loading } = useWishlist();
-
-  if (!isAuthenticated) {
-    return (
-      <GateShell
-        title="Sign in to see your wishlist"
-        icon="favorite"
-        tone="text-primary"
-        cta={
-          <Link
-            className={GATE_CTA_CLASS}
-            to={`${routes.auth}?next=${encodeURIComponent(routes.wishlist)}`}
-          >
-            Sign in
-          </Link>
-        }
-      >
-        <p>Save the pieces you love and pick up right where you left off, on any device.</p>
-      </GateShell>
-    );
-  }
 
   return (
     <div className="w-full max-w-[1360px] mx-auto px-margin py-space-2xl">
@@ -108,5 +52,13 @@ export function WishlistPage() {
         }
       />
     </div>
+  );
+}
+
+export function WishlistPage() {
+  return (
+    <RequireAuth>
+      <WishlistContent />
+    </RequireAuth>
   );
 }

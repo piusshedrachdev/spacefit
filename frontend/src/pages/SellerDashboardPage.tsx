@@ -45,10 +45,10 @@ import type {
  * Seller dashboard — port of legacy seller-dashboard.html + js/seller-dashboard.js.
  *
  * Tabs live on the URL (`/seller-dashboard/:tab`; the legacy `#tab` hash is
- * accepted as an alias so stored links keep resolving) and the four gates
- * from the plan render in place of the shell: signed out → branded sign-in
- * prompt, pending application → "under review", blocked seller → contact
- * support, approved seller → the dashboard itself.
+ * accepted as an alias so stored links keep resolving). Guests are redirected
+ * by the route-level auth guard; the remaining status gates render in place
+ * of the shell: pending application → "under review", blocked seller →
+ * contact support, approved seller → the dashboard itself.
  *
  * Data flow mirrors legacy refresh(): dashboard / returns / notifications
  * load independently and any failure surfaces in the "Some data could not
@@ -314,7 +314,7 @@ export function SellerDashboardPage() {
     setFailures(nextFailures);
   }, []);
 
-  /** Boot: gate first (legacy boot()), then products + categories + refresh. */
+  /** Boot: load the seller context first, then products + categories + refresh. */
   useEffect(() => {
     let cancelled = false;
 

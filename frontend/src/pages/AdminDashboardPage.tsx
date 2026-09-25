@@ -29,10 +29,12 @@ import type {
  *
  * Tabs live on the URL (`/admin/:tab`; the legacy `#tab` hash is accepted as
  * an alias so stored notification links like `admin.html#applications` keep
- * resolving). The gate mirrors legacy boot(): a fresh `getMe()` first —
+ * resolving). Guests are redirected by the route-level auth guard; after
+ * authentication the gate mirrors legacy boot(): a fresh `getMe()` first —
  * `profiles.role` is the source of truth, so a freshly-promoted admin is
  * recognised without a re-login — then `getRole()` with the memory-mode
- * dev-admin bypass; failures render the "Admin access required" shell.
+ * dev-admin bypass; profile failures render the "Admin access required"
+ * shell.
  *
  * Data flow mirrors legacy refresh(): independent labelled fetches (plus the
  * plan's admin-wide Returns tab) where any failure surfaces in the "Some

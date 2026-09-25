@@ -264,18 +264,16 @@ beforeEach(() => {
 /* --------------------------------------------------------------- tests */
 
 describe('AdminDashboardPage gates', () => {
-  it('shows the origin message when signed out', async () => {
+  it('redirects signed-out visitors to the auth page', async () => {
     renderAdmin();
 
+    await waitFor(() => {
+      expect(screen.getByTestId('location')).toHaveTextContent('/auth?next=%2Fadmin');
+    });
+    expect(screen.getByRole('heading', { name: 'Welcome back' })).toBeInTheDocument();
     expect(
-      await screen.findByRole('heading', { name: 'Admin access required' })
-    ).toBeInTheDocument();
-    expect(screen.getByText(/not signed in on this page/)).toBeInTheDocument();
-    // getByText (not role): the header's account control is also named "Sign in".
-    expect(screen.getByText('Sign in')).toHaveAttribute(
-      'href',
-      '/auth?next=%2Fadmin'
-    );
+      screen.queryByRole('heading', { name: 'Admin access required' })
+    ).not.toBeInTheDocument();
     expect(getMe).not.toHaveBeenCalled();
   });
 

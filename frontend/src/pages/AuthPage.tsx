@@ -661,32 +661,6 @@ export function AuthPage() {
           />
         </form>
 
-        {signingIn ? (
-          <>
-            <div className="relative py-1">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-outline-variant/60" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-background px-3 font-body-sm text-body-sm text-outline sm:bg-surface-container-lowest">
-                  or
-                </span>
-              </div>
-            </div>
-            <button
-              aria-describedby="google-auth-note"
-              className="h-10 w-full rounded-md border border-outline-variant/60 bg-surface-container-lowest font-label-lg text-label-lg font-semibold text-on-surface opacity-60"
-              disabled
-              type="button"
-            >
-              Continue with Google
-            </button>
-            <p className="sr-only" id="google-auth-note">
-              Google sign-in is coming soon.
-            </p>
-          </>
-        ) : null}
-
         <div className="mt-6 border-t border-outline-variant/50 pt-4">
           <p className="mb-2 font-label-md text-label-md text-on-surface-variant">
             Demo accounts (memory mode)

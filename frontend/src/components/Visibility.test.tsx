@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AppProviders } from '@/context/AppProviders';
-import { AuthOnly, GuestOnly, IfCan, RequireRole, RoleOnly } from '@/components/Visibility';
+import { AuthOnly, GuestOnly, IfCan, RequireAuth, RequireRole, RoleOnly } from '@/components/Visibility';
 import { setSession } from '@/lib/session';
 import type { Profile, Role } from '@/types/api';
 
@@ -139,6 +139,20 @@ describe('IfCan', () => {
       </IfCan>
     );
     expect(await screen.findByText('become a seller')).toBeInTheDocument();
+  });
+});
+
+describe('RequireAuth', () => {
+  it('redirects signed-out visitors to auth instead of rendering a gate', async () => {
+    renderGated(
+      <RequireAuth>
+        <span>protected content</span>
+      </RequireAuth>
+    );
+
+    const location = await screen.findByTestId('location');
+    expect(location).toHaveTextContent('/auth?next=%2Fgated');
+    expect(screen.queryByText('protected content')).not.toBeInTheDocument();
   });
 });
 

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { WishlistPage } from '@/pages/WishlistPage';
 import { AppProviders } from '@/context/AppProviders';
 import { ToastHost } from '@/layout/Chrome';
@@ -99,12 +99,20 @@ const BASIC_CONFIG = {
   paymentMethods: [{ id: 'card', label: 'Card' }]
 };
 
+function LocationProbe() {
+  const location = useLocation();
+  return <span data-testid="location">{location.pathname}{location.search}</span>;
+}
+
 function renderWishlist() {
   return render(
     <MemoryRouter initialEntries={['/wishlist']}>
       <AppProviders>
         <ToastHost />
-        <WishlistPage />
+        <Routes>
+          <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/auth" element={<LocationProbe />} />
+        </Routes>
       </AppProviders>
     </MemoryRouter>
   );
@@ -131,17 +139,13 @@ beforeEach(() => {
 });
 
 describe('WishlistPage', () => {
-  it('shows the sign-in gate when signed out (no wishlist fetch)', async () => {
+  it('redirects signed-out visitors to auth (no wishlist fetch)', async () => {
     renderWishlist();
 
-    expect(
-      await screen.findByRole('heading', { name: 'Sign in to see your wishlist' })
-    ).toBeInTheDocument();
-    expect(screen.getByText('Save the pieces you love and pick up right where you left off, on any device.')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute(
-      'href',
-      '/auth?next=%2Fwishlist'
-    );
+    await waitFor(() => {
+      expect(screen.getByTestId('location')).toHaveTextContent('/auth?next=%2Fwishlist');
+    });
+    expect(screen.queryByRole('heading', { name: 'My Wishlist' })).not.toBeInTheDocument();
     expect(getWishlist).not.toHaveBeenCalled();
   });
 

@@ -140,6 +140,7 @@ describe('StorefrontLayout (signed in)', () => {
     fireEvent.click(screen.getByLabelText('Account menu'));
     expect(screen.getByText('Ada Admin')).toBeInTheDocument();
     expect(screen.getByText('Admin dashboard')).toHaveAttribute('href', '/admin');
+    expect(screen.getByText('My profile')).toHaveAttribute('href', '/profile');
     expect(screen.getByText('Sign out')).toBeInTheDocument();
     // "Who sees what": admins already have a dashboard — no seller pitch.
     expect(screen.queryByText('Become a Seller')).not.toBeInTheDocument();
@@ -168,6 +169,7 @@ describe('StorefrontLayout (signed in)', () => {
     // Customers have no dashboard entry point.
     expect(screen.queryByText('Admin dashboard')).not.toBeInTheDocument();
     expect(screen.queryByText('Seller dashboard')).not.toBeInTheDocument();
+    expect(screen.getByText('My profile')).toHaveAttribute('href', '/profile');
     expect(screen.getByText('Sign out')).toBeInTheDocument();
   });
 });

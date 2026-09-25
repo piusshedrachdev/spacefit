@@ -33,7 +33,7 @@ interface AuthContextValue {
   signup: (payload: SignupPayload) => Promise<AuthResult>;
   logout: () => Promise<void>;
   refresh: () => Promise<AuthMeResult | null>;
-  updateProfile: (patch: ProfileUpdate) => Promise<AuthMeResult>;
+  updateProfile: (patch: ProfileUpdate) => Promise<Profile>;
   /** Memory-mode demo sign-in (mirrors legacy setDevUser + clearSession). */
   applyDevUser: (id: string) => Promise<void>;
   clearDevUser: () => void;
@@ -98,15 +98,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await authService.logout();
-    setSessionState(getSession());
+    // Clear local identity first so a failed network logout cannot leave a
+    // seller/admin account menu visible. Keep a copy for the server revoke.
+    const session = getSession();
+    const devUser = getDevUser();
+    clearSession();
+    setDevUser(null);
+    setDevUserState(null);
+    setSessionState(null);
+    setStatus('ready');
+    await authService.logout({
+      accessToken: session?.accessToken,
+      devUser
+    });
   }, []);
 
   const updateProfile = useCallback(async (patch: ProfileUpdate) => {
     const data = await authService.updateMe(patch);
-    setSessionState(getSession());
+    // Refresh both Supabase sessions and memory-mode dev identities so the
+    // header, profile page, and role resolution see the update immediately.
+    await refresh();
     return data;
-  }, []);
+  }, [refresh]);
 
   const applyDevUser = useCallback(async (id: string) => {
     setDevUser(id);

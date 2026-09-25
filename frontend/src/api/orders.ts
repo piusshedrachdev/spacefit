@@ -5,6 +5,10 @@ export function placeOrder(payload: PlaceOrderPayload): Promise<Order> {
   return request<Order>('/api/orders', { method: 'POST', body: payload });
 }
 
+export function getMyOrders(): Promise<Order[]> {
+  return request<Order[]>('/api/orders/mine');
+}
+
 export function getOrder(id: string): Promise<Order> {
   return request<Order>(`/api/orders/${encodeURIComponent(id)}`);
 }

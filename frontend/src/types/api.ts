@@ -43,6 +43,8 @@ export interface Profile {
   full_name?: string | null;
   avatar_path?: string | null;
   phone?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 export interface TokenPair {
@@ -73,10 +75,9 @@ export interface AuthMeResult {
 
 /** PATCH /api/auth/me body. */
 export interface ProfileUpdate {
-  full_name?: string;
+  fullName?: string;
   phone?: string | null;
-  avatar_path?: string | null;
-  [key: string]: unknown;
+  avatarPath?: string | null;
 }
 
 export interface SignupPayload {
@@ -216,6 +217,8 @@ export interface Order {
   id: string;
   reference: string;
   status: string;
+  /** Present for authenticated purchases; null/undefined for guest orders. */
+  userId?: string | null;
   items: OrderLine[];
   customer: OrderCustomer;
   delivery: OrderDelivery;

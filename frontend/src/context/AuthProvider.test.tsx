@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { AuthProvider, useAuth } from '@/context/AuthProvider';
-import { setDevUser, setSession } from '@/lib/session';
+import { getDevUser, getSession, setDevUser, setSession } from '@/lib/session';
 import type { Role } from '@/types/api';
 
 vi.mock('@/api/auth', () => ({
@@ -25,6 +25,11 @@ function Probe() {
       <span data-testid="profile-name">{profile?.full_name ?? ''}</span>
     </div>
   );
+}
+
+function LogoutProbe() {
+  const { logout } = useAuth();
+  return <button onClick={() => void logout()} type="button">Sign out</button>;
 }
 
 function renderAuth() {
@@ -107,6 +112,29 @@ describe('AuthProvider', () => {
     // Still signed in based on the stored session; no crash.
     expect(screen.getByTestId('authenticated')).toHaveTextContent('true');
     expect(screen.getByTestId('role')).toHaveTextContent('customer');
+  });
+
+  it('clears a memory-mode identity when signing out', async () => {
+    setDevUser('dev-user-admin');
+    vi.mocked(authService.getMe).mockResolvedValue({
+      user: { id: 'dev-user-admin' },
+      profile: null
+    });
+
+    render(
+      <AuthProvider>
+        <Probe />
+        <LogoutProbe />
+      </AuthProvider>
+    );
+
+    await screen.findByText('ready');
+    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }));
+
+    await waitFor(() => expect(screen.getByTestId('authenticated')).toHaveTextContent('false'));
+    expect(screen.getByTestId('role')).toHaveTextContent('customer');
+    expect(getDevUser()).toBeNull();
+    expect(getSession()).toBeNull();
   });
 
   it('exposes the resolved Role type union', async () => {

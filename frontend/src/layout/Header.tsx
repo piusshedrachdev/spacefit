@@ -137,9 +137,9 @@ export function AccountControl() {
       : null;
 
   const onSignOut = () => {
-    void logout().then(() => {
-      window.location.assign(routes.home);
-    });
+    void logout()
+      .catch(() => undefined)
+      .finally(() => window.location.assign(routes.home));
   };
 
   return (
@@ -170,6 +170,13 @@ export function AccountControl() {
             {dashboard.label}
           </SmartLink>
         ) : null}
+        <SmartLink
+          href={routes.profile}
+          className="flex items-center gap-space-sm px-space-md py-space-sm hover:bg-surface-container-high"
+        >
+          <span className="material-symbols-outlined text-xl">person</span>
+          My profile
+        </SmartLink>
         <SmartLink
           href={routes.wishlist}
           className="flex items-center gap-space-sm px-space-md py-space-sm hover:bg-surface-container-high"

@@ -313,22 +313,18 @@ beforeEach(() => {
 /* --------------------------------------------------------------- tests */
 
 describe('SellerDashboardPage gates', () => {
-  it('shows the branded sign-in prompt when signed out', async () => {
+  it('redirects signed-out visitors to the auth page', async () => {
     renderDashboard();
 
+    await waitFor(() => {
+      expect(screen.getByTestId('location')).toHaveTextContent(
+        '/auth?next=%2Fseller-dashboard'
+      );
+    });
+    expect(screen.getByRole('heading', { name: 'Welcome back' })).toBeInTheDocument();
     expect(
-      await screen.findByRole('heading', { name: 'Sign in to sell on SpaceFit' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Open your seller dashboard to manage listings, orders, reviews and returns.'
-      )
-    ).toBeInTheDocument();
-    // getByText (not role): the header's account control is also named "Sign in".
-    expect(screen.getByText('Sign in')).toHaveAttribute(
-      'href',
-      '/auth?next=%2Fseller-dashboard'
-    );
+      screen.queryByRole('heading', { name: 'Sign in to sell on SpaceFit' })
+    ).not.toBeInTheDocument();
     expect(getMySellerContext).not.toHaveBeenCalled();
   });
 

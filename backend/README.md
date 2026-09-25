@@ -84,6 +84,7 @@ Frontend: `/checkout` (customer info, delivery info, payment method) and `/order
 | Method | Path | Purpose |
 | --- | --- | --- |
 | POST | /api/orders | place an order; accepts nested `customer`/`delivery` objects or flat form fields (`fullName`, `email`, `phone`, `address`, `city`, `state`); also accepts `cartId` to build from a server cart |
+| GET | /api/orders/mine | authenticated caller's own orders, newest first |
 | GET | /api/orders | admin listing, newest first |
 | GET | /api/orders/:id | order detail for the success page |
 
@@ -121,7 +122,7 @@ the typed fetch client (`frontend/src/lib/api.ts`) auto-refreshes once on `401`.
 | POST | /api/auth/forgot-password | request a reset link |
 | POST | /api/auth/reset-password | set a new password with the reset token |
 | GET | /api/auth/me | current user + profile (drives the header account menu) |
-| PATCH | /api/auth/me | update profile fields (`full_name`, `phone`, …) |
+| PATCH | /api/auth/me | update profile fields (`fullName`, `phone`, `avatarPath`) |
 
 ### Seller applications & sellers — `src/routes/sellers.js`
 
