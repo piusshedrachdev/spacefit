@@ -1,5 +1,5 @@
 import { request } from '@/lib/api';
-import { getSession, setSession } from '@/lib/session';
+import { getDevUser, getSession, setDevUser, setSession } from '@/lib/session';
 import type {
   AuthMeResult,
   AuthResult,
@@ -42,13 +42,31 @@ export async function signup(payload: SignupPayload): Promise<AuthResult> {
   return data;
 }
 
-export async function logout(): Promise<void> {
-  try {
-    await request('/api/auth/logout', { method: 'POST' });
-  } catch {
-    /* best effort — clear locally regardless */
+interface LogoutCredentials {
+  accessToken?: string | null;
+  devUser?: string | null;
+}
+
+export async function logout(credentials: LogoutCredentials = {}): Promise<void> {
+  // Capture credentials for the best-effort server revoke, then clear the
+  // browser identity before waiting on the network. A slow or unavailable
+  // logout endpoint must not leave a seller/admin account active locally.
+  const accessToken = credentials.accessToken ?? getSession()?.accessToken;
+  const devUser = credentials.devUser ?? getDevUser();
+  const headers: Record<string, string> = {};
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  } else if (devUser) {
+    headers['X-Dev-User'] = devUser;
   }
+
   setSession(null);
+  setDevUser(null);
+  try {
+    await request('/api/auth/logout', { method: 'POST', headers });
+  } catch {
+    /* best effort — the local session is already signed out */
+  }
 }
 
 /** Refresh user + profile and persist them onto the stored session. */
@@ -65,14 +83,14 @@ export async function getMe(): Promise<AuthMeResult> {
 }
 
 /** PATCH /api/auth/me — merges the updated profile into the session. */
-export async function updateMe(patch: ProfileUpdate): Promise<AuthMeResult> {
-  const data = await request<AuthMeResult>('/api/auth/me', {
+export async function updateMe(patch: ProfileUpdate): Promise<Profile> {
+  const data = await request<Profile>('/api/auth/me', {
     method: 'PATCH',
     body: patch
   });
   const session = getSession();
-  if (session && data.profile) {
-    setSession({ ...session, profile: data.profile as Profile });
+  if (session) {
+    setSession({ ...session, profile: data });
   }
   return data;
 }

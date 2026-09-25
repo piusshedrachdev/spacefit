@@ -10,6 +10,8 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
 import { OrderSuccessPage } from '@/pages/OrderSuccessPage';
 import { PoliciesPage } from '@/pages/PoliciesPage';
 import { ProductDetailsPage } from '@/pages/ProductDetailsPage';
+import { ProfilePage } from '@/pages/ProfilePage';
+import { RequireAuth } from '@/components/Visibility';
 import { SellerApplyPage } from '@/pages/SellerApplyPage';
 import { SELLER_TABS, SellerDashboardPage } from '@/pages/SellerDashboardPage';
 import { SellerLayout } from '@/layout/SellerLayout';
@@ -37,6 +39,14 @@ function LegacyAuthRedirect() {
   const [params] = useSearchParams();
   const qs = params.toString();
   return <Navigate to={qs ? `/auth?${qs}` : '/auth'} replace />;
+}
+
+/** `/profile.html#settings|orders|saved` → the URL-backed profile tab. */
+function LegacyProfileRedirect() {
+  const location = useLocation();
+  const hash = location.hash.replace('#', '');
+  const tab = ['orders', 'saved', 'settings'].includes(hash) ? hash : null;
+  return <Navigate to={tab ? `/profile/${tab}` : '/profile'} replace />;
 }
 
 /** `/product-details.html?id=…` (and the clean variant) → `/products/:id`. */
@@ -117,8 +127,22 @@ export function AppRoutes() {
 
       {/* Seller console (Phase 5) — its own chrome, like the legacy page. */}
       <Route element={<SellerLayout />}>
-        <Route path="/seller-dashboard" element={<SellerDashboardPage />} />
-        <Route path="/seller-dashboard/:tab" element={<SellerDashboardPage />} />
+        <Route
+          path="/seller-dashboard"
+          element={
+            <RequireAuth>
+              <SellerDashboardPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/seller-dashboard/:tab"
+          element={
+            <RequireAuth>
+              <SellerDashboardPage />
+            </RequireAuth>
+          }
+        />
         <Route
           path="/seller-dashboard.html"
           element={<LegacySellerDashboardRedirect />}
@@ -127,8 +151,22 @@ export function AppRoutes() {
 
       {/* Admin console (Phase 6) — its own chrome, like the legacy page. */}
       <Route element={<AdminLayout />}>
-        <Route path="/admin" element={<AdminDashboardPage />} />
-        <Route path="/admin/:tab" element={<AdminDashboardPage />} />
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth>
+              <AdminDashboardPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/:tab"
+          element={
+            <RequireAuth>
+              <AdminDashboardPage />
+            </RequireAuth>
+          }
+        />
         <Route path="/admin.html" element={<LegacyAdminRedirect />} />
       </Route>
 
@@ -142,8 +180,34 @@ export function AppRoutes() {
         <Route path="/order-success/:id" element={<OrderSuccessPage />} />
 
         {/* Wishlist (server-backed per account) */}
-        <Route path="/wishlist" element={<WishlistPage />} />
+        <Route
+          path="/wishlist"
+          element={
+            <RequireAuth>
+              <WishlistPage />
+            </RequireAuth>
+          }
+        />
         <Route path="/wishlist.html" element={<Navigate to="/wishlist" replace />} />
+
+        {/* Shared personal profile (customer, seller, and admin) */}
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <ProfilePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/profile/:tab"
+          element={
+            <RequireAuth>
+              <ProfilePage />
+            </RequireAuth>
+          }
+        />
+        <Route path="/profile.html" element={<LegacyProfileRedirect />} />
 
         {/* Seller application (Phase 4) */}
         <Route path="/seller-apply" element={<SellerApplyPage />} />

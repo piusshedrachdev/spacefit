@@ -33,9 +33,15 @@ export interface RequestOptions {
   _retry?: boolean;
 }
 
+function isFormDataBody(body: unknown): body is FormData {
+  return typeof FormData !== 'undefined' && body instanceof FormData;
+}
+
 function buildHeaders(options: RequestOptions): Record<string, string> {
   const headers: Record<string, string> = { Accept: 'application/json', ...options.headers };
-  if (options.body !== undefined) headers['Content-Type'] = 'application/json';
+  if (options.body !== undefined && !isFormDataBody(options.body)) {
+    headers['Content-Type'] = 'application/json';
+  }
   const session = getSession();
   if (session?.accessToken) {
     headers['Authorization'] = `Bearer ${session.accessToken}`;
@@ -89,7 +95,12 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
     const res = await fetch(`${API_BASE}${path}`, {
       method: options.method || 'GET',
       headers: buildHeaders(options),
-      body: options.body !== undefined ? JSON.stringify(options.body) : undefined
+      body:
+        options.body === undefined
+          ? undefined
+          : isFormDataBody(options.body)
+            ? options.body
+            : JSON.stringify(options.body)
     });
     return await parseResponse<T>(res);
   } catch (err) {

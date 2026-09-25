@@ -67,6 +67,19 @@ describe('request()', () => {
     expect((init.headers as Record<string, string>)['X-Dev-User']).toBeUndefined();
   });
 
+  it('passes FormData through without forcing a JSON content type', async () => {
+    const form = new FormData();
+    form.append('title', 'Uploaded product');
+    form.append('images', new Blob(['image-bytes'], { type: 'image/png' }), 'product.png');
+    fetchMock.mockResolvedValue(jsonResponse({ success: true, data: null }));
+
+    await request('/api/products', { method: 'POST', body: form });
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(init.body).toBe(form);
+    expect((init.headers as Record<string, string>)['Content-Type']).toBeUndefined();
+  });
+
   it('sends X-Dev-User for memory-mode identities without a token', async () => {
     setDevUser('dev-user-seller');
     fetchMock.mockResolvedValue(jsonResponse({ success: true, data: null }));

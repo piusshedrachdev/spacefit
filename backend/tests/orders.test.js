@@ -78,6 +78,32 @@ describe('POST /api/orders', () => {
   });
 });
 
+describe('GET /api/orders/mine', () => {
+  it('requires an authenticated caller', async () => {
+    const res = await request(app).get('/api/orders/mine');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns only orders belonging to the caller', async () => {
+    const customerOrder = await request(app)
+      .post('/api/orders')
+      .set('X-Dev-User', 'dev-user-customer')
+      .send(validOrder);
+    const sellerOrder = await request(app)
+      .post('/api/orders')
+      .set('X-Dev-User', 'dev-user-seller')
+      .send({ ...validOrder, customer: { ...validOrder.customer, email: 'seller-order@example.com' } });
+
+    const res = await request(app)
+      .get('/api/orders/mine')
+      .set('X-Dev-User', 'dev-user-customer');
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.map((order) => order.id)).toContain(customerOrder.body.data.id);
+    expect(res.body.data.map((order) => order.id)).not.toContain(sellerOrder.body.data.id);
+  });
+});
+
 describe('GET /api/orders', () => {
   it('retrieves an order by id', async () => {
     const created = await request(app).post('/api/orders').send(validOrder);

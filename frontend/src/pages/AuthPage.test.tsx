@@ -77,8 +77,16 @@ function submitAuthForm() {
 }
 
 function fillCredentials(email = 'ada@spacefit.ng', password = 'password123') {
-  fireEvent.change(screen.getByLabelText('Email'), { target: { value: email } });
+  fireEvent.change(screen.getByLabelText('Email address'), { target: { value: email } });
   fireEvent.change(screen.getByLabelText('Password'), { target: { value: password } });
+
+  // Signup adds a client-only confirmation field; keep the shared helper
+  // useful for both modes without sending that value to the API.
+  const confirmPassword = screen.queryByLabelText('Confirm password');
+  if (confirmPassword) {
+    fireEvent.change(confirmPassword, { target: { value: password } });
+    fireEvent.click(screen.getByRole('checkbox', { name: /I agree to the/i }));
+  }
 }
 
 beforeEach(() => {
@@ -94,12 +102,12 @@ beforeEach(() => {
 });
 
 describe('AuthPage', () => {
-  it('renders the sign-in tab by default', async () => {
+  it('renders the sign-in form by default', async () => {
     renderAuth();
     expect(
       await screen.findByRole('heading', { name: 'Welcome back' })
     ).toBeInTheDocument();
-    expect(screen.getByText('Sign in to continue to SpaceFit.')).toBeInTheDocument();
+    expect(screen.getByText('Sign in to your account to continue.')).toBeInTheDocument();
     // Signup-only fields are hidden in signin mode.
     expect(screen.queryByLabelText('Full name')).not.toBeInTheDocument();
     // Memory-mode demo chips (legacy #demoAccounts).
@@ -108,7 +116,7 @@ describe('AuthPage', () => {
     expect(screen.getByRole('button', { name: 'Customer' })).toBeInTheDocument();
   });
 
-  it('toggles between the sign-in and create-account tabs', async () => {
+  it('switches between the sign-in and create-account forms', async () => {
     renderAuth();
     await screen.findByRole('heading', { name: 'Welcome back' });
 
@@ -119,12 +127,84 @@ describe('AuthPage', () => {
     expect(screen.getByLabelText('Full name')).toBeInTheDocument();
     expect(screen.getByLabelText('Phone')).toBeInTheDocument();
     expect(
-      screen.getByText('Join SpaceFit to shop, track orders and apply to sell.')
+      screen.getByText('Join SpaceFit to buy and sell furniture with confidence.')
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
     expect(screen.getByRole('heading', { name: 'Welcome back' })).toBeInTheDocument();
     expect(screen.queryByLabelText('Full name')).not.toBeInTheDocument();
+  });
+
+  it('toggles password visibility with accessible state', async () => {
+    renderAuth();
+    await screen.findByRole('heading', { name: 'Welcome back' });
+
+    const password = screen.getByLabelText('Password');
+    const toggle = screen.getByRole('button', { name: 'Show' });
+
+    expect(password).toHaveAttribute('type', 'password');
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+
+    fireEvent.click(toggle);
+
+    expect(password).toHaveAttribute('type', 'text');
+    expect(screen.getByRole('button', { name: 'Hide' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+  });
+
+  it('validates the signup password confirmation without sending it to the API', async () => {
+    renderAuth('/auth?mode=signup');
+    await screen.findByRole('heading', { name: 'Create your account' });
+
+    fireEvent.change(screen.getByLabelText('Email address'), {
+      target: { value: 'ada@spacefit.ng' }
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'password123' }
+    });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
+      target: { value: 'different123' }
+    });
+    submitAuthForm();
+
+    expect(await screen.findByText('Passwords do not match.')).toBeInTheDocument();
+    expect(screen.getByLabelText('Confirm password')).toHaveAttribute('aria-invalid', 'true');
+    expect(signup).not.toHaveBeenCalled();
+  });
+
+  it('requires terms acceptance before creating an account', async () => {
+    renderAuth('/auth?mode=signup');
+    await screen.findByRole('heading', { name: 'Create your account' });
+
+    fireEvent.change(screen.getByLabelText('Email address'), {
+      target: { value: 'ada@spacefit.ng' }
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'password123' }
+    });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
+      target: { value: 'password123' }
+    });
+    submitAuthForm();
+
+    expect(
+      await screen.findByText('Please accept the Terms of Service and Privacy Policy to continue.')
+    ).toBeInTheDocument();
+    expect(signup).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /I agree to the/i }));
+    expect(screen.queryByText('Please accept the Terms of Service and Privacy Policy to continue.')).not.toBeInTheDocument();
+  });
+
+  it('moves focus to the first field after switching modes', async () => {
+    renderAuth();
+    await screen.findByRole('heading', { name: 'Welcome back' });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
+
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByLabelText('Full name')));
   });
 
   it('validates email and password before calling the API', async () => {
@@ -133,7 +213,7 @@ describe('AuthPage', () => {
 
     fillCredentials('not-an-email');
     submitAuthForm();
-    expect(await screen.findByText('Enter a valid email address.')).toBeInTheDocument();
+    expect(await screen.findByText('Please enter a valid email address.')).toBeInTheDocument();
     expect(login).not.toHaveBeenCalled();
 
     fillCredentials('ada@spacefit.ng', 'short');
@@ -153,7 +233,7 @@ describe('AuthPage', () => {
     submitAuthForm();
 
     const submit = document.getElementById('authSubmit') as HTMLButtonElement;
-    expect(submit).toHaveTextContent('Please wait\u2026');
+    expect(submit).toHaveTextContent('Signing in…');
     expect(submit).toBeDisabled();
   });
 
@@ -180,7 +260,7 @@ describe('AuthPage', () => {
     fillCredentials();
     submitAuthForm();
 
-    expect(await screen.findByText('Invalid credentials')).toBeInTheDocument();
+    expect(await screen.findByRole('status')).toHaveTextContent('Invalid credentials');
     expect(screen.getByTestId('location')).toHaveTextContent('/auth');
   });
 

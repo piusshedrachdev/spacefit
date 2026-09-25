@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthProvider';
 import { useNotifications } from '@/context/NotificationsProvider';
@@ -32,6 +32,7 @@ import type {
   NotificationsPage,
   Product,
   ProductReview,
+  ProductWritePayload,
   ReturnRequest,
   ReturnStatus,
   SellerApplication,
@@ -44,10 +45,10 @@ import type {
  * Seller dashboard — port of legacy seller-dashboard.html + js/seller-dashboard.js.
  *
  * Tabs live on the URL (`/seller-dashboard/:tab`; the legacy `#tab` hash is
- * accepted as an alias so stored links keep resolving) and the four gates
- * from the plan render in place of the shell: signed out → branded sign-in
- * prompt, pending application → "under review", blocked seller → contact
- * support, approved seller → the dashboard itself.
+ * accepted as an alias so stored links keep resolving). Guests are redirected
+ * by the route-level auth guard; the remaining status gates render in place
+ * of the shell: pending application → "under review", blocked seller →
+ * contact support, approved seller → the dashboard itself.
  *
  * Data flow mirrors legacy refresh(): dashboard / returns / notifications
  * load independently and any failure surfaces in the "Some data could not
@@ -80,6 +81,10 @@ type Phase =
 const GATE_CTA_CLASS =
   'inline-block bg-primary text-on-primary px-space-xl py-space-md rounded-lg font-label-lg hover:opacity-95';
 
+const MAX_PRODUCT_IMAGES = 8;
+const MAX_PRODUCT_IMAGE_BYTES = 5 * 1024 * 1024;
+const PRODUCT_IMAGE_ACCEPT = 'image/png,image/jpeg,image/webp,image/avif,image/gif';
+
 interface ProductForm {
   title: string;
   category: string;
@@ -91,7 +96,7 @@ interface ProductForm {
   description: string;
   features: string;
   sizes: string;
-  images: string;
+  images: File[];
 }
 
 const EMPTY_PRODUCT_FORM: ProductForm = {
@@ -105,7 +110,7 @@ const EMPTY_PRODUCT_FORM: ProductForm = {
   description: '',
   features: '',
   sizes: '',
-  images: ''
+  images: []
 };
 
 /* -------------------------------------------------------------- helpers */
@@ -309,7 +314,7 @@ export function SellerDashboardPage() {
     setFailures(nextFailures);
   }, []);
 
-  /** Boot: gate first (legacy boot()), then products + categories + refresh. */
+  /** Boot: load the seller context first, then products + categories + refresh. */
   useEffect(() => {
     let cancelled = false;
 
@@ -391,6 +396,7 @@ export function SellerDashboardPage() {
     setModalProduct(null);
     setProductForm({
       ...EMPTY_PRODUCT_FORM,
+      images: [],
       category: categories[0]?.name || 'Uncategorised'
     });
     setProductModalOpen(true);
@@ -409,7 +415,9 @@ export function SellerDashboardPage() {
       description: product.description,
       features: (product.features || []).join('\n'),
       sizes: (product.sizes || []).join('\n'),
-      images: (product.images || []).join('\n')
+      // Existing images stay on the server unless the seller selects new
+      // replacement files below.
+      images: []
     });
     setProductModalOpen(true);
   };
@@ -421,7 +429,7 @@ export function SellerDashboardPage() {
     const price = Number(productForm.price);
     if (Number.isNaN(price) || price < 0) throw new Error('Enter a valid price.');
 
-    const payload: Partial<Product> = {
+    const payload: ProductWritePayload = {
       title,
       category: productForm.category,
       price,
@@ -431,7 +439,7 @@ export function SellerDashboardPage() {
       description: productForm.description.trim(),
       features: linesToList(productForm.features),
       sizes: linesToList(productForm.sizes),
-      images: linesToList(productForm.images),
+      images: productForm.images,
       featured: productForm.featured
     };
 
@@ -499,8 +507,41 @@ export function SellerDashboardPage() {
     }
   };
 
+  const onProductImagesChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(event.target.files ?? []);
+    const invalid = selected.find(
+      (file) =>
+        !PRODUCT_IMAGE_ACCEPT.split(',').includes(file.type) ||
+        file.size === 0 ||
+        file.size > MAX_PRODUCT_IMAGE_BYTES
+    );
+    if (invalid) {
+      toast(
+        invalid.size === 0
+          ? 'Product images cannot be empty.'
+          : invalid.size > MAX_PRODUCT_IMAGE_BYTES
+            ? 'Each product image must be 5 MB or smaller.'
+            : 'Choose a PNG, JPEG, WebP, AVIF, or GIF image.',
+        true
+      );
+      event.target.value = '';
+      return;
+    }
+    if (productForm.images.length + selected.length > MAX_PRODUCT_IMAGES) {
+      toast(`Upload at most ${MAX_PRODUCT_IMAGES} product images.`, true);
+      event.target.value = '';
+      return;
+    }
+    setProductForm((current) => ({
+      ...current,
+      images: [...current.images, ...selected]
+    }));
+    // Allow selecting the same file again after removing it from the selection.
+    event.target.value = '';
+  };
+
   const patchProductForm =
-    (key: Exclude<keyof ProductForm, 'featured'>) =>
+    (key: Exclude<keyof ProductForm, 'featured' | 'images'>) =>
     (event: { target: { value: string } }) =>
       setProductForm((current) => ({ ...current, [key]: event.target.value }));
 
@@ -1113,13 +1154,24 @@ export function SellerDashboardPage() {
               value={productForm.sizes}
               onChange={patchProductForm('sizes')}
             />
-            <Textarea
-              label="Image URLs (one per line)"
+            <Input
+              label="Product images"
               id="pfImages"
-              rows={3}
-              value={productForm.images}
-              onChange={patchProductForm('images')}
+              type="file"
+              accept={PRODUCT_IMAGE_ACCEPT}
+              multiple
+              onChange={onProductImagesChange}
+              hint="PNG, JPEG, WebP, AVIF, or GIF. Up to 8 images, 5 MB each."
             />
+            {productForm.images.length ? (
+              <p className="font-body-sm text-on-surface-variant">
+                Selected: {productForm.images.map((file) => file.name).join(', ')}
+              </p>
+            ) : modalProduct ? (
+              <p className="font-body-sm text-outline">
+                Existing images will stay unchanged unless you select replacements.
+              </p>
+            ) : null}
           </div>
         </ConfirmModal>
       ) : null}

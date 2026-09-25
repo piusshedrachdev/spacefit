@@ -369,7 +369,8 @@ class Store {
       customer,
       delivery,
       paymentMethod,
-      notes
+      notes,
+      userId = null
     } = payload;
 
     let items = rawItems;
@@ -404,6 +405,7 @@ class Store {
       id: randomUUID(),
       reference: `SF-${Date.now().toString(36).toUpperCase()}`,
       status: 'pending',
+      userId,
       items: resolved,
       customer,
       delivery,
@@ -432,10 +434,10 @@ class Store {
     return order;
   }
 
-  listOrders() {
-    return [...this.orders.values()].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
+  listOrders({ userId = null } = {}) {
+    return [...this.orders.values()]
+      .filter((order) => !userId || order.userId === userId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   /* ---------------------------------------------------- spatial consultations */
@@ -1148,6 +1150,7 @@ class Store {
       id: randomUUID(),
       reference: 'SF-DEMO01',
       status: 'delivered',
+      userId: DEMO_USERS.customer,
       items: demoItems,
       customer: { fullName: 'Chinedu Effiong', email: 'chinedu@example.com', phone: '+234805555555' },
       delivery: { address: '14 Admiralty Way', city: 'Lagos', state: 'Lagos', instructions: '' },

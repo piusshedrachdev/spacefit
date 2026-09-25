@@ -18,6 +18,8 @@ export const routes = {
   product: (id: string) => `/products/${encodeURIComponent(id)}`,
   orderSuccess: (id: string) => `/order-success/${encodeURIComponent(id)}`,
   auth: '/auth',
+  profile: '/profile',
+  profileTab: (tab: string) => `/profile/${tab}`,
   sellerApply: '/seller-apply',
   sellerDashboard: '/seller-dashboard',
   admin: '/admin',

@@ -91,6 +91,27 @@ export function AccessDenied({ role }: { role: string }) {
   );
 }
 
+/** Auth-only route guard that preserves the current path in `next`. */
+export function RequireAuth({ children }: { children: ReactNode }) {
+  const { isAuthenticated, status } = useAuth();
+  const location = useLocation();
+
+  if (status === 'loading' && isAuthenticated) {
+    return (
+      <div className="flex justify-center py-space-2xl">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    const next = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`${routes.auth}?next=${next}`} replace />;
+  }
+
+  return <>{children}</>;
+}
+
 /**
  * Route-level guard: redirects signed-out visitors to auth (?next=…) and
  * shows <AccessDenied/> for the wrong role. Used by the dashboards
@@ -106,7 +127,7 @@ export function RequireRole({
   const { isAuthenticated, role, status } = useAuth();
   const location = useLocation();
 
-  if (status === 'loading') {
+  if (status === 'loading' && isAuthenticated) {
     return (
       <div className="flex justify-center py-space-2xl">
         <Spinner />

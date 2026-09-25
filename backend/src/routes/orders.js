@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import * as db from '../db/index.js';
-import { asyncHandler, ok } from '../utils/http.js';
+import { ApiError, asyncHandler, ok } from '../utils/http.js';
 import { validate } from '../utils/validate.js';
-import { requireAdmin } from '../middleware/auth.js';
+import { requireAdmin, requireAuth } from '../middleware/auth.js';
 
 /**
  * Order routes.
@@ -57,6 +57,18 @@ router.post(
     });
 
     return ok(res, order, 201);
+  })
+);
+
+/** GET /api/orders/mine -> the authenticated caller's purchases. */
+router.get(
+  '/mine',
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    // requireAuth is intentionally relaxed in memory mode, so enforce the
+    // owner requirement here as well instead of exposing every demo order.
+    if (!req.user) throw ApiError.unauthorized('Authentication required');
+    return ok(res, await db.listOrders({ userId: req.user.id }));
   })
 );
 

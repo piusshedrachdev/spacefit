@@ -137,7 +137,7 @@ export async function getOrder(id) {
 
 export async function listOrders(opts = {}) {
   if (backend() === 'supabase') return ordersRepo.listOrders(opts);
-  return store.listOrders();
+  return store.listOrders(opts);
 }
 
 export async function updateOrderStatus(id, status) {

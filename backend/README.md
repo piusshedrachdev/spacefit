@@ -84,6 +84,7 @@ Frontend: `/checkout` (customer info, delivery info, payment method) and `/order
 | Method | Path | Purpose |
 | --- | --- | --- |
 | POST | /api/orders | place an order; accepts nested `customer`/`delivery` objects or flat form fields (`fullName`, `email`, `phone`, `address`, `city`, `state`); also accepts `cartId` to build from a server cart |
+| GET | /api/orders/mine | authenticated caller's own orders, newest first |
 | GET | /api/orders | admin listing, newest first |
 | GET | /api/orders/:id | order detail for the success page |
 
@@ -121,7 +122,7 @@ the typed fetch client (`frontend/src/lib/api.ts`) auto-refreshes once on `401`.
 | POST | /api/auth/forgot-password | request a reset link |
 | POST | /api/auth/reset-password | set a new password with the reset token |
 | GET | /api/auth/me | current user + profile (drives the header account menu) |
-| PATCH | /api/auth/me | update profile fields (`full_name`, `phone`, …) |
+| PATCH | /api/auth/me | update profile fields (`fullName`, `phone`, `avatarPath`) |
 
 ### Seller applications & sellers — `src/routes/sellers.js`
 
@@ -173,11 +174,40 @@ Frontend: heart toggle on product cards and `/products/:id`, header wishlist ico
 
 | Method | Path | Guard | Purpose |
 | --- | --- | --- | --- |
-| POST | /api/products | seller/admin | create a listing (full product schema); `sellerId` set from the caller |
-| PATCH | /api/products/:id | owner/admin | edit a listing (only admins may toggle `featured`) |
+| POST | /api/products | seller/admin | create a listing from `multipart/form-data`; upload repeated `images` files; `sellerId` set from the caller |
+| PATCH | /api/products/:id | owner/admin | edit a listing; uploaded `images` files replace the gallery, while no files preserve it (only admins may toggle `featured`) |
 | DELETE | /api/products/:id | owner/admin | remove a listing |
 | GET | /api/products/:id/reviews | public | published reviews for a product |
 | POST | /api/products/:id/reviews | auth | leave a review `{ rating (1-5), comment? }` |
+
+#### Product image upload contract
+
+Seller product writes do not accept image URLs. Send `multipart/form-data` with
+one or more files under the repeated `images` field. Other product fields are
+normal form fields; array fields (`features`, `specs`, `colors`, `sizes`) must
+be JSON strings. For example:
+
+```bash
+curl -X POST http://localhost:4000/api/products \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -F 'title=Handblown Vesper Lamp' \
+  -F 'category=Lighting' \
+  -F 'price=85000' \
+  -F 'features=["Handblown glass"]' \
+  -F 'sizes=[]' \
+  -F 'images=@./vesper-lamp.jpg;type=image/jpeg'
+```
+
+The server validates the file count (8 by default), MIME allow-list, and 5 MiB
+per-file limit. It uploads the bytes with the server-only Supabase client to the
+`product-images` bucket, generates the public URL, and stores that URL in
+`public.product_images`. The browser never supplies a storage path or URL.
+Object names are server-generated under `sellers/<seller-id>/...` or
+`admins/<user-id>/...`.
+
+With `USE_SUPABASE=false` (or missing credentials), uploads use a bounded
+`data:` URL in the in-memory store so local development and tests can exercise
+the same flow; those files are not persisted to a cloud bucket.
 
 ### Store settings — `src/routes/meta.js`
 
@@ -245,8 +275,8 @@ only a fallback when no profile row exists and is never required.
 - `src/middleware/errorHandler.js` — 404 + central error handling
 - `src/routes/` — products, cart, orders, consultations, newsletter, meta, sellers, notifications, returns
 - `src/db/` — Supabase repositories + the `db/index.js` backend facade
-- `src/services/` — auth (Supabase) and email (Brevo) services
-- `src/middleware/` — auth guards (attachUser/requireAuth/requireAdmin/requireSeller) + error handler
+- `src/services/` — auth (Supabase), product-image storage, and email (Brevo) services
+- `src/middleware/` — auth guards (attachUser/requireAuth/requireAdmin/requireSeller), multipart image parsing, and error handling
 - `src/utils/` — http (ApiError/asyncHandler/ok), validate, slugify
 - `tests/` — vitest + supertest suites
 - `vitest.config.js` — test configuration
@@ -276,7 +306,7 @@ and redirect client-side.
 | `/auth` | sign in / create account | POST /api/auth/login, /api/auth/signup |
 | `/seller-apply` | application form + status | POST /api/sellers/applications, GET /api/sellers/me |
 | `/seller-dashboard/:tab` | gating + KPIs | GET /api/sellers/me, /api/sellers/me/dashboard |
-| `/seller-dashboard/:tab` | product CRUD | POST/PATCH/DELETE /api/products |
+| `/seller-dashboard/:tab` | product CRUD + image uploads | multipart POST/PATCH/DELETE /api/products (repeated `images` files) |
 | `/seller-dashboard/:tab` | reviews / returns / notifications | GET /api/products/:id/reviews, /api/returns, /api/notifications |
 | `/admin/:tab` | application review queue | GET/PATCH /api/sellers/applications(/:id) |
 | `/admin/:tab` | block / unblock sellers | PATCH /api/sellers/:id |
@@ -324,6 +354,9 @@ Copy `.env.example` to `.env`. All values have sensible defaults:
 | SUPABASE_URL | — | Supabase project URL |
 | SUPABASE_SECRET_KEY | — | service-role key (server only) |
 | SUPABASE_PUBLISHABLE_KEY | — | anon/publishable key |
+| PRODUCT_IMAGE_BUCKET | product-images | Supabase Storage bucket for seller product images |
+| PRODUCT_IMAGE_MAX_FILES | 8 | maximum image files per product write |
+| PRODUCT_IMAGE_MAX_BYTES | 5242880 | maximum bytes per image (5 MiB) |
 | BREVO_API_KEY | — | Brevo transactional email key (blank = log-only) |
 | BREVO_SENDER_EMAIL | no-reply@spacefit.ng | verified sender address |
 | BREVO_SENDER_NAME | SpaceFit | sender display name |
@@ -341,7 +374,8 @@ Run `npm test` (or `npm run test:watch`). Suites live in `tests/`:
 - `meta.test.js` — health, config, newsletter, consultations, 404 envelope
 - `meta-settings.test.js` — public settings GET + admin PUT round-trip
 - `sellers.test.js` — application submit/review/approve/reject, block/unblock, `/me` + dashboard
-- `products-write.test.js` — seller CRUD on own listings, cross-seller denial, admin override
+- `products-write.test.js` — seller CRUD, multipart image uploads, URL rejection, ownership, admin override
+- `product-images.test.js` — memory-mode upload fallback and managed-URL cleanup validation
 - `notifications.test.js` — per-user isolation, mark-one-read, read-all
 - `email.test.js` — template builders + no-key log-only fallback
 - `auth.test.js` — auth request validation

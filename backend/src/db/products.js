@@ -279,7 +279,13 @@ export async function createProduct(payload) {
     const { error: imagesError } = await supabase
       .from('product_images')
       .insert(images.map((url, position) => ({ product_id: id, url, position })));
-    throwIfError({ error: imagesError }, 'create product images');
+    if (imagesError) {
+      // Product and image inserts are separate REST calls. Roll back the
+      // product row so a failed gallery write cannot leave an orphan listing;
+      // the route removes the corresponding storage objects.
+      await supabase.from('products').delete().eq('id', id);
+      throwIfError({ error: imagesError }, 'create product images');
+    }
   }
 
   return getProduct(id);
@@ -310,13 +316,28 @@ export async function updateProduct(idOrSlug, patch) {
   }
 
   if (Array.isArray(patch.images)) {
-    await supabase.from('product_images').delete().eq('product_id', existing.id);
+    const oldImages = Array.isArray(existing.images) ? existing.images : [];
+    const { error: deleteError } = await supabase
+      .from('product_images')
+      .delete()
+      .eq('product_id', existing.id);
+    throwIfError({ error: deleteError }, 'delete old product images');
+
     const images = patch.images.filter(Boolean);
     if (images.length) {
       const { error: imagesError } = await supabase
         .from('product_images')
         .insert(images.map((url, position) => ({ product_id: existing.id, url, position })));
-      throwIfError({ error: imagesError }, 'update product images');
+      if (imagesError) {
+        // Best-effort compensation: restore the previous gallery if replacing
+        // it fails. The route removes any newly uploaded storage objects.
+        if (oldImages.length) {
+          await supabase
+            .from('product_images')
+            .insert(oldImages.map((url, position) => ({ product_id: existing.id, url, position })));
+        }
+        throwIfError({ error: imagesError }, 'update product images');
+      }
     }
   }
 

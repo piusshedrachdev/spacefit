@@ -18,6 +18,9 @@ policies, Storage buckets and seed data for SpaceFit, following
                                       # profiles.role += 'seller'
         0006_seller_rls.sql           # RLS for the seller-ecosystem tables
         0007_seller_seed.sql          # default store_settings + demo seller data
+        0008_wishlist.sql             # wishlist table + RLS
+        0009_wishlist_rls.sql         # wishlist policies
+        0010_server_managed_product_images.sql # image writes stay server-side
 
 ## Applying the migrations
 
@@ -41,6 +44,13 @@ Copy backend/.env.example to backend/.env and fill in:
 
 SUPABASE_SECRET_KEY (older name: SUPABASE_SERVICE_ROLE_KEY) bypasses RLS and
 must never be exposed in frontend code or committed to Git.
+
+Seller image uploads are server-mediated: the browser sends multipart bytes to
+`POST /api/products` (or `PATCH /api/products/:id`), and the backend uses the
+secret client to write to the public `product-images` bucket. The bucket's
+admin-only Storage policy is intentional; do not upload product images directly
+from the browser or expose the secret key. The generated public URL is stored
+in `public.product_images.url`.
 
 When USE_SUPABASE is not 'true' - or credentials are missing - the API
 automatically falls back to the in-memory store so local development and the
