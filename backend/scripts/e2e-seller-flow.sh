@@ -78,13 +78,21 @@ check "admin unreadCount >= 1" "true" "$(node -e "const d=JSON.parse(process.arg
 NOTIF0=$(curl -s "$B/api/notifications" -H "$ADM" | jqv "data.items.0.type")
 echo "      latest type=$NOTIF0"
 
-echo "--- 8. approved seller lists a product"
-PROD=$(curl -s -X POST "$B/api/products" -H "$JSON" -H "$CUST" -d '{
-  "title":"Handblown Vesper Lamp","category":"Lighting",
-  "price":85000,"origPrice":95000,"availability":"In stock",
-  "shortDescription":"Handblown glass table lamp.","description":"A sculptural table lamp.",
-  "features":["Handblown glass"],"specs":["Material: Glass"],
-  "colors":["Amber"],"sizes":[],"images":["/logo.jpeg"],"featured":false}')
+echo "--- 8. approved seller lists a product (multipart image upload)"
+PROD=$(curl -s -X POST "$B/api/products" -H "$CUST" \
+  -F 'title=Handblown Vesper Lamp' \
+  -F 'category=Lighting' \
+  -F 'price=85000' \
+  -F 'origPrice=95000' \
+  -F 'availability=In stock' \
+  -F 'shortDescription=Handblown glass table lamp.' \
+  -F 'description=A sculptural table lamp.' \
+  -F 'features=["Handblown glass"]' \
+  -F 'specs=["Material: Glass"]' \
+  -F 'colors=["Amber"]' \
+  -F 'sizes=[]' \
+  -F 'featured=false' \
+  -F 'images=@../frontend/public/logo.jpeg;type=image/jpeg')
 PROD_ID=$(echo "$PROD" | jqv data.id)
 check "product id returned" "false" "$([ "$PROD_ID" = "MISSING" -o "$PROD_ID" = "PARSE_ERR" ] && echo true || echo false)"
 check "product owned by the new seller" "$SELLER_ID" "$(echo "$PROD" | jqv data.sellerId)"

@@ -2,7 +2,13 @@ import { Router } from 'express';
 import * as db from '../db/index.js';
 import { asyncHandler, ok, ApiError } from '../utils/http.js';
 import { validate } from '../utils/validate.js';
-import { requireAuth, requireAdmin, requireSellerOrAdmin, resolveRole } from '../middleware/auth.js';
+import { requireAuth, requireSellerOrAdmin, resolveRole } from '../middleware/auth.js';
+import { parseProductImages } from '../middleware/productImages.js';
+import {
+  removeProductImageUploads,
+  removeProductImageUrls,
+  uploadProductImages
+} from '../services/productImages.js';
 
 /**
  * Product routes.
@@ -14,6 +20,138 @@ import { requireAuth, requireAdmin, requireSellerOrAdmin, resolveRole } from '..
  *   - admin.html -> edit featured/price/availability, delete any listing
  */
 const router = Router();
+
+const PRODUCT_IMAGE_FIELDS = ['images', 'image', 'imageUrl', 'imageURL', 'image_url'];
+const JSON_ARRAY_FIELDS = ['features', 'specs', 'colors', 'sizes'];
+
+const CREATE_PRODUCT_SCHEMA = {
+  title: { required: true, type: 'string', minLength: 2 },
+  category: { required: true, type: 'string' },
+  price: { required: true, type: 'number', min: 0 },
+  origPrice: { type: 'number' },
+  availability: { type: 'string' },
+  shortDescription: { type: 'string' },
+  description: { type: 'string' },
+  features: { type: 'array' },
+  specs: { type: 'array' },
+  colors: { type: 'array' },
+  sizes: { type: 'array' },
+  featured: {}
+};
+
+const UPDATE_PRODUCT_SCHEMA = {
+  title: { type: 'string' },
+  category: { type: 'string' },
+  price: { type: 'number', min: 0 },
+  origPrice: { type: 'number' },
+  availability: { type: 'string' },
+  shortDescription: { type: 'string' },
+  description: { type: 'string' },
+  features: { type: 'array' },
+  specs: { type: 'array' },
+  colors: { type: 'array' },
+  sizes: { type: 'array' },
+  featured: {}
+};
+
+/**
+ * Multipart form fields arrive as strings. JSON-encode arrays in the browser
+ * and decode them here so the same validation rules apply to JSON and form
+ * requests. Image URLs are deliberately not part of this contract.
+ */
+function normaliseProductBody(body) {
+  const source = body && typeof body === 'object' ? { ...body } : {};
+
+  // Accept a single `payload` JSON field as well as direct form fields. The
+  // seller UI uses direct fields, while this keeps the multipart API pleasant
+  // for other clients that already build a JSON product payload.
+  if (source.payload !== undefined) {
+    let payload = source.payload;
+    if (typeof payload === 'string') {
+      try {
+        payload = JSON.parse(payload);
+      } catch {
+        throw ApiError.unprocessable('Invalid product data', {
+          payload: 'payload must be valid JSON'
+        });
+      }
+    }
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      throw ApiError.unprocessable('Invalid product data', {
+        payload: 'payload must be a JSON object'
+      });
+    }
+    for (const [field, value] of Object.entries(payload)) {
+      Object.defineProperty(source, field, {
+        configurable: true,
+        enumerable: true,
+        value,
+        writable: true
+      });
+    }
+    delete source.payload;
+  }
+
+  for (const field of PRODUCT_IMAGE_FIELDS) {
+    if (Object.prototype.hasOwnProperty.call(source, field)) {
+      throw ApiError.unprocessable('Upload product images as files', {
+        [field]: 'Image URLs are not accepted; upload one or more image files instead'
+      });
+    }
+  }
+
+  for (const field of JSON_ARRAY_FIELDS) {
+    if (typeof source[field] !== 'string') continue;
+    try {
+      source[field] = JSON.parse(source[field]);
+    } catch {
+      throw ApiError.unprocessable('Invalid product data', {
+        [field]: `${field} must be valid JSON`
+      });
+    }
+  }
+
+  return source;
+}
+
+function requestFiles(req) {
+  if (Array.isArray(req.files)) return req.files;
+  if (!req.files || typeof req.files !== 'object') return [];
+  return [
+    ...(Array.isArray(req.files.images) ? req.files.images : []),
+    ...(Array.isArray(req.files.image) ? req.files.image : [])
+  ];
+}
+
+async function cleanupUploads(uploads) {
+  if (!uploads?.length) return;
+  try {
+    await removeProductImageUploads(uploads);
+  } catch (error) {
+    console.error('[storage] product image cleanup failed:', error);
+  }
+}
+
+async function cleanupCreatedProduct(productId) {
+  if (!productId) return;
+  try {
+    await db.deleteProduct(productId);
+  } catch (error) {
+    console.error('[products] failed to roll back product:', error);
+  }
+}
+
+/** Authorize a product mutation before multer consumes any file bytes. */
+async function loadOwnedProduct(req, _res, next) {
+  try {
+    const product = await db.getProduct(req.params.id);
+    await assertCanModify(req, product);
+    req.productForWrite = product;
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
 
 /** Resolve the acting user id, tolerating memory-mode requests without a session. */
 function actingUserId(req) {
@@ -76,45 +214,55 @@ router.get(
   })
 );
 
-/** POST /api/products -> create a listing (seller or admin) */
+/**
+ * POST /api/products -> create a listing (seller or admin).
+ *
+ * Send `multipart/form-data` with product fields and one or more files in the
+ * `images` field. The route uploads the bytes to the product-images bucket,
+ * then passes only the generated public URLs to the product repository.
+ */
 router.post(
   '/',
   requireSellerOrAdmin,
+  parseProductImages,
   asyncHandler(async (req, res) => {
-    const payload = validate(req.body, {
-      title: { required: true, type: 'string', minLength: 2 },
-      category: { required: true, type: 'string' },
-      price: { required: true, type: 'number', min: 0 },
-      origPrice: { type: 'number' },
-      availability: { type: 'string' },
-      shortDescription: { type: 'string' },
-      description: { type: 'string' },
-      features: { type: 'array' },
-      specs: { type: 'array' },
-      colors: { type: 'array' },
-      sizes: { type: 'array' },
-      images: { type: 'array' },
-      featured: {}
-    });
-
+    const body = normaliseProductBody(req.body);
+    const payload = validate(body, CREATE_PRODUCT_SCHEMA);
+    const files = requestFiles(req);
     const userId = actingUserId(req);
     const seller =
       req.seller || (userId ? await db.getSellerByUserId(userId) : null);
     const role = req.role || (req.user ? await resolveRole(req) : null);
+    const effectiveSellerId = role === 'admin' ? null : seller?.id || null;
+    const uploads = [];
+    let product;
 
-    const product = await db.createProduct({
-      ...payload,
-      featured: payload.featured === true || payload.featured === 'true',
-      sellerId: seller?.id || null
-    });
+    try {
+      // The seller/admin identity comes from the authenticated request; the
+      // browser cannot choose a storage path or a public URL.
+      const imageUploads = await uploadProductImages(files, {
+        sellerId: effectiveSellerId,
+        userId
+      });
+      uploads.push(...imageUploads);
 
-    // Only admins may self-assign a featured flag; sellers get the default.
-    if (role !== 'admin' && product.featured) {
-      await db.updateProduct(product.id, { featured: false });
-      product.featured = false;
+      product = await db.createProduct({
+        ...payload,
+        images: uploads.map((image) => image.url),
+        // Only admins may self-assign a featured flag.
+        featured:
+          role === 'admin' && (payload.featured === true || payload.featured === 'true'),
+        sellerId: effectiveSellerId
+      });
+
+      return ok(res, product, 201);
+    } catch (error) {
+      // If either storage or the database write fails, do not leave a product
+      // row or orphaned bucket objects behind.
+      await cleanupCreatedProduct(product?.id);
+      await cleanupUploads(uploads);
+      throw error;
     }
-
-    return ok(res, product, 201);
   })
 );
 
@@ -170,30 +318,25 @@ router.get(
   })
 );
 
-/** PATCH /api/products/:id -> edit a listing (owner or admin) */
+/**
+ * PATCH /api/products/:id -> edit a listing (owner or admin).
+ *
+ * Product fields may be JSON or multipart form fields. If files are supplied
+ * in `images`, they replace the current gallery; otherwise the existing gallery
+ * is preserved. A URL field is never accepted as a replacement.
+ */
 router.patch(
   '/:id',
   requireSellerOrAdmin,
+  loadOwnedProduct,
+  parseProductImages,
   asyncHandler(async (req, res) => {
-    const product = await db.getProduct(req.params.id);
-    await assertCanModify(req, product);
+    const product = req.productForWrite;
 
-    const patch = validate(req.body, {
-      title: { type: 'string' },
-      category: { type: 'string' },
-      price: { type: 'number', min: 0 },
-      origPrice: { type: 'number' },
-      availability: { type: 'string' },
-      shortDescription: { type: 'string' },
-      description: { type: 'string' },
-      features: { type: 'array' },
-      specs: { type: 'array' },
-      colors: { type: 'array' },
-      sizes: { type: 'array' },
-      images: { type: 'array' },
-      featured: {}
-    });
-    if (Object.keys(patch).length === 0) {
+    const body = normaliseProductBody(req.body);
+    const patch = validate(body, UPDATE_PRODUCT_SCHEMA);
+    const files = requestFiles(req);
+    if (Object.keys(patch).length === 0 && files.length === 0) {
       throw ApiError.badRequest('No product fields to update');
     }
     if (patch.featured !== undefined) {
@@ -202,7 +345,32 @@ router.patch(
       else patch.featured = patch.featured === true || patch.featured === 'true';
     }
 
-    return ok(res, await db.updateProduct(product.id, patch));
+    const uploads = [];
+    try {
+      const imageUploads = await uploadProductImages(files, {
+        sellerId: req.seller?.id || product.sellerId || null,
+        userId: actingUserId(req)
+      });
+      uploads.push(...imageUploads);
+
+      const updated = await db.updateProduct(
+        product.id,
+        files.length ? { ...patch, images: uploads.map((image) => image.url) } : patch
+      );
+
+      // The database now points at the new objects, so old bucket objects can
+      // be removed. Seeded/external URLs are ignored by the helper.
+      if (files.length) {
+        await removeProductImageUrls(product.images).catch((error) => {
+          console.error('[storage] old product image cleanup failed:', error);
+        });
+      }
+
+      return ok(res, updated);
+    } catch (error) {
+      await cleanupUploads(uploads);
+      throw error;
+    }
   })
 );
 
@@ -214,6 +382,11 @@ router.delete(
     const product = await db.getProduct(req.params.id);
     await assertCanModify(req, product);
     await db.deleteProduct(product.id);
+    // Database cascade removes product_images; clean up only our own bucket
+    // objects and leave seeded/external URLs untouched.
+    await removeProductImageUrls(product.images).catch((error) => {
+      console.error('[storage] deleted product image cleanup failed:', error);
+    });
     return ok(res, { id: product.id, deleted: true });
   })
 );

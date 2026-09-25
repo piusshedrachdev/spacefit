@@ -110,4 +110,13 @@ describe('supabase migrations', () => {
     expect(storage).toContain("'product-images'");
     expect(storage).toContain("'avatars'");
   });
+
+  it('keeps product image metadata writes server-managed', () => {
+    const migration = readFileSync(
+      path.join(migrationsDir, '0010_server_managed_product_images.sql'),
+      'utf8'
+    );
+    expect(migration).toContain('product_images_admin_write');
+    expect(migration).toContain('product_images_owner_write');
+  });
 });

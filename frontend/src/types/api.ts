@@ -123,6 +123,12 @@ export interface Product {
   sellerName: string | null;
 }
 
+/** Multipart payload used by seller create/edit product requests. */
+export interface ProductWritePayload extends Omit<Partial<Product>, 'images'> {
+  /** Files are uploaded as repeated `images` parts; never send image URLs. */
+  images?: File[];
+}
+
 export interface CategoryCount {
   name: string;
   count: number;

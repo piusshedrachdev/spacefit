@@ -19,7 +19,6 @@ function newProduct(overrides = {}) {
     specs: [{ label: 'Height', value: '65 cm' }],
     colors: [{ name: 'Walnut', hex: '#5b3a29' }],
     sizes: ['Standard'],
-    images: ['/images/test-stool.jpg'],
     availability: 'In stock',
     ...overrides
   };
@@ -35,6 +34,51 @@ describe('POST /api/products', () => {
     expect(res.status).toBe(201);
     expect(res.body.data.title).toBe('Test Walnut Stool');
     expect(res.body.data.sellerId).toBe('seed-seller-1');
+  });
+
+  it('uploads product image files and persists the generated image reference', async () => {
+    const res = await request(app)
+      .post('/api/products')
+      .set('X-Dev-User', SELLER)
+      .field('title', 'Uploaded Walnut Stool')
+      .field('category', 'Seating')
+      .field('price', '45000')
+      .field('features', JSON.stringify(['Solid walnut']))
+      .field('sizes', JSON.stringify(['Standard']))
+      .attach('images', Buffer.from('fake-png-bytes'), {
+        filename: 'stool.png',
+        contentType: 'image/png'
+      });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.images).toHaveLength(1);
+    expect(res.body.data.images[0]).toMatch(/^data:image\/png;base64,/);
+  });
+
+  it('rejects an image URL instead of accepting user-provided storage links', async () => {
+    const res = await request(app)
+      .post('/api/products')
+      .set('X-Dev-User', SELLER)
+      .send(newProduct({ images: ['https://example.com/image.png'] }));
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.details).toHaveProperty('images');
+  });
+
+  it('rejects a non-image upload', async () => {
+    const res = await request(app)
+      .post('/api/products')
+      .set('X-Dev-User', SELLER)
+      .field('title', 'Bad Image Product')
+      .field('category', 'Seating')
+      .field('price', '45000')
+      .attach('images', Buffer.from('not-an-image'), {
+        filename: 'notes.txt',
+        contentType: 'text/plain'
+      });
+
+    expect(res.status).toBe(422);
+    expect(res.body.error.details).toHaveProperty('images');
   });
 
   it('rejects a listing without a price', async () => {

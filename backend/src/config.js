@@ -32,6 +32,16 @@ export const config = {
       process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
   },
 
+  // Seller product image uploads. The bucket is created by migration 0003 and
+  // uploads use the server-only Supabase client, so sellers never receive the
+  // secret key or bypass storage RLS in the browser.
+  productImages: {
+    bucket: process.env.PRODUCT_IMAGE_BUCKET || 'product-images',
+    maxFiles: Math.max(1, Number(process.env.PRODUCT_IMAGE_MAX_FILES) || 8),
+    maxFileSize: Math.max(1, Number(process.env.PRODUCT_IMAGE_MAX_BYTES) || 5 * 1024 * 1024),
+    allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/avif', 'image/gif']
+  },
+
   // Brevo (ex-Sendinblue) transactional email. When the API key is missing the
   // email service logs the payload it *would* send instead of failing, so
   // local development and the test suite work without an account.

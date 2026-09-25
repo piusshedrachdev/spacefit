@@ -142,7 +142,6 @@ describe('product management in Supabase mode', () => {
       specs: [{ label: 'Height', value: '65 cm' }],
       colors: [{ name: 'Walnut', hex: '#5b3a29' }],
       sizes: ['Standard'],
-      images: ['/images/test-stool.jpg'],
       availability: 'In stock',
       ...overrides
     };
