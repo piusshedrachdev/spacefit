@@ -227,10 +227,18 @@ export function HomePage() {
   const [placeholder, setPlaceholder] = useState(SEARCH_PLACEHOLDER);
   const searchRef = useRef<HTMLInputElement>(null);
 
+<<<<<<< Updated upstream
   useEffect(() => {
     const timer = setInterval(() => setSlide((current) => (current + 1) % SLIDES.length), AUTOPLAY_MS);
     return () => clearInterval(timer);
   }, [restartKey]);
+=======
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState<string | null>(null);
+  const [priceBracket, setPriceBracket] = useState<PriceBracket | null>(null);
+  const [sort, setSort] = useState('');
+>>>>>>> Stashed changes
 
   const goTo = (index: number) => {
     setSlide(((index % SLIDES.length) + SLIDES.length) % SLIDES.length);
@@ -253,7 +261,19 @@ export function HomePage() {
       ?.scrollIntoView?.({ behavior: 'smooth' });
   };
 
+<<<<<<< Updated upstream
   const onSearchSubmit = (event: FormEvent) => {
+=======
+  const resetFilters = () => {
+    setSearchInput('');
+    setSearch('');
+    setCategory(null);
+    setPriceBracket(null);
+    setSort('');
+  };
+
+  const onSearch = (event: FormEvent) => {
+>>>>>>> Stashed changes
     event.preventDefault();
     runSearch();
   };
@@ -323,6 +343,7 @@ export function HomePage() {
                   role="search"
                   onSubmit={onSearchSubmit}
                 >
+<<<<<<< Updated upstream
                   <div className="relative flex-1 flex items-center pl-3">
                     <svg
                       className="w-5 h-5 text-stone-400 shrink-0 mr-3"
@@ -437,6 +458,14 @@ export function HomePage() {
                     </svg>
                   </button>
                 </div>
+=======
+                  <option value="">Sort pieces</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="newest">Newest Additions</option>
+                  <option value="rating">Customer Rating</option>
+                </select>
+>>>>>>> Stashed changes
               </div>
             </div>
           </div>

@@ -218,8 +218,10 @@ describe('ProductDetailsPage', () => {
     await vi.waitFor(() =>
       expect(addToCart).toHaveBeenCalledWith('luna-bed', 3, 'King', 'Oak')
     );
-    // The shared hook confirms via toast (host rendered by the layout).
-    expect(await screen.findByText(/Luna Bed \(x3\) added/)).toBeInTheDocument();
+    // The shared hook confirms via the reference-style cart toast.
+    expect(await screen.findByText('Added to cart')).toBeInTheDocument();
+    expect(screen.getByText('Luna Bed (x3)')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'View cart' })).toHaveAttribute('href', '/cart');
   });
 
   it('shows the error panel and recovers via Try again', async () => {

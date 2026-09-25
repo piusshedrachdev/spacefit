@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getProduct, getRelatedProducts } from '@/api/products';
 import { ProductGrid, ProductImage, QuantityStepper } from '@/components/commerce';
@@ -40,13 +40,13 @@ export function ProductDetailsPage() {
   const { has, toggle } = useWishlist();
   const favorite = has(product?.id ?? '');
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setImageIndex(0);
     setColorIndex(0);
     setQuantity(1);
     setSize(product?.sizes?.[0] ?? '');
     if (product) document.title = `${product.title} - SpaceFit`;
-  }, [product]);
+  }, [product?.id]);
 
   if (loading) {
     return (

@@ -61,7 +61,7 @@ export function useAddToCart(): {
   pending: boolean;
 } {
   const { add } = useCart();
-  const { toast } = useToast();
+  const { toast, toastCart } = useToast();
   const [pending, setPending] = useState(false);
 
   const addToCart = useCallback(
@@ -69,7 +69,7 @@ export function useAddToCart(): {
       setPending(true);
       try {
         await add(productIdOrTitle, options.quantity ?? 1, options.size, options.color);
-        toast(`${options.label ?? productIdOrTitle} added`);
+        toastCart(options.label ?? productIdOrTitle);
         return true;
       } catch (err) {
         toast(`Could not add to cart: ${(err as Error).message}`, true);
@@ -78,7 +78,7 @@ export function useAddToCart(): {
         setPending(false);
       }
     },
-    [add, toast]
+    [add, toast, toastCart]
   );
 
   return { addToCart, pending };

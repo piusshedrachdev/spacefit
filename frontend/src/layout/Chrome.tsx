@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import { useSettings } from '@/context/SettingsProvider';
-import { useToast } from '@/context/ToastProvider';
+import { useToast, type ToastItem } from '@/context/ToastProvider';
 import { routes } from '@/lib/routes';
 
 /** Discount banner (chrome.js) — shown when settings.discounts.bannerEnabled. */
@@ -21,37 +22,87 @@ export function DiscountBanner() {
   );
 }
 
-/** Toast stack — port of chrome.js toast() (top-right, 3.2s auto-dismiss). */
+function CartToast({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
+  return (
+    <div
+      role="status"
+      className="fixed bottom-[88px] left-1/2 z-[60] flex min-w-[300px] max-w-[92vw] -translate-x-1/2 items-center justify-between gap-3 rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-on-surface shadow-md transition-all sm:bottom-6"
+    >
+      <div className="flex min-w-0 items-center gap-2.5">
+        <span aria-hidden="true" className="material-symbols-outlined shrink-0 text-base text-primary">
+          check
+        </span>
+        <div className="min-w-0">
+          <span className="block text-xs font-semibold text-on-surface sm:text-sm">Added to cart</span>
+          <span className="block max-w-[180px] truncate text-xs text-on-surface-variant sm:max-w-[240px]">
+            {item.message}
+          </span>
+        </div>
+      </div>
+      <div className="flex shrink-0 items-center gap-3">
+        <Link
+          className="text-xs font-bold text-primary underline transition-colors hover:text-secondary"
+          to={routes.cart}
+        >
+          View cart
+        </Link>
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onDismiss}
+          className="p-1 text-lg leading-none text-outline transition-colors hover:text-on-surface"
+        >
+          <span aria-hidden="true" className="material-symbols-outlined text-base">
+            close
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Toast stack — generic messages stay top-right; cart confirmations use the
+ * reference shop's bottom-centre "Added to cart" feedback. */
 export function ToastHost() {
   const { toasts, dismiss } = useToast();
   if (toasts.length === 0) return null;
 
+  const standardToasts = toasts.filter((item) => item.kind === 'default');
+  const cartToast = toasts.find((item) => item.kind === 'cart');
+
   return (
-    <div className="fixed top-24 right-8 z-[60] flex flex-col gap-space-sm items-end">
-      {toasts.map((item) => (
-        <div
-          key={item.id}
-          role="status"
-          className={[
-            'flex items-center gap-space-sm px-space-lg py-space-md rounded-xl shadow-xl transition-all duration-300',
-            item.isError ? 'bg-error text-on-error' : 'bg-inverse-surface text-inverse-on-surface'
-          ].join(' ')}
-        >
-          <span className="material-symbols-outlined text-xl">
-            {item.isError ? 'error' : 'check_circle'}
-          </span>
-          <span className="font-body-sm">{item.message}</span>
-          <button
-            type="button"
-            aria-label="Dismiss"
-            onClick={() => dismiss(item.id)}
-            className="ml-space-md text-surface-dim hover:text-inverse-on-surface"
-          >
-            <span className="material-symbols-outlined text-base">close</span>
-          </button>
+    <>
+      {standardToasts.length > 0 ? (
+        <div className="fixed top-24 right-8 z-[60] flex flex-col gap-space-sm items-end">
+          {standardToasts.map((item) => (
+            <div
+              key={item.id}
+              role="status"
+              className={[
+                'flex items-center gap-space-sm px-space-lg py-space-md rounded-xl shadow-xl transition-all duration-300',
+                item.isError ? 'bg-error text-on-error' : 'bg-inverse-surface text-inverse-on-surface'
+              ].join(' ')}
+            >
+              <span className="material-symbols-outlined text-xl">
+                {item.isError ? 'error' : 'check_circle'}
+              </span>
+              <span className="font-body-sm">{item.message}</span>
+              <button
+                type="button"
+                aria-label="Dismiss"
+                onClick={() => dismiss(item.id)}
+                className="ml-space-md text-surface-dim hover:text-inverse-on-surface"
+              >
+                <span className="material-symbols-outlined text-base">close</span>
+              </button>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      ) : null}
+      {cartToast ? (
+        <CartToast item={cartToast} onDismiss={() => dismiss(cartToast.id)} />
+      ) : null}
+    </>
   );
 }
 
