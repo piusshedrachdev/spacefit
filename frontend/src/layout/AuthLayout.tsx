@@ -20,7 +20,7 @@ export function AuthLayout({ children }: { children?: ReactNode }) {
             <img
               alt="SpaceFit"
               className="h-8 w-auto object-contain"
-              src="/logo.jpeg"
+              src="/logo.png"
             />
             <span className="font-headline-md text-headline-md tracking-tight text-primary">
               SpaceFit
