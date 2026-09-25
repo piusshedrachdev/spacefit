@@ -1,7 +1,14 @@
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import { AppRoutes } from '@/appRoutes';
 import { AppProviders } from '@/context/AppProviders';
 import SwiftAgentWidget from './components/SwiftAgentWidget';
+
+function GlobalWidget() {
+  const { pathname } = useLocation();
+
+  if (pathname === '/auth' || pathname === '/auth.html') return null;
+  return <SwiftAgentWidget />;
+}
 
 /**
  * App shell: router + provider stack + route table (src/appRoutes.tsx).
@@ -11,7 +18,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppProviders>
-        <SwiftAgentWidget />
+        <GlobalWidget />
         <AppRoutes />
       </AppProviders>
     </BrowserRouter>
