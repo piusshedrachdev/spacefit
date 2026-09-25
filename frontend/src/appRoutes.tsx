@@ -15,6 +15,7 @@ import { RequireAuth } from '@/components/Visibility';
 import { SellerApplyPage } from '@/pages/SellerApplyPage';
 import { SELLER_TABS, SellerDashboardPage } from '@/pages/SellerDashboardPage';
 import { SellerLayout } from '@/layout/SellerLayout';
+import { ShopPage } from '@/pages/ShopPage';
 import { StorefrontLayout } from '@/layout/StorefrontLayout';
 import { WishlistPage } from '@/pages/WishlistPage';
 
@@ -116,6 +117,17 @@ function LegacyAdminRedirect() {
   return <Navigate to={tab ? `/admin/${tab.id}` : '/admin'} replace />;
 }
 
+/**
+ * The catalogue moved from `/` to `/shop`, so the old header/nav deep link
+ * `/#shop` (hash never reaches the server) is read here and forwarded; every
+ * other hash (`#sell-section`, `#categories-section`, …) belongs to the
+ * homepage and is left alone.
+ */
+function HomeRoute() {
+  const location = useLocation();
+  return location.hash === '#shop' ? <Navigate to="/shop" replace /> : <HomePage />;
+}
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -171,8 +183,12 @@ export function AppRoutes() {
       </Route>
 
       <Route element={<StorefrontLayout />}>
-        {/* Ported storefront (Phase 3) */}
-        <Route path="/" element={<HomePage />} />
+        {/* Ported storefront (Phase 3) — marketing home at `/` + `/home`, the
+            catalogue (filters/grid) at `/shop` with `/products` redirecting. */}
+        <Route path="/" element={<HomeRoute />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/shop" element={<ShopPage />} />
+        <Route path="/products" element={<Navigate to="/shop" replace />} />
         <Route path="/products/:id" element={<ProductDetailsPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />

@@ -228,7 +228,7 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-space-lg">
             <NavAnchor href={routes.home}>Home</NavAnchor>
             <NavAnchor href={routes.shop}>Shop</NavAnchor>
-            <NavAnchor href={routes.home}>Products</NavAnchor>
+            <NavAnchor href={routes.shop}>Products</NavAnchor>
           </nav>
 
           <div className="flex items-center gap-space-sm">
