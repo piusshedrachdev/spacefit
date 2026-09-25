@@ -12,7 +12,7 @@
  */
 export const routes = {
   home: '/',
-  shop: '/#shop',
+  shop: '/shop',
   cart: '/cart',
   checkout: '/checkout',
   product: (id: string) => `/products/${encodeURIComponent(id)}`,

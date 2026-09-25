@@ -1,203 +1,194 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { HomePage } from '@/pages/HomePage';
-import { AppProviders } from '@/context/AppProviders';
-import { setSession } from '@/lib/session';
-import type { Product } from '@/types/api';
 
-vi.mock('@/api/meta', () => ({
-  getConfig: vi.fn(),
-  getSettings: vi.fn(),
-  saveSettings: vi.fn()
-}));
-vi.mock('@/api/auth', () => ({
-  getMe: vi.fn(),
-  login: vi.fn(),
-  signup: vi.fn(),
-  logout: vi.fn(),
-  updateMe: vi.fn()
-}));
-vi.mock('@/api/notifications', () => ({
-  getNotifications: vi.fn(),
-  markNotificationRead: vi.fn(),
-  markAllNotificationsRead: vi.fn()
-}));
-vi.mock('@/api/products', () => ({
-  getProducts: vi.fn(),
-  getFeaturedProducts: vi.fn(),
-  getProduct: vi.fn(),
-  getRelatedProducts: vi.fn(),
-  getCategories: vi.fn(),
-  createProduct: vi.fn(),
-  updateProduct: vi.fn(),
-  deleteProduct: vi.fn(),
-  getProductReviews: vi.fn(),
-  createProductReview: vi.fn()
-}));
-vi.mock('@/api/forms', () => ({
-  subscribe: vi.fn(),
-  bookConsultation: vi.fn()
-}));
-
-import { getMe } from '@/api/auth';
-import { getConfig, getSettings } from '@/api/meta';
-import { getCategories, getProducts } from '@/api/products';
-
-function product(overrides: Partial<Product>): Product {
-  return {
-    id: 'luna-bed',
-    title: 'Luna Bed',
-    slug: 'luna-bed',
-    category: 'Beds',
-    price: 450000,
-    origPrice: null,
-    currency: 'NGN',
-    rating: 4.8,
-    reviews: 14,
-    availability: 'In Stock',
-    shortDescription: 'Solid wood frame',
-    description: 'A modern bed.',
-    features: [],
-    specs: [],
-    colors: [],
-    sizes: [],
-    images: ['/img/luna.jpg'],
-    featured: false,
-    sellerId: null,
-    sellerName: null,
-    ...overrides
-  };
-}
-
-const BED = product({ id: 'luna-bed', title: 'Luna Bed', price: 450000 });
-const DESK = product({ id: 'apex-desk', title: 'Apex Desk', category: 'Desks', price: 120000 });
-
-const BASIC_SETTINGS = {
-  policies: { returnPolicy: 'r', sellerPolicy: 's', deliveryPolicy: 'd', privacyPolicy: 'p' },
-  discounts: {
-    sitewidePercent: null,
-    promoCode: null,
-    freeDeliveryThreshold: 500000,
-    bannerEnabled: false
-  }
-};
-
-const BASIC_CONFIG = {
-  currency: 'NGN',
-  currencySymbol: '\u20a6',
-  deliveryFee: 15000,
-  freeDeliveryThreshold: 500000,
-  vatRate: 0.075,
-  serviceableCities: ['Lagos'],
-  paymentMethods: [{ id: 'card', label: 'Card' }]
-};
+/**
+ * Static marketing homepage (port of space-fit2/frontend/index.html body):
+ * section content, the hero carousel state machine (manual + 4s autoplay),
+ * suggestion-pill quick-fill, the search action, and the SPA link wiring.
+ */
 
 function renderHome() {
   return render(
     <MemoryRouter initialEntries={['/']}>
-      <AppProviders>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </AppProviders>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/shop" element={<div>shop page</div>} />
+        <Route path="/seller-apply" element={<div>seller apply</div>} />
+      </Routes>
     </MemoryRouter>
   );
 }
 
-beforeEach(() => {
-  localStorage.clear();
-  vi.mocked(getSettings).mockReset().mockResolvedValue({ ...BASIC_SETTINGS });
-  vi.mocked(getConfig).mockReset().mockResolvedValue({ ...BASIC_CONFIG });
-  vi.mocked(getMe).mockReset().mockRejectedValue(new Error('signed out'));
-  vi.mocked(getProducts).mockReset().mockResolvedValue([BED, DESK]);
-  vi.mocked(getCategories)
-    .mockReset()
-    .mockResolvedValue([
-      { name: 'Beds', count: 12 },
-      { name: 'Desks', count: 5 }
-    ]);
+const slides = () => Array.from(document.querySelectorAll('[data-slide-index]'));
+const dots = () => Array.from(document.querySelectorAll('[data-dot-index]'));
+
+/** Index of the slide/dot currently in its "active" state (see reference JS). */
+const activeSlide = () => slides().findIndex((node) => node.classList.contains('opacity-100'));
+const activeDot = () => dots().findIndex((node) => node.classList.contains('w-6'));
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.restoreAllMocks();
 });
 
 describe('HomePage', () => {
-  it('renders the hero and the product catalogue', async () => {
+  it('renders every reference section with its headline copy', () => {
     renderHome();
 
     expect(
-      await screen.findByRole('heading', { name: /explore furniture/i, level: 1 })
+      screen.getByRole('heading', { level: 1, name: /tell us what you need for your space/i })
     ).toBeInTheDocument();
-    expect(await screen.findByRole('link', { name: 'Luna Bed' })).toHaveAttribute(
-      'href',
-      '/products/luna-bed'
-    );
-    expect(screen.getByRole('link', { name: 'Apex Desk' })).toHaveAttribute(
-      'href',
-      '/products/apex-desk'
-    );
-    expect(getProducts).toHaveBeenCalled();
-    expect(getCategories).toHaveBeenCalled();
-  });
-
-  it('filters the catalogue when a sidebar category is chosen', async () => {
-    renderHome();
-    fireEvent.click(await screen.findByRole('button', { name: /Beds \(12\)/ }));
-
-    await vi.waitFor(() =>
-      expect(getProducts).lastCalledWith(
-        expect.objectContaining({ category: 'Beds' })
-      )
-    );
-  });
-
-  it('re-sorts the grid client-side from the toolbar dropdown', async () => {
-    renderHome();
-    await screen.findByRole('link', { name: 'Luna Bed' });
-
-    fireEvent.change(screen.getByRole('combobox', { name: 'Sort pieces' }), {
-      target: { value: 'price-asc' }
-    });
-
-    await vi.waitFor(() => {
-      const links = screen
-        .getAllByRole('link')
-        .filter((node) => (node.getAttribute('href') ?? '').startsWith('/products/'));
-      expect(links[0]).toHaveAttribute('href', '/products/apex-desk');
-    });
-  });
-
-  it('applies the search from the hero search bar', async () => {
-    renderHome();
-    const input = await screen.findByPlaceholderText(/Search furniture/i);
-    fireEvent.change(input, { target: { value: 'desk' } });
-    fireEvent.submit(input.closest('form')!);
-
-    await vi.waitFor(() =>
-      expect(getProducts).lastCalledWith(expect.objectContaining({ search: 'desk' }))
-    );
-  });
-
-  it('hides the consultation banner from guests', async () => {
-    const view = renderHome();
-    await screen.findByRole('link', { name: 'Luna Bed' });
+    expect(screen.getByRole('heading', { name: /^Categories$/ })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /in stock \(fast delivery\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /create your perfect space/i })).toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: /Book Spatial Measurement/i })
-    ).not.toBeInTheDocument();
-    view.unmount();
-  });
-
-  it('shows the consultation banner to signed-in customers', async () => {
-    // Sign in as a customer (getMe persists the profile).
-    const user = { id: 'u1', email: 'ada@spacefit.ng' };
-    const profile = { id: 'u1', role: 'customer' as const, full_name: 'Ada' };
-    setSession({ accessToken: 't', refreshToken: 'r', user, profile: null });
-    vi.mocked(getMe).mockImplementation(async () => {
-      setSession({ accessToken: 't', refreshToken: 'r', user, profile });
-      return { user, profile };
-    });
-
-    renderHome();
-    expect(
-      await screen.findByRole('button', { name: /Book Spatial Measurement/i })
+      screen.getByRole('heading', { name: /have furniture to sell or relocate\?/i })
     ).toBeInTheDocument();
+  });
+
+  it('renders the 7 carousel slides with slide 0 and dot 0 active', () => {
+    renderHome();
+
+    expect(slides()).toHaveLength(7);
+    expect(dots()).toHaveLength(7);
+    expect(activeSlide()).toBe(0);
+    expect(activeDot()).toBe(0);
+  });
+
+  it('advances to the next slide and wraps around from the last', () => {
+    renderHome();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next slide' }));
+    expect(activeSlide()).toBe(1);
+    expect(activeDot()).toBe(1);
+
+    // Wrap: 7 slides → clicking prev from 0 lands on the last one.
+    fireEvent.click(screen.getByRole('button', { name: 'Previous slide' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Previous slide' }));
+    expect(activeSlide()).toBe(6);
+    expect(activeDot()).toBe(6);
+  });
+
+  it('jumps to a slide from its dot', () => {
+    renderHome();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Go to slide 5' }));
+    expect(activeSlide()).toBe(4);
+    expect(activeDot()).toBe(4);
+  });
+
+  it('auto-advances the carousel every 4 seconds', () => {
+    vi.useFakeTimers();
+    renderHome();
+    expect(activeSlide()).toBe(0);
+
+    act(() => vi.advanceTimersByTime(4000));
+    expect(activeSlide()).toBe(1);
+
+    act(() => vi.advanceTimersByTime(4000));
+    expect(activeSlide()).toBe(2);
+  });
+
+  it('restarts the autoplay interval after a manual control press', () => {
+    vi.useFakeTimers();
+    renderHome();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next slide' }));
+    expect(activeSlide()).toBe(1);
+
+    // 3.9s after the manual press the timer must have restarted from zero.
+    act(() => vi.advanceTimersByTime(3900));
+    expect(activeSlide()).toBe(1);
+
+    act(() => vi.advanceTimersByTime(100));
+    expect(activeSlide()).toBe(2);
+  });
+
+  it('fills the search input when a suggestion pill is clicked', () => {
+    renderHome();
+
+    fireEvent.click(screen.getByRole('button', { name: /a desk for a small room/i }));
+
+    const input = screen.getByPlaceholderText(/looking for/i) as HTMLInputElement;
+    expect(input).toHaveValue('A desk for a small room');
+    expect(document.activeElement).toBe(input);
+  });
+
+  it('hints instead of scrolling when "Find matches" is pressed empty', () => {
+    renderHome();
+
+    fireEvent.click(screen.getByRole('button', { name: /find matches/i }));
+
+    const input = screen.getByPlaceholderText(/please type a piece or budget/i);
+    expect(input).toHaveValue('');
+  });
+
+  it('scrolls to the categories section once a query is entered', () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    renderHome();
+
+    fireEvent.change(screen.getByPlaceholderText(/looking for/i), {
+      target: { value: 'a desk for a small room' }
+    });
+    fireEvent.click(screen.getByRole('button', { name: /find matches/i }));
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+    expect(document.getElementById('categories-section')).not.toBeNull();
+  });
+
+  it('renders the 6 categories and 4 featured products from the reference', () => {
+    renderHome();
+
+    const categoryGrid = document.getElementById('categories-section')!;
+    expect(within(categoryGrid).getAllByRole('link')).toHaveLength(7); // 6 cards + "Explore all"
+    expect(within(categoryGrid).getByRole('link', { name: /Beds/ })).toHaveTextContent('84 models');
+    expect(within(categoryGrid).getByRole('link', { name: /Rugs/ })).toHaveTextContent('29 models');
+
+    expect(document.querySelectorAll('[data-purpose="product-card"]')).toHaveLength(4);
+    expect(screen.getByText('₦450,000')).toBeInTheDocument();
+    expect(screen.getByText('₦180,000')).toBeInTheDocument();
+    expect(screen.getByText('₦320,000')).toBeInTheDocument();
+    expect(screen.getByText('₦150,000')).toBeInTheDocument();
+
+    // Curated spaces: 3 scenario cards.
+    expect(
+      screen.getAllByRole('heading', {
+        name: /furnish my bedroom|build my workspace|first apartment starter/i
+      })
+    ).toHaveLength(3);
+  });
+
+  it('wires placeholder links to the real SPA routes', () => {
+    renderHome();
+
+    expect(screen.getByRole('link', { name: /explore all/i })).toHaveAttribute('href', '/shop');
+    expect(screen.getByRole('link', { name: /view all/i })).toHaveAttribute('href', '/shop');
+    expect(screen.getByRole('link', { name: /shop bedroom essentials/i })).toHaveAttribute(
+      'href',
+      '/shop'
+    );
+    expect(screen.getByRole('link', { name: /start selling today/i })).toHaveAttribute(
+      'href',
+      '/seller-apply'
+    );
+    expect(screen.getByRole('link', { name: /how selling works/i })).toHaveAttribute(
+      'href',
+      '/seller-apply'
+    );
+    // Every category card links into the catalogue.
+    expect(screen.getAllByRole('link', { name: /models/i })).toHaveLength(6);
+    screen
+      .getAllByRole('link', { name: /models/i })
+      .forEach((link) => expect(link).toHaveAttribute('href', '/shop'));
+  });
+
+  it('keeps the wishlist heart and add-to-cart controls on each featured card', () => {
+    renderHome();
+
+    expect(screen.getAllByRole('button', { name: /add .* to wishlist/i })).toHaveLength(4);
+    expect(screen.getAllByRole('button', { name: /add .* to cart/i })).toHaveLength(4);
   });
 });

@@ -96,22 +96,24 @@ beforeEach(() => {
 });
 
 describe('App shell (Phase 3 home)', () => {
-  it('renders the ported home hero inside the shared chrome', async () => {
+  it('renders the reference home hero inside the shared chrome', async () => {
     render(<App />);
     expect(
-      await screen.findByRole('heading', { name: /explore furniture/i, level: 1 })
+      await screen.findByRole('heading', { name: /tell us what you need for your space/i, level: 1 })
     ).toBeInTheDocument();
     // Header brand from StorefrontLayout.
     expect(screen.getByAltText('SpaceFit Brand Logo')).toBeInTheDocument();
   });
 
-  it('loads the catalogue and links products through the SPA', async () => {
+  it('loads the catalogue on /shop and links products through the SPA', async () => {
+    window.history.pushState({}, '', '/shop');
     render(<App />);
     expect(await screen.findByRole('link', { name: 'Luna Bed' })).toHaveAttribute(
       'href',
       '/products/luna-bed'
     );
     expect(getProducts).toHaveBeenCalled();
+    window.history.pushState({}, '', '/');
   });
 
   it('links the footer policies entry through the SPA', async () => {
