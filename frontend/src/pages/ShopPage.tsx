@@ -42,7 +42,7 @@ export function ShopPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string | null>(null);
   const [priceBracket, setPriceBracket] = useState<PriceBracket | null>(null);
-  const [sort, setSort] = useState('recommended');
+  const [sort, setSort] = useState('');
 
   const [consultOpen, setConsultOpen] = useState(false);
   const [booking, setBooking] = useState(false);
@@ -90,7 +90,7 @@ export function ShopPage() {
     setSearch('');
     setCategory(null);
     setPriceBracket(null);
-    setSort('recommended');
+    setSort('');
   };
 
   const onSearch = (event: FormEvent) => {
@@ -231,7 +231,7 @@ export function ShopPage() {
                   value={sort}
                   onChange={(event) => setSort(event.target.value)}
                 >
-                  <option value="recommended">Sort by: Recommended</option>
+                  <option value="">Sort pieces</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
                   <option value="newest">Newest Additions</option>

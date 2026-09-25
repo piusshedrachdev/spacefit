@@ -40,69 +40,9 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: /tell us what you need for your space/i })
     ).toBeInTheDocument();
-<<<<<<< Updated upstream
     expect(screen.getByRole('heading', { name: /^Categories$/ })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /in stock \(fast delivery\)/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /create your perfect space/i })).toBeInTheDocument();
-=======
-    expect(await screen.findByRole('link', { name: 'Luna Bed' })).toHaveAttribute(
-      'href',
-      '/products/luna-bed'
-    );
-    expect(screen.getByRole('link', { name: 'Apex Desk' })).toHaveAttribute(
-      'href',
-      '/products/apex-desk'
-    );
-    expect(getProducts).toHaveBeenCalled();
-    expect(getCategories).toHaveBeenCalled();
-  });
-
-  it('filters the catalogue when a sidebar category is chosen', async () => {
-    renderHome();
-    fireEvent.click(await screen.findByRole('button', { name: /Beds \(12\)/ }));
-
-    await vi.waitFor(() =>
-      expect(getProducts).lastCalledWith(
-        expect.objectContaining({ category: 'Beds' })
-      )
-    );
-  });
-
-  it('re-sorts the grid client-side from the toolbar dropdown', async () => {
-    renderHome();
-    await screen.findByRole('link', { name: 'Luna Bed' });
-
-    const sort = screen.getByRole('combobox', { name: 'Sort pieces' });
-    expect(screen.queryByRole('option', { name: 'Sort by: Recommended' })).not.toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Sort pieces' })).toBeInTheDocument();
-
-    fireEvent.change(sort, {
-      target: { value: 'price-asc' }
-    });
-
-    await vi.waitFor(() => {
-      const links = screen
-        .getAllByRole('link')
-        .filter((node) => (node.getAttribute('href') ?? '').startsWith('/products/'));
-      expect(links[0]).toHaveAttribute('href', '/products/apex-desk');
-    });
-  });
-
-  it('applies the search from the hero search bar', async () => {
-    renderHome();
-    const input = await screen.findByPlaceholderText(/Search furniture/i);
-    fireEvent.change(input, { target: { value: 'desk' } });
-    fireEvent.submit(input.closest('form')!);
-
-    await vi.waitFor(() =>
-      expect(getProducts).lastCalledWith(expect.objectContaining({ search: 'desk' }))
-    );
-  });
-
-  it('hides the consultation banner from guests', async () => {
-    const view = renderHome();
-    await screen.findByRole('link', { name: 'Luna Bed' });
->>>>>>> Stashed changes
     expect(
       screen.getByRole('heading', { name: /have furniture to sell or relocate\?/i })
     ).toBeInTheDocument();

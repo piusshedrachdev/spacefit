@@ -153,7 +153,11 @@ describe('ShopPage', () => {
     renderHome();
     await screen.findByRole('link', { name: 'Luna Bed' });
 
-    fireEvent.change(screen.getByRole('combobox', { name: 'Sort pieces' }), {
+    const sort = screen.getByRole('combobox', { name: 'Sort pieces' });
+    expect(screen.queryByRole('option', { name: 'Sort by: Recommended' })).not.toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Sort pieces' })).toBeInTheDocument();
+
+    fireEvent.change(sort, {
       target: { value: 'price-asc' }
     });
 
