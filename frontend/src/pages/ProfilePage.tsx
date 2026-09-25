@@ -9,7 +9,7 @@ import { useToast } from '@/context/ToastProvider';
 import { useWishlist } from '@/context/WishlistProvider';
 import { formatPrice } from '@/lib/format';
 import { routes } from '@/lib/routes';
-import { Button, Card, EmptyState, Input, Spinner, StatusPill } from '@/ui';
+import { Button, Card, Input, Spinner, StatusPill } from '@/ui';
 import type { Order, Profile } from '@/types/api';
 
 type ProfileTab = 'orders' | 'saved' | 'settings';
@@ -21,20 +21,13 @@ interface ProfileTabItem {
 }
 
 const PROFILE_TABS: ProfileTabItem[] = [
-  { id: 'orders', label: 'Orders', icon: 'receipt_long' },
+  { id: 'orders', label: 'Orders', icon: 'local_shipping' },
   { id: 'saved', label: 'Saved items', icon: 'favorite' },
   { id: 'settings', label: 'Settings', icon: 'settings' }
 ];
 
 function displayName(profile: Profile | null, email: string | null | undefined): string {
   return profile?.full_name?.trim() || email?.split('@')[0] || 'SpaceFit member';
-}
-
-function initials(name: string): string {
-  const parts = name.split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return 'SF';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }
 
 function formatDate(value?: string | null): string {
@@ -89,40 +82,62 @@ function ProfileSummary({
   savedCount: number;
 }) {
   return (
-    <Card className="border border-outline-variant/60 p-5 sm:p-8">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4 sm:gap-5">
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-container/20 font-headline-lg text-primary sm:h-24 sm:w-24">
-            {initials(name)}
+    <Card className="mb-6 !rounded-lg border border-outline-variant p-6 md:p-8">
+      <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-center">
+          <div className="flex flex-col items-center gap-2 sm:items-start">
+            <div
+              aria-label="Profile photo placeholder"
+              className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-outline-variant bg-surface-container-high text-outline"
+              role="img"
+            >
+              <span aria-hidden="true" className="material-symbols-outlined text-[52px]">
+                person
+              </span>
+            </div>
           </div>
-          <div className="min-w-0">
-            <div className="mb-1 flex flex-wrap items-center gap-2">
-              <h1 className="font-headline-md text-headline-md text-on-surface">{name}</h1>
-              <span className="rounded-full bg-surface-container px-2 py-0.5 font-label-sm text-label-sm text-on-surface-variant">
+          <div className="flex min-w-0 flex-col text-center sm:text-left">
+            <div className="flex flex-wrap items-center justify-center gap-2.5 sm:justify-start">
+              <h1 className="font-headline-md text-headline-md font-bold text-on-surface">
+                {name}
+              </h1>
+              <span className="inline-flex items-center gap-1 rounded-full border border-outline-variant bg-surface-container-high px-2.5 py-0.5 font-label-md text-label-md text-on-surface-variant">
+                <span aria-hidden="true" className="material-symbols-outlined text-[14px]">
+                  badge
+                </span>
                 {roleLabel(role)}
               </span>
             </div>
-            <p className="truncate font-body-md text-body-md text-on-surface-variant">{email}</p>
+            <p className="mt-1 truncate font-body-md text-body-md text-on-surface-variant">
+              {email}
+            </p>
             {createdAt ? (
-              <p className="mt-1 font-body-sm text-body-sm text-outline">
-                Member since {formatDate(createdAt)}
-              </p>
+              <div className="mt-1 flex items-center justify-center gap-1 font-body-sm text-body-sm text-on-surface-variant sm:justify-start">
+                <span aria-hidden="true" className="material-symbols-outlined text-[16px] text-outline">
+                  calendar_today
+                </span>
+                <span>Member since {formatDate(createdAt)}</span>
+              </div>
             ) : null}
           </div>
         </div>
-        <Link
-          className="inline-flex items-center justify-center gap-space-xs rounded-lg border border-outline-variant px-space-lg py-space-sm font-label-md text-label-md text-on-surface transition-colors hover:border-primary hover:text-primary"
-          to={routes.profileTab('settings')}
-        >
-          <span className="material-symbols-outlined text-lg">edit</span>
-          Edit profile
-        </Link>
+        <div className="flex w-full justify-center sm:w-auto sm:justify-end">
+          <Link
+            className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-md border border-outline-variant bg-surface-container-lowest px-5 py-2.5 font-label-lg text-label-lg text-on-surface transition-colors hover:bg-surface-container-low hover:text-primary sm:w-auto"
+            to={routes.profileTab('settings')}
+          >
+            <span aria-hidden="true" className="material-symbols-outlined text-[18px]">
+              edit
+            </span>
+            Edit profile
+          </Link>
+        </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 border-t border-outline-variant/50 pt-5 sm:grid-cols-3 sm:divide-x sm:divide-outline-variant/50">
+      <div className="mt-8 grid grid-cols-1 gap-3 border-t border-outline-variant pt-6 sm:grid-cols-3 sm:gap-4">
         <ProfileStat label="Orders" value={orderCount === null ? '—' : String(orderCount)} />
         <ProfileStat label="Saved items" value={String(savedCount)} />
-        <ProfileStat label="Account" value={roleLabel(role)} />
+        <ProfileStat label="Account type" value={roleLabel(role)} />
       </div>
     </Card>
   );
@@ -130,40 +145,67 @@ function ProfileSummary({
 
 function ProfileStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between py-2 sm:block sm:px-6 sm:py-0 first:sm:pl-0 last:sm:pr-0">
-      <p className="font-label-md text-label-md text-on-surface-variant">{label}</p>
-      <p className="font-headline-sm text-headline-sm text-on-surface sm:mt-1">{value}</p>
+    <div className="flex flex-col justify-between rounded border border-outline-variant bg-surface p-4">
+      <span className="font-label-md text-label-md text-on-surface-variant">{label}</span>
+      <span className="mt-1 font-headline-lg text-headline-lg font-bold text-on-surface">
+        {value}
+      </span>
     </div>
   );
 }
 
-function ProfileTabs({ active }: { active: ProfileTab }) {
+function ProfileTabs({
+  active,
+  orderCount,
+  savedCount
+}: {
+  active: ProfileTab;
+  orderCount: number | null;
+  savedCount: number;
+}) {
   return (
     <nav
       aria-label="Profile sections"
-      className="-mx-1 flex gap-1 overflow-x-auto border-b border-outline-variant/60 px-1"
+      className="mb-6 w-full overflow-x-auto border-b border-outline-variant"
     >
-      {PROFILE_TABS.map((item) => {
-        const selected = item.id === active;
-        return (
-          <Link
-            aria-current={selected ? 'page' : undefined}
-            className={[
-              'inline-flex min-h-12 shrink-0 items-center gap-2 border-b-2 px-3 font-label-md text-label-md transition-colors',
-              selected
-                ? 'border-primary text-primary'
-                : 'border-transparent text-on-surface-variant hover:text-on-surface'
-            ].join(' ')}
-            key={item.id}
-            to={routes.profileTab(item.id)}
-          >
-            <span className="material-symbols-outlined text-lg" aria-hidden="true">
-              {item.icon}
-            </span>
-            {item.label}
-          </Link>
-        );
-      })}
+      <div className="flex min-w-max items-center gap-8">
+        {PROFILE_TABS.map((item) => {
+          const selected = item.id === active;
+          const count =
+            item.id === 'orders'
+              ? orderCount ?? 0
+              : item.id === 'saved'
+                ? savedCount
+                : null;
+          return (
+            <Link
+              aria-current={selected ? 'page' : undefined}
+              aria-label={item.label}
+              className={[
+                'flex items-center gap-2 border-b-2 px-1 py-3 font-label-lg text-label-lg font-semibold transition-colors',
+                selected
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-on-surface-variant hover:text-on-surface'
+              ].join(' ')}
+              key={item.id}
+              to={routes.profileTab(item.id)}
+            >
+              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">
+                {item.icon}
+              </span>
+              {item.label}
+              {count !== null ? (
+                <span
+                  aria-hidden="true"
+                  className="ml-1 rounded-full bg-surface-container-high px-2 py-0.5 font-label-md text-label-md text-on-surface-variant"
+                >
+                  {count}
+                </span>
+              ) : null}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }
@@ -180,9 +222,17 @@ function ProfileEmptyState({
   cta: ReactNode;
 }) {
   return (
-    <div className="text-center">
-      <EmptyState hint={hint} icon={icon} title={title} />
-      <div className="-mt-4">{cta}</div>
+    <div className="flex flex-col items-center justify-center rounded-lg border border-outline-variant bg-surface-container-lowest p-12 text-center shadow-sm">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant">
+        <span aria-hidden="true" className="material-symbols-outlined text-[32px] text-outline">
+          {icon}
+        </span>
+      </div>
+      <h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">
+        {title}
+      </h2>
+      <p className="mt-1 max-w-sm font-body-md text-body-md text-on-surface-variant">{hint}</p>
+      <div className="mt-5">{cta}</div>
     </div>
   );
 }
@@ -212,23 +262,26 @@ function OrdersPanel({ orders, loading, error }: { orders: Order[]; loading: boo
       <ProfileEmptyState
         cta={
           <Link
-            className="inline-flex bg-primary px-space-xl py-space-md text-on-primary rounded-lg font-label-lg hover:bg-primary-container"
+            className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-primary px-6 py-2.5 font-label-lg text-label-lg font-medium text-on-primary transition-opacity hover:opacity-95"
             to={routes.shop}
           >
-            Start shopping
+            <span aria-hidden="true" className="material-symbols-outlined text-[18px]">
+              shopping_cart
+            </span>
+            Browse items
           </Link>
         }
-        hint="When you place an order, its status and details will appear here."
-        icon="receipt_long"
+        hint="Items you buy will appear here."
+        icon="shopping_cart"
         title="No orders yet"
       />
     );
   }
 
   return (
-    <div className="space-y-space-md">
+    <div className="flex flex-col gap-4">
       {orders.map((order) => (
-        <Card className="border border-outline-variant/60 p-space-md sm:p-space-lg" key={order.id}>
+        <Card className="!rounded-lg border border-outline-variant p-6 md:p-8" key={order.id}>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="font-label-md text-label-md text-on-surface-variant">Order {order.reference}</p>
@@ -278,9 +331,12 @@ function SavedPanel() {
         <ProfileEmptyState
           cta={
             <Link
-              className="inline-flex bg-primary px-space-xl py-space-md text-on-primary rounded-lg font-label-lg hover:bg-primary-container"
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-primary px-6 py-2.5 font-label-lg text-label-lg font-medium text-on-primary transition-opacity hover:opacity-95"
               to={routes.shop}
             >
+              <span aria-hidden="true" className="material-symbols-outlined text-[18px]">
+                search
+              </span>
               Browse the shop
             </Link>
           }
@@ -344,15 +400,18 @@ function SettingsPanel() {
   };
 
   return (
-    <div className="space-y-space-lg">
-      <Card className="border border-outline-variant/60 p-space-lg">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface">Personal details</h2>
+    <div className="flex flex-col gap-6">
+      <Card className="!rounded-lg border border-outline-variant p-6 md:p-8">
+        <h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">
+          Personal details
+        </h2>
         <p className="mt-1 font-body-sm text-body-sm text-on-surface-variant">
           Keep your contact details current for order updates and account security.
         </p>
-        <form className="mt-6 grid max-w-2xl gap-4 sm:grid-cols-2" onSubmit={save}>
+        <form className="mt-6 space-y-4" onSubmit={save}>
           <Input
             autoComplete="name"
+            className="h-12 !rounded-xl"
             id="profile-full-name"
             label="Full name"
             onChange={(event) => setFullName(event.target.value)}
@@ -360,42 +419,49 @@ function SettingsPanel() {
             value={fullName}
           />
           <Input
-            autoComplete="tel"
-            id="profile-phone"
-            label="Phone number"
-            onChange={(event) => setPhone(event.target.value)}
-            placeholder="+234..."
-            type="tel"
-            value={phone}
-          />
-          <Input
             autoComplete="email"
-            className="bg-surface-container text-on-surface-variant"
+            className="h-12 !rounded-xl bg-surface-container text-on-surface-variant"
             id="profile-email"
             label="Email address"
             readOnly
             value={user?.email ?? ''}
           />
-          <div className="flex items-end sm:col-span-2">
-            <Button disabled={saving} type="submit">
+          <Input
+            autoComplete="tel"
+            className="h-12 !rounded-xl"
+            id="profile-phone"
+            label="Phone number"
+            onChange={(event) => setPhone(event.target.value)}
+            placeholder="+234 800 000 0000"
+            type="tel"
+            value={phone}
+          />
+          <div className="flex justify-end pt-4">
+            <Button
+              className="min-h-[48px] !rounded-full !px-7 !py-2 font-label-lg text-label-lg"
+              disabled={saving}
+              type="submit"
+            >
               {saving ? 'Saving…' : 'Save changes'}
             </Button>
           </div>
           {message ? (
-            <p className="font-body-sm text-body-sm text-primary sm:col-span-2" role="status">
+            <p className="font-body-sm text-body-sm text-primary" role="status">
               {message}
             </p>
           ) : null}
           {error ? (
-            <p className="font-body-sm text-body-sm text-error sm:col-span-2" role="alert">
+            <p className="font-body-sm text-body-sm text-error" role="alert">
               {error}
             </p>
           ) : null}
         </form>
       </Card>
 
-      <Card className="border border-outline-variant/60 p-space-lg">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface">Account tools</h2>
+      <Card className="!rounded-lg border border-outline-variant p-6 md:p-8">
+        <h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">
+          Account tools
+        </h2>
         <p className="mt-1 font-body-sm text-body-sm text-on-surface-variant">
           {role === 'customer'
             ? 'Ready to share your space with others?'
@@ -404,7 +470,7 @@ function SettingsPanel() {
         <div className="mt-4 flex flex-wrap gap-2">
           {tools.map((tool) => (
             <Link
-              className="inline-flex items-center gap-2 rounded-lg border border-outline-variant px-3 py-2 font-label-md text-label-md text-on-surface transition-colors hover:border-primary hover:text-primary"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-md border border-outline-variant px-4 py-2.5 font-label-lg text-label-lg text-on-surface transition-colors hover:border-primary hover:text-primary"
               key={tool.label}
               to={tool.href}
             >
@@ -417,13 +483,19 @@ function SettingsPanel() {
         </div>
       </Card>
 
-      <Card className="border border-outline-variant/60 p-space-lg">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface">Account access</h2>
+      <Card className="!rounded-lg border border-outline-variant p-6 md:p-8">
+        <h2 className="font-headline-sm text-headline-sm font-semibold text-on-surface">
+          Account access
+        </h2>
         <p className="mt-1 font-body-sm text-body-sm text-on-surface-variant">
           Sign out of this device when you are finished.
         </p>
-        <Button className="mt-5" onClick={signOut} variant="outline">
-          <span className="material-symbols-outlined text-lg" aria-hidden="true">
+        <Button
+          className="mt-5 min-h-[44px] !rounded-md !px-6 !py-2.5 font-label-lg text-label-lg"
+          onClick={signOut}
+          variant="outline"
+        >
+          <span aria-hidden="true" className="material-symbols-outlined text-[18px]">
             logout
           </span>
           Sign out
@@ -468,7 +540,7 @@ export function ProfilePage() {
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-[1360px] px-4 py-space-2xl sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-[1360px] px-4 pb-12 pt-8 sm:px-6 lg:px-8">
       <ProfileSummary
         createdAt={profile?.created_at}
         email={user?.email ?? ''}
@@ -477,10 +549,14 @@ export function ProfilePage() {
         role={role}
         savedCount={items.length}
       />
-      <div className="mt-6">
-        <ProfileTabs active={activeTab} />
+      <div>
+        <ProfileTabs
+          active={activeTab}
+          orderCount={ordersLoading ? null : orders.length}
+          savedCount={items.length}
+        />
       </div>
-      <div className="pt-space-lg">
+      <div>
         {activeTab === 'orders' ? (
           <OrdersPanel error={ordersError} loading={ordersLoading} orders={orders} />
         ) : null}
