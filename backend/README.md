@@ -271,7 +271,7 @@ only a fallback when no profile row exists and is never required.
 - `src/server.js` — HTTP bootstrap + graceful shutdown
 - `src/config.js` — env-driven configuration
 - `src/store.js` — in-memory data store + pricing logic
-- `src/data/products.js` — seed catalogue (mirrors frontend product data)
+- `src/data/products.js` — eight-product reference catalogue seed (homepage + shop additions)
 - `src/middleware/errorHandler.js` — 404 + central error handling
 - `src/routes/` — products, cart, orders, consultations, newsletter, meta, sellers, notifications, returns
 - `src/db/` — Supabase repositories + the `db/index.js` backend facade
@@ -318,6 +318,12 @@ and redirect client-side.
 
 ---
 
+## Reference catalogue seed
+
+The default in-memory catalogue contains the four products shown in the reference homepage plus the four additional curated products shown in `shop.html`. Their local frontend image paths are stored in the seed and in `supabase/migrations/0011_reference_catalogue.sql` and `0012_shop_catalogue_additions.sql`. Migration 0011 resets the catalogue to the homepage four; migration 0012 additively inserts the shop additions and their image metadata. The richer seller-dashboard demo listings are test/opt-in fixtures controlled by `SEED_DEMO_SELLER_LISTINGS`.
+
+---
+
 ## To Be Provided Later
 
 The API is fully functional against the in-memory store and Supabase. The following must be supplied before production:
@@ -350,6 +356,7 @@ Copy `.env.example` to `.env`. All values have sensible defaults:
 | FREE_DELIVERY_THRESHOLD | 500000 | subtotal above which delivery is free |
 | VAT_RATE | 0.075 | VAT as a decimal (0 disables) |
 | SERVICEABLE_CITIES | Lagos,Abuja,Ibadan | checkout cities |
+| SEED_DEMO_SELLER_LISTINGS | false | opt into seller-dashboard demo products/reviews/orders in memory mode |
 | USE_SUPABASE | false | use Supabase instead of the in-memory store |
 | SUPABASE_URL | — | Supabase project URL |
 | SUPABASE_SECRET_KEY | — | service-role key (server only) |
@@ -380,6 +387,7 @@ Run `npm test` (or `npm run test:watch`). Suites live in `tests/`:
 - `email.test.js` — template builders + no-key log-only fallback
 - `auth.test.js` — auth request validation
 - `db.test.js` — db facade + Supabase migration sanity checks
+- `reference-catalogue.test.js` — eight reference products, local image assets, and migration consistency
 
 `server.test.js` covers port binding / `EADDRINUSE` handling and `static.test.js`
 covers static frontend serving (the `dist` entry + a hashed asset, the SPA shell

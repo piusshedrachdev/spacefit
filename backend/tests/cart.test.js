@@ -33,10 +33,10 @@ describe('Cart lifecycle', () => {
 
   it('increments quantity for duplicate add', async () => {
     const cartId = await newCart();
-    await request(app).post(`/api/cart/${cartId}/items`).send({ productId: 'vesper-lamp', quantity: 1 });
+    await request(app).post(`/api/cart/${cartId}/items`).send({ productId: 'nordic-desk', quantity: 1 });
     const res = await request(app)
       .post(`/api/cart/${cartId}/items`)
-      .send({ productId: 'vesper-lamp', quantity: 1 });
+      .send({ productId: 'nordic-desk', quantity: 1 });
     expect(res.body.data.items).toHaveLength(1);
     expect(res.body.data.items[0].quantity).toBe(2);
   });
@@ -60,7 +60,7 @@ describe('Cart lifecycle', () => {
     const cartId = await newCart();
     const add = await request(app)
       .post(`/api/cart/${cartId}/items`)
-      .send({ productId: 'arlo-nightstand', quantity: 1 });
+      .send({ productId: 'nordic-desk', quantity: 1 });
     const key = add.body.data.items[0].key;
 
     const res = await request(app)
@@ -74,7 +74,7 @@ describe('Cart lifecycle', () => {
     const cartId = await newCart();
     const add = await request(app)
       .post(`/api/cart/${cartId}/items`)
-      .send({ productId: 'arlo-nightstand', quantity: 2 });
+      .send({ productId: 'nordic-desk', quantity: 2 });
     const key = add.body.data.items[0].key;
 
     const res = await request(app)
@@ -87,7 +87,7 @@ describe('Cart lifecycle', () => {
     const cartId = await newCart();
     const add = await request(app)
       .post(`/api/cart/${cartId}/items`)
-      .send({ productId: 'sahara-rug', quantity: 1 });
+      .send({ productId: 'kanso-wardrobe', quantity: 1 });
     const key = add.body.data.items[0].key;
 
     const res = await request(app).delete(`/api/cart/${cartId}/items/${encodeURIComponent(key)}`);
@@ -104,7 +104,7 @@ describe('Cart lifecycle', () => {
     const cartId = await newCart();
     const res = await request(app)
       .post(`/api/cart/${cartId}/items`)
-      .send({ productId: 'kyoto-bed', quantity: 1 });
+      .send({ productId: 'kanso-wardrobe', quantity: 2 });
     expect(res.body.data.delivery).toBe(0);
   });
 

@@ -21,6 +21,10 @@ policies, Storage buckets and seed data for SpaceFit, following
         0008_wishlist.sql             # wishlist table + RLS
         0009_wishlist_rls.sql         # wishlist policies
         0010_server_managed_product_images.sql # image writes stay server-side
+        0011_reference_catalogue.sql       # replace catalogue with the four homepage products
+        0012_shop_catalogue_additions.sql  # add the four shop products and images
+
+`0011_reference_catalogue.sql` is a catalogue reset: back up the project and pause catalogue writes before applying it. It removes all product rows, clears active cart lines, and preserves order snapshots by setting old `order_items.product_id` values to null.
 
 ## Applying the migrations
 
@@ -100,4 +104,10 @@ In Dashboard -> Authentication:
   links, discount banner) and written by admins from `admin.html`.
 - Seller stats (units, revenue, rating, returns) are derived from
   `order_items` -> `products.seller_id`, `product_reviews` and `return_requests`.
+- Migration `0011_reference_catalogue.sql` replaces the product catalogue. It
+  makes `order_items.product_id` nullable with `ON DELETE SET NULL` so
+  historical order name/price/quantity snapshots survive a catalogue reset;
+  active cart lines are cleared before product ids are reused.
+- Migration `0012_shop_catalogue_additions.sql` additively inserts the four
+  additional shop products and replaces only their product-image metadata.
 

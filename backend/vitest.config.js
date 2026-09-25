@@ -10,6 +10,10 @@ export default defineConfig({
     // credentials also guarantees no test can reach the real database.
     env: {
       USE_SUPABASE: 'false',
+      // Keep the existing seller-dashboard fixtures available to the test
+      // suite while normal memory-mode seeding exposes only the reference
+      // catalogue.
+      SEED_DEMO_SELLER_LISTINGS: 'true',
       SUPABASE_URL: '',
       SUPABASE_SECRET_KEY: '',
       SUPABASE_SERVICE_ROLE_KEY: '',

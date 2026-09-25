@@ -1,0 +1,51 @@
+# Manuals
+
+**Audience:** Customers using products purchased through SpaceFit  
+**Visibility:** Public  
+**Status:** Content outline — no live product manuals are currently stored on the site
+
+## Purpose
+
+Manuals help customers set up, use, maintain, and safely handle the products they buy. A manual should be easy to follow without requiring technical expertise.
+
+## Recommended manual topics
+
+- Product assembly and setup
+- Unpacking and inventory check
+- Safe lifting and handling
+- Materials, finishes, and care requirements
+- Cleaning and maintenance schedules
+- Storage and long-term care
+- Troubleshooting common issues
+- Warranty-related care requirements
+- When to contact SpaceFit or the seller
+
+## Manual structure
+
+Every product manual should use the following sections where applicable:
+
+1. **Product overview**
+2. **What is included**
+3. **Safety information**
+4. **Assembly or setup**
+5. **Care and cleaning**
+6. **Maintenance schedule**
+7. **Troubleshooting**
+8. **Warranty or support**
+9. **Product version and review date**
+
+## Manual index template
+
+| Product or category | Version | Owner | Last reviewed | Manual status |
+| --- | --- | --- | --- | --- |
+| Product name | 1.0 | Team or seller | YYYY-MM-DD | Draft / Approved |
+
+## Writing rules
+
+- Put safety warnings before installation or use instructions.
+- Use numbered steps and call out required tools.
+- Avoid vague instructions such as “handle carefully”; explain the safe action.
+- Separate product-specific instructions from general care advice.
+- Include the product name and version on every manual.
+- Link to the relevant return or warranty policy without changing its wording.
+- Store the same approved version for sellers, support, and customers.

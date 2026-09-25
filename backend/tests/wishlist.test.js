@@ -27,7 +27,7 @@ describe('GET /api/wishlist', () => {
   it('lists saved products newest first', async () => {
     const [first, second] = [
       await request(app).post('/api/wishlist/luna-bed').set('X-Dev-User', CUSTOMER),
-      await request(app).post('/api/wishlist/vesper-lamp').set('X-Dev-User', CUSTOMER)
+      await request(app).post('/api/wishlist/nordic-desk').set('X-Dev-User', CUSTOMER)
     ];
     expect(first.status).toBe(201);
     expect(second.status).toBe(201);
@@ -35,7 +35,7 @@ describe('GET /api/wishlist', () => {
     const res = await request(app).get('/api/wishlist').set('X-Dev-User', CUSTOMER);
 
     expect(res.status).toBe(200);
-    expect(res.body.data.map((p) => p.id)).toEqual(['vesper-lamp', 'luna-bed']);
+    expect(res.body.data.map((p) => p.id)).toEqual(['nordic-desk', 'luna-bed']);
     expect(res.body.meta.count).toBe(2);
   });
 

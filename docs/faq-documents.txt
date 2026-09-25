@@ -1,0 +1,321 @@
+# SpaceFit Customer FAQ
+
+**Purpose:** Answer-ready FAQ knowledge for the SpaceFit customer-support and CRM AI agent.  
+**Audience:** Customers, visitors, prospective buyers, and approved sellers.  
+**Source status:** Draft knowledge base based on the current SpaceFit application. Confirm prices, stock, delivery charges, discounts, and policy changes against the live system before making a commitment.
+
+## Answer rules for the AI agent
+
+- Answer the customer's question directly first, then add the relevant steps.
+- Use the exact policy wording in `policies-for-ai.md` for policy questions.
+- For a live price, stock level, delivery fee, order state, or application state, use connected business data or ask a human. Do not infer it from this FAQ.
+- Never promise a refund, approval, delivery date, discount, or product outcome unless the responsible team has confirmed it.
+- Never ask for a password, one-time code, full card number, CVV, bank password, or secret key.
+- Do not claim that an order, return, refund, seller application, or consultation was changed unless a tool confirms the action.
+- If the answer is not covered here, say that you will check and escalate rather than inventing a rule.
+
+---
+
+## 1. About SpaceFit
+
+### What is SpaceFit?
+
+SpaceFit is an online marketplace for furniture and home essentials. Customers can browse products, inspect product details and variants, add items to a cart, check out, and manage their account. SpaceFit also supports approved sellers, seller applications, returns, saved products, and spatial consultation bookings.
+
+### Who can use SpaceFit?
+
+Visitors can browse the catalogue and place a guest checkout. Signed-in customers can use their profile, saved products, order history, and other account features. People who want to sell must have an approved seller account.
+
+### Which product categories are available?
+
+The current catalogue includes categories such as beds, mattresses, wardrobes, desks, nightstands, storage, and rugs. The live catalogue is the source of truth for the current category list, products, prices, and availability.
+
+### Where can I shop?
+
+Use the main Shop page to search and filter the catalogue. The marketing home page is separate from the live catalogue.
+
+---
+
+## 2. Account and authentication
+
+### How do I create a SpaceFit account?
+
+Open the authentication page, choose account creation, and provide your full name, email address, password, and phone number where requested. If email confirmation is enabled, follow the confirmation message before signing in.
+
+### How do I sign in?
+
+Use the email address and password associated with your SpaceFit account. Google sign-in is not currently offered.
+
+### How do I sign out?
+
+Open the account menu and choose sign out. Signing out clears the active session on the site.
+
+### Can I check out without an account?
+
+Yes. Guest checkout is supported. You must provide your full name, email address, phone number, delivery address, city, state, and a payment method. Creating an account makes it easier to view order history and manage saved products.
+
+### How do I update my profile?
+
+A signed-in customer can open Profile and edit the profile fields supported by the site, including name and phone number. Do not promise that every account field can be changed in the customer interface. If a customer needs to change an email address or another restricted field, escalate the request.
+
+### I cannot sign in. What should I do?
+
+Check that the email address and password are correct. If the customer is still locked out, ask them to use the password-reset option if available. Do not ask them to send their password. If the reset does not resolve the issue, escalate the account-access request to support.
+
+### What information should I provide for an account-access issue?
+
+Ask for the full name, email address, a short description of the problem, and the approximate time of the last successful sign-in. Never ask for a password or one-time code.
+
+---
+
+## 3. Finding products
+
+### How do I search for a product?
+
+Use the search field on the Shop page. Search terms are matched against the product title, description, and category. If there are no results, suggest broader wording or reset the filters.
+
+### How do I filter products?
+
+Use the available category, price-range, and sorting controls. The Shop page supports sorting by price ascending, price descending, rating, and newest. Do not tell a customer that a product is available until the live catalogue confirms it.
+
+### Where do I find product specifications?
+
+Open the product details page. Product details can include the description, features, specifications, colours, sizes, availability, and related products. If a specification is not shown on the product page, do not guess it.
+
+### How do I choose a colour or size?
+
+Select the available option on the product details page before adding the item to the cart. The options shown for a product are product-specific. If the customer needs a size or colour that is not listed, ask them to contact the seller or support.
+
+### Are all products made by SpaceFit?
+
+No assumption should be made about who made a product. Use the product listing and seller information supplied by the live catalogue. The seller policy requires sellers to list authentic goods and describe them accurately.
+
+---
+
+## 4. Cart and checkout
+
+### How do I add a product to my cart?
+
+Open the product, select any required colour or size, and choose **Add to cart**. The site shows an **Added to cart** confirmation with a link to the cart. The agent should only say the item was added when the connected cart tool confirms it.
+
+### How do I change the quantity in my cart?
+
+Open the cart and update the quantity for the relevant line item. Setting the quantity to zero removes the item in the current cart workflow. If a customer cannot see the cart change, ask them to refresh and try again before escalating.
+
+### How do I remove an item?
+
+Open the cart and choose the remove option for that item. Confirm the item and quantity before asking a human or CRM tool to make a change.
+
+### What information do I need at checkout?
+
+Provide:
+
+- Full name
+- Email address
+- Phone number
+- Delivery address
+- City
+- State
+- Payment method
+- Optional delivery instructions
+
+### Which payment methods are accepted?
+
+The current checkout configuration lists card (Visa and Mastercard), bank transfer, and cash on delivery. Availability can be configured, so the agent should use the payment options shown at checkout. Never ask a customer to send card or bank-account credentials in chat.
+
+### How are delivery charges calculated?
+
+The current configuration applies a delivery fee unless the order subtotal meets the free-delivery threshold. The fee and threshold are configurable. The agent must use the live cart or checkout calculation rather than quote a remembered amount.
+
+### Can I place an order as a guest?
+
+Yes. Guest checkout is supported. The order confirmation includes an order reference beginning with `SF-` and the order details shown on the confirmation page.
+
+### Can I change or cancel an order after placing it?
+
+There is no general self-service cancellation or amendment rule in the current customer workflow. Do not promise a change or cancellation. Collect the order reference and escalate the request to the responsible support or operations team.
+
+---
+
+## 5. Orders and delivery
+
+### How do I find my order?
+
+Signed-in customers can open **Profile → Orders** to view their own orders. For a guest order, ask for the order reference or order ID and escalate if a lookup is required. Do not reveal another customer's order information.
+
+### How long does delivery take?
+
+The current default delivery policy states:
+
+- Standard delivery within Lagos, Abuja, and Ibadan: **2–5 business days**
+- Nationwide delivery: **5–9 business days**
+
+These are policy targets, not a guarantee for every order. Confirm the current delivery promise and destination before telling a customer when an order will arrive.
+
+### Which cities does SpaceFit serve?
+
+The current default configuration lists Lagos, Abuja, and Ibadan as serviceable cities. The live checkout configuration is the source of truth for current coverage.
+
+### Is delivery free?
+
+Delivery is free when the order subtotal meets the current free-delivery threshold. The threshold is configurable, so use the live cart or checkout total. Do not promise free delivery without confirming the current configuration.
+
+### Can I track my delivery?
+
+The site shows an order reference and estimated delivery information on the confirmation page. The agent should not claim that live courier tracking is available unless a tracking tool or human support confirms it.
+
+### What happens after I place an order?
+
+The site creates an order and shows a confirmation with an order reference. The order is then subject to confirmation and fulfilment. Do not state that an item has shipped, been delivered, or been paid until the responsible system confirms it.
+
+---
+
+## 6. Returns and refunds
+
+### What is the return window?
+
+The current default return policy accepts returns within **7 days of delivery** when the item is in its original condition.
+
+### Can custom-made items be returned?
+
+The current default policy says custom-made pieces are final sale. Do not offer an exception unless the seller or an authorized support representative confirms it in writing.
+
+### How do I request a return?
+
+Provide the order ID or reference, the product involved, and a clear reason for the request. A return request is recorded for review; submission does not by itself mean that the return is approved. The current return workflow uses the statuses `requested`, `approved`, `rejected`, and `completed`.
+
+### When will a refund be paid?
+
+Under the current default policy, an **approved** refund is issued to the original payment method within **10 business days**. The agent must not promise a refund for a request that has not been approved.
+
+### What should I do if an item arrives damaged or is different from its description?
+
+Do not dispose of the item. Ask the customer to contact support promptly with the order reference, product name, a description of the issue, and clear photos if available. The case must be reviewed under the applicable return or seller policy.
+
+### Who handles my return?
+
+The return is associated with the seller for the product. Sellers can manage returns for their own products, while administrators can review all returns. The customer should not be given an internal seller or administrator decision as final without confirmation.
+
+---
+
+## 7. Sellers
+
+### How do I become a seller on SpaceFit?
+
+Create or sign in to an account, open the seller application page, and provide:
+
+- Full name
+- Email address
+- Phone number
+- Shop name
+- City and state or location
+- Delivery places
+- Product categories
+- A short shop or business description
+
+You must accept the terms and disclaimers before submitting.
+
+### How long does seller approval take?
+
+The current application email says that the team aims to review an application and respond within **2–3 business days**. This is a review target, not an approval guarantee.
+
+### What happens after I apply?
+
+The application is recorded for administrator review. The possible statuses include pending, approved, and rejected. An approved application creates the seller account and enables seller features. A rejected application includes review information when available.
+
+### What do sellers have to do?
+
+Sellers must list authentic, accurately described goods, respond to buyer enquiries within the period stated in the current seller policy, and follow the SpaceFit return window. Repeated or serious breaches may lead to suspension.
+
+### Why was my seller account blocked or suspended?
+
+Do not speculate. Explain that the account status needs to be checked by an administrator, collect the seller email and shop name, and escalate the request. The seller may contact `support@spacefit.ng` for assistance.
+
+### Can an administrator approve my seller application immediately?
+
+No. The agent should not promise approval, a specific decision, or a guaranteed response time beyond the current review target.
+
+---
+
+## 8. Saved products and wishlist
+
+### How do I save a product?
+
+Signed-in customers can use the wishlist/save control on a product card or product details page. Saved products can be viewed from the wishlist page.
+
+### Do I need an account to save products?
+
+Yes. Wishlist actions require authentication. Ask the customer to sign in if they want to save products.
+
+### Can I share my saved products with someone else?
+
+The current knowledge does not define a sharing feature. Do not claim that wishlists are public or shareable.
+
+---
+
+## 9. Spatial consultation
+
+### What is a SpaceFit spatial consultation?
+
+SpaceFit offers a free spatial-measurement consultation to help a customer think about furniture that fits a room or space. The booking asks for contact details and the city. Room type, preferred date, and notes are optional in the consultation API.
+
+### How do I book a consultation?
+
+Provide a full name, email address, phone number, and city. Add the room type, preferred date, and any useful notes if the channel supports them. Only say that the consultation is booked after a successful confirmation.
+
+### Is the consultation guaranteed to be free or completed within a particular time?
+
+The site presents the consultation as free, but availability, timing, and the final service scope must be confirmed by the team. Do not promise a particular appointment time or technical result without confirmation.
+
+---
+
+## 10. Support and escalation
+
+### How do I contact SpaceFit support?
+
+Use `support@spacefit.ng` for support requests. The current site does not define verified support hours or a public phone number, so do not invent either one.
+
+### What should a support request include?
+
+Ask for the minimum information needed to investigate:
+
+- Full name
+- Email address
+- Phone number when appropriate
+- Order ID or `SF-` reference for an order issue
+- Product name or seller/shop name for a catalogue or seller issue
+- A short description of the problem
+- Relevant date and screenshots or photos when safe to share
+
+Never request passwords, OTPs, full payment-card numbers, CVVs, or bank credentials.
+
+### When should the AI escalate?
+
+Escalate when:
+
+- The customer requests a refund, replacement, cancellation, or order change.
+- The customer reports damage, fraud, abuse, a safety issue, or a legal complaint.
+- A seller application needs a decision or an account is blocked.
+- A live price, stock level, payment result, delivery status, or discount cannot be verified.
+- The customer asks for a manual, warranty interpretation, or information not in the knowledge base.
+- The customer becomes abusive or threatens harm. Maintain a calm boundary and escalate.
+
+### What should an escalation summary contain?
+
+Use this compact format:
+
+```text
+Customer: [name]
+Contact: [email / phone if provided]
+Account or shop: [seller/shop if relevant]
+Order or application reference: [reference]
+Category: [order / return / product / seller / account / consultation]
+Issue: [short factual description]
+Requested outcome: [what the customer wants]
+Relevant dates: [dates]
+Evidence already provided: [photos/screenshots or none]
+Agent action: [information gathered or action confirmed]
+Status: [open / awaiting customer / awaiting team]
+```
+
+Do not include passwords, authentication codes, payment credentials, or unnecessary sensitive information.

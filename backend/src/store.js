@@ -12,9 +12,9 @@ import { ApiError } from './utils/http.js';
  * Beyond the storefront data this also emulates the pieces of Supabase the
  * seller-ecosystem flows need: dev users/sessions (when no Supabase project is
  * configured), profiles, seller applications, sellers, notifications, store
- * settings, product reviews and return requests. Everything is re-seeded on
- * `reset()` so the demo scenario (admin + seller + pending application) is
- * always available locally and in tests.
+ * settings, product reviews and return requests. The normal catalogue is the
+ * eight reference products; the richer seller-dashboard fixtures are opt-in via
+ * `SEED_DEMO_SELLER_LISTINGS`. Everything is re-seeded on `reset()`.
  */
 
 const ACCESS_TOKEN_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -1060,8 +1060,11 @@ class Store {
       updatedAt: earlier
     });
 
-    // Demo listings owned by the approved seller.
-    const console_ = this.createProduct({
+    // Demo listings, reviews, order history and returns are opt-in fixtures so
+    // the normal in-memory catalogue matches the eight reference products.
+    if (config.seedDemoSellerListings) {
+      // Demo listings owned by the approved seller.
+      const console_ = this.createProduct({
       title: 'Ikeja Solid Oak Console Table',
       category: 'Storage',
       price: 195000,
@@ -1076,7 +1079,7 @@ class Store {
       ],
       colors: [{ name: 'Natural Oak', hex: '#c9a227' }],
       sizes: ['Standard'],
-      images: [SEED_PRODUCTS[1].images[0]],
+      images: ['/assets/featured-product/novo-workdesk.jpg'],
       availability: 'In stock',
       sellerId: DEMO_SELLER_ID
     });
@@ -1095,7 +1098,7 @@ class Store {
       ],
       colors: [{ name: 'Brass', hex: '#b08d57' }],
       sizes: ['Standard'],
-      images: [SEED_PRODUCTS[6].images[0]],
+      images: ['/assets/featured-product/cloud-bedding.jpg'],
       availability: 'In stock',
       sellerId: DEMO_SELLER_ID
     });
@@ -1180,10 +1183,11 @@ class Store {
       requestedBy: null,
       reason: 'Wrong colour delivered — customer ordered Natural Oak.'
     });
-    this.updateReturn(completedReturn.id, {
-      status: 'completed',
-      resolutionNotes: 'Replacement dispatched within 48 hours.'
-    });
+      this.updateReturn(completedReturn.id, {
+        status: 'completed',
+        resolutionNotes: 'Replacement dispatched within 48 hours.'
+      });
+    }
 
     // Default storefront settings.
     this.settings.set('policies', { ...DEFAULT_SETTINGS.policies });

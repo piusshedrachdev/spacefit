@@ -66,7 +66,7 @@ describe('GET /api/products/:id', () => {
     const res = await request(app).get('/api/products/luna-bed');
     expect(res.status).toBe(200);
     expect(res.body.data.id).toBe('luna-bed');
-    expect(res.body.data.title).toBe('Luna Upholstered Queen Bed');
+    expect(res.body.data.title).toBe('Luna Bed Frame');
     expect(res.body.data).toHaveProperty('specs');
     expect(res.body.data).toHaveProperty('colors');
   });

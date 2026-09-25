@@ -1,0 +1,243 @@
+# SpaceFit Policies
+
+**Purpose:** Answer-ready policy knowledge for the SpaceFit customer-support and CRM AI agent.  
+**Audience:** Customers, sellers, and authorized SpaceFit staff.  
+**Source status:** Draft policy pack based on the current storefront defaults and settings model. The policy text is not a substitute for owner or legal approval.
+
+## How the AI agent should use this document
+
+- Quote or closely paraphrase the relevant section below.
+- Do not invent a refund, warranty, delivery, seller, privacy, or payment promise that is not written here or confirmed by an authorized SpaceFit representative.
+- If a question is about a specific order, account, refund, seller application, or current configuration, collect the reference and escalate or use connected business data.
+- Never give legal advice. Escalate complaints involving fraud, safety, data privacy, chargebacks, or legal rights.
+- Never request passwords, OTPs, full card details, CVVs, or bank credentials.
+
+---
+
+# 1. Return and refund policy
+
+## Current SpaceFit policy
+
+SpaceFit accepts returns within **7 days of delivery** for items in their original condition. Custom-made pieces are final sale. Approved refunds are issued to the original payment method within **10 business days**.
+
+## What this means
+
+- The return period begins from delivery, not from the date the customer browsed or ordered the item.
+- The item must be in its original condition. The agent should not decide whether packaging, wear, or use makes an item eligible; that decision belongs to the responsible team.
+- A custom-made item is final sale unless an authorized representative approves an exception in writing.
+- A refund is not guaranteed when a request is submitted. The request must be approved first.
+- After approval, the current policy states that the refund goes back to the original payment method and may take up to 10 business days.
+- The customer should keep the item, packaging, and relevant records until the return decision and any approved return instructions are completed.
+
+## Return information to collect
+
+For a return question or request, collect:
+
+- Customer name and email
+- Order ID or `SF-` reference
+- Product name
+- Reason for the return
+- Delivery date, if known
+- Description of the issue and whether the item is damaged or differs from the listing
+
+Do not ask for payment credentials. Do not ask the customer to send a full card number.
+
+## Return workflow
+
+The current return workflow records a request with the order, product, and reason. A return can have one of these statuses:
+
+- `requested` — the request has been submitted
+- `approved` — the return has been approved
+- `rejected` — the return has been declined
+- `completed` — the return process has been completed
+
+The agent must not tell a customer that a return is approved until the status is confirmed. Sellers manage returns for their own products; administrators can review all returns.
+
+## Agent response for a return
+
+> SpaceFit accepts returns within 7 days of delivery when the item is in its original condition. Custom-made pieces are final sale. Approved refunds are issued to the original payment method within 10 business days. Please send your order reference, product name, and reason for the return so the request can be reviewed.
+
+Then ask for the missing details and explain that submission does not guarantee approval.
+
+---
+
+# 2. Seller policy
+
+## Current SpaceFit policy
+
+Sellers on SpaceFit are reviewed before approval. Sellers must:
+
+- List authentic goods.
+- Describe products accurately.
+- Respond to buyer enquiries within **48 hours**.
+- Honour the SpaceFit return window.
+- Comply with marketplace rules and applicable law.
+
+Breaches may lead to suspension.
+
+## Seller application requirements
+
+A seller application requires:
+
+- Full name
+- Email address
+- Phone number
+- Shop name
+- City and state or location
+- Delivery places
+- Product categories
+- A short business or shop description
+- Acceptance of the terms and disclaimers
+
+The current application email tells applicants that the team aims to review the application and respond within **2–3 business days**. This is a review target, not a guarantee of approval.
+
+## Approval and suspension
+
+- An application is reviewed by an administrator.
+- Approval creates the seller account and enables seller features.
+- Rejection does not automatically prevent a future application, but the agent should not promise a future outcome.
+- A seller whose account is blocked or suspended should contact `support@spacefit.ng` for assistance.
+- The agent must not reveal internal review notes, investigation details, or private staff comments.
+
+## Agent response for a seller question
+
+> Seller applications are reviewed before approval. Sellers must provide accurate contact and shop information, list authentic and accurately described products, respond to buyer enquiries within 48 hours, and follow the SpaceFit return window. Approval and response timing are subject to review.
+
+For a blocked account, collect the seller email and shop name and escalate. Do not speculate about the reason for a block.
+
+---
+
+# 3. Delivery policy
+
+## Current SpaceFit policy
+
+Standard delivery is **2–5 business days within Lagos, Abuja, and Ibadan**. Nationwide delivery is **5–9 business days**. Delivery is free on orders above the current free-delivery threshold.
+
+## Important qualifications
+
+- The city list, delivery fee, and free-delivery threshold are configurable. The live checkout configuration is the source of truth.
+- Delivery estimates are business-day estimates, not guaranteed arrival timestamps.
+- The agent must confirm the destination and live checkout total before giving a delivery commitment.
+- The agent must not promise same-day delivery, a courier name, or a guaranteed arrival date unless an authorized team member confirms it.
+
+## Delivery information to collect
+
+- Delivery address
+- City
+- State
+- Phone number
+- Preferred delivery instructions, if any
+- Order reference, if the question concerns an existing order
+
+## Agent response for delivery
+
+> The current delivery policy is 2–5 business days for standard delivery within Lagos, Abuja, and Ibadan, and 5–9 business days for nationwide delivery. Delivery is free when the order subtotal meets the current free-delivery threshold. Please confirm your destination and checkout total for the applicable fee and timing.
+
+Do not present the estimate as a guarantee.
+
+---
+
+# 4. Privacy policy
+
+## Current SpaceFit policy
+
+SpaceFit stores only the data needed to fulfil orders and improve the customer experience. SpaceFit does not sell personal data. Payment details are processed by the payment provider identified in the current approved policy and are not stored by SpaceFit's servers.
+
+## Data SpaceFit may need for a transaction or account
+
+Depending on the requested service, the site may require:
+
+- Full name
+- Email address
+- Phone number
+- Delivery address, city, and state
+- Order and product references
+- Seller application and shop details
+- Consultation details, such as city, room type, preferred date, and notes
+
+The agent should collect only information needed for the request. Do not request a password, OTP, full card number, CVV, bank password, or secret key.
+
+## Data-handling rules for the agent
+
+- Do not repeat or summarize a customer's personal data in a public response.
+- Do not expose another customer's order, profile, application, or saved-product information.
+- Send sensitive information only through an approved private support channel.
+- Escalate suspected account takeover, fraud, data misuse, or privacy complaints.
+- Do not claim that a data request has been completed unless an authorized system confirms it.
+
+## Agent response for a privacy question
+
+> SpaceFit uses the information needed to process orders, manage accounts, provide requested services, and improve the customer experience. Personal data is not sold. For a specific access, correction, or deletion request, collect the requester's email and identity details through an approved private channel and escalate it to the responsible team.
+
+Do not promise a deletion timeframe unless one has been approved by the responsible team.
+
+---
+
+# 5. Checkout and payment rules
+
+## Current checkout rules
+
+The checkout flow requires:
+
+- Full name
+- Email address
+- Phone number
+- Delivery address
+- City
+- State
+- A payment method
+
+The current payment configuration lists:
+
+- Card (Visa and Mastercard)
+- Bank transfer
+- Cash on delivery
+
+The available options shown at checkout are the source of truth. A payment method being displayed does not guarantee that every payment attempt will succeed.
+
+## Agent rules
+
+- Do not ask for or accept card numbers, CVVs, bank passwords, or OTPs in chat.
+- Do not tell a customer that a payment succeeded unless the connected payment/order system confirms it.
+- If checkout fails, preserve the error and escalate it; do not repeatedly ask for payment credentials.
+- Price, delivery fee, VAT, discounts, and order total must come from the live cart or checkout calculation.
+
+---
+
+# 6. Product and listing rules
+
+The current seller policy requires authentic goods and accurate descriptions. The agent may answer questions using the live product listing, but it must not invent dimensions, materials, stock status, warranty, or delivery promises that are not shown there.
+
+If a product page and a customer report conflict, collect the product name, seller or shop, order reference if relevant, and the exact discrepancy. Escalate product-quality, safety, or listing-accuracy concerns for review.
+
+---
+
+# 7. Policies not currently defined
+
+The current site does not provide a complete approved policy for every possible subject. The agent must not make up rules for:
+
+- A general warranty or statutory consumer rights
+- A cancellation fee or order-change fee
+- A specific refund processing time for a payment provider beyond the approved return policy
+- Cookie or advertising tracking
+- Chargebacks or payment disputes
+- Custom manufacturing deadlines
+- Professional installation or assembly services
+- Memberships, credits, gift cards, or loyalty points
+
+For these questions, say that the information is not published in the current policy pack and escalate to an authorized representative.
+
+---
+
+# 8. Escalation and approval
+
+The following requests must be escalated rather than decided by the AI:
+
+- Refund approval, replacement, rejection, or exception
+- Damaged, unsafe, counterfeit, or materially misdescribed products
+- Order cancellation, amendment, or delivery commitment
+- Seller approval, rejection, suspension, or reinstatement
+- Privacy, fraud, chargeback, legal, or safety concerns
+- Any request that conflicts with this document
+
+A useful escalation summary includes the customer name, verified contact details, order/application reference, category, issue, requested outcome, relevant dates, and evidence already provided. Exclude passwords, OTPs, payment credentials, and unnecessary sensitive data.

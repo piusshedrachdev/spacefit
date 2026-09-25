@@ -51,6 +51,11 @@ export const config = {
     senderName: process.env.BREVO_SENDER_NAME || 'SpaceFit'
   },
 
+  // Optional local/test fixtures. The normal in-memory catalogue contains the
+  // eight reference products; tests may opt into the richer seller dashboard
+  // scenario explicitly.
+  seedDemoSellerListings: (process.env.SEED_DEMO_SELLER_LISTINGS || '').toLowerCase() === 'true',
+
   // When true, the app reads/writes through Supabase instead of the in-memory
   // store. Falls back to memory automatically if credentials are missing.
   useSupabase: (process.env.USE_SUPABASE || '').toLowerCase() === 'true'

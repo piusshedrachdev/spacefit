@@ -1,171 +1,130 @@
 import { slugify } from '../utils/slugify.js';
 
 /**
- * Seed catalogue for the SpaceFit storefront.
- * Product ids are slugs and match the ids the frontend uses on
- * product-details.html?id=...
+ * Reference catalogue seed.
  *
- * NOTE: This is in-memory seed data. The README explains which parts of this
- * should later be sourced from a real database / PIM system.
+ * These eight entries mirror the four homepage product cards in
+ * `space-fit2/frontend/index.html` plus the four additional curated shop
+ * products in `space-fit2/frontend/shop.html` and their metadata in
+ * `space-fit2/frontend/products.js`. Fields not supplied by the reference stay
+ * empty/zero rather than inventing catalogue data.
  */
 export const SEED_PRODUCTS = [
   {
     id: 'luna-bed',
-    title: 'Luna Upholstered Queen Bed',
+    title: 'Luna Bed Frame',
     category: 'Beds',
     price: 450000,
     origPrice: null,
     currency: 'NGN',
-    rating: 4.8,
-    reviews: 128,
+    rating: 0,
+    reviews: 0,
     availability: 'In stock',
-    shortDescription: 'A sculptural upholstered queen bed with a soft, curved headboard.',
-    description:
-      'A low-profile upholstered queen bed with a softly curved headboard, deep foam padding and a solid beech frame. Designed to anchor calm, contemporary bedrooms.',
-    features: [
-      'Solid beech hardwood frame',
-      'High-resilience foam padding',
-      'Stain-resistant performance fabric',
-      'Slatted base, no box spring required'
-    ],
+    shortDescription: 'Natural solid oak with curved headboard and oatmeal bouclé upholstery.',
+    description: 'Natural solid oak with curved headboard and oatmeal bouclé upholstery.',
+    features: ['Solid wood frame', 'Modern profile', 'Easy assembly'],
     specs: [
-      { label: 'Dimensions', value: '210 \u00d7 165 \u00d7 95 cm' },
-      { label: 'Material', value: 'Beech, foam, performance fabric' },
-      { label: 'Assembly', value: 'Minimal assembly (15 mins)' },
-      { label: 'Availability', value: 'In stock' }
+      { label: 'Dimensions', value: '200 × 160 × 90 cm' },
+      { label: 'Material', value: 'Solid wood' },
+      { label: 'Style', value: 'Modern' },
+      { label: 'Assembly', value: 'Easy assembly' }
     ],
-    colors: [
-      { name: 'Oat', hex: '#e7ded0' },
-      { name: 'Charcoal', hex: '#3d3a37' },
-      { name: 'Sage', hex: '#a8b5a0' }
-    ],
-    sizes: ['Queen', 'King', 'Super King'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAv2rHcY6xG_IySVreSWQMGFw67OxBdL9bdjjQCwjJcSlAwrv7s7mwgs5q8SHO19y_qHHJiFeGULX9vrMI7RBQv91TXGdZGy-a6rac-wbOW4JtJx56BoLWobJblCl9uxMr1julmK1OA0wLZynTfSEww9r1FAuopXtGV_PBAZ9P532el0oSrbA1k4EBBAwJNIeesFDTNLtcCm-Ijgn3RUguLTGXKHaT1B8zMz_ng2yXEULDshcGMZqVMDg'
-    ],
-    featured: true
-  },
-  {
-    id: 'nordic-desk',
-    title: 'Nordic Ergonomic Oak Desk',
-    category: 'Desks',
-    price: 185000,
-    origPrice: 210000,
-    currency: 'NGN',
-    rating: 4.7,
-    reviews: 94,
-    availability: 'In stock',
-    shortDescription: 'Solid oak work desk with cable management and a ergonomic profile.',
-    description:
-      'A solid oak writing desk with a gently tapered profile, integrated cable channel and a rounded front edge for all-day comfort.',
-    features: [
-      'Solid oak top',
-      'Integrated cable management',
-      'Ergonomic rounded edge',
-      'Powder-coated steel legs'
-    ],
-    specs: [
-      { label: 'Dimensions', value: '140 \u00d7 65 \u00d7 75 cm' },
-      { label: 'Material', value: 'Oak, steel' },
-      { label: 'Assembly', value: 'Assemble in 20 mins' },
-      { label: 'Availability', value: 'In stock' }
-    ],
-    colors: [
-      { name: 'Natural Oak', hex: '#c9a227' },
-      { name: 'Walnut', hex: '#6b4a2b' }
-    ],
-    sizes: ['140 cm', '160 cm'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAg9iUcew14JZ-qhYmgk6dSnhivEProXqgY_WBfSH49RVkLunQz-uIjeajEZfp1M0xKaw31fATfor0gpO4zpoFulbt-uSni1X27NgeGSnkyxjRO71hl7BhepNKUfDK--og7GaKufpwtZGKuX6BH7sCQo5eTZaGzvdhYGCR1n_0IoyZ_fq5v5Kr03vSd5zWEjb4J6PDmMpKvcVBhzIYHTSbhvGcnXW0TZz4BozLeOI7h7egR-yyEtLQ3'
-    ],
+    colors: [],
+    sizes: [],
+    images: ['/assets/featured-product/lunabedframe.jpg'],
     featured: true
   },
   {
     id: 'cloudrest-mattress',
-    title: 'CloudRest Memory Hybrid Mattress',
+    title: 'Comfort Cloud Mattress',
     category: 'Mattresses',
-    price: 240000,
+    price: 180000,
     origPrice: null,
     currency: 'NGN',
-    rating: 4.9,
-    reviews: 212,
+    rating: 0,
+    reviews: 0,
     availability: 'In stock',
-    shortDescription: 'Hybrid memory-foam mattress with pocket springs for cooling support.',
-    description:
-      'A hybrid mattress combining cooling memory foam with individually pocketed springs for responsive, breathable support night after night.',
-    features: [
-      'Cooling gel memory foam',
-      'Individually pocketed springs',
-      'Motion isolation',
-      '10-year warranty'
-    ],
+    shortDescription: 'Orthopedic dual-layer high density foam with breathable cooling gel.',
+    description: 'Orthopedic dual-layer high density foam with breathable cooling gel.',
+    features: ['Memory foam', 'Pocket spring', 'Zero motion transfer'],
     specs: [
-      { label: 'Dimensions', value: '200 \u00d7 150 \u00d7 28 cm' },
-      { label: 'Firmness', value: 'Medium' },
-      { label: 'Warranty', value: '10 years' },
-      { label: 'Availability', value: 'In stock' }
+      { label: 'Dimensions', value: '180 × 200 × 28 cm' },
+      { label: 'Material', value: 'Memory foam & pocket spring' },
+      { label: 'Feel', value: 'Zero motion transfer' }
     ],
-    colors: [{ name: 'White', hex: '#f5f5f5' }],
-    sizes: ['Double', 'Queen', 'King'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuD646tjCDPLN0QSK2wy-s7PRBcEQRSLE4aFn8HtXFQWvZk6BWGyIq29veX3FHMbdxfwEsgteOTnZZAsaCBTF2lgrd526T8eM4iM3hOwHiinUsCAU91CV5kIWTwXLSXwkx7CkXMj3rWwRFqz1WjN1Lfs3fT6usrmCI4wf-rB8HpiBcGaBGKL7Y-EsET_Ezx1iG0X7Ppa5lkQhjTRkUu2N71UzvS41wfU8O623YigK8PGjJ2w5XuR5PPyYg'
-    ],
+    colors: [],
+    sizes: [],
+    images: ['/assets/featured-product/cloud-bedding.jpg'],
     featured: true
   },
   {
     id: 'kanso-wardrobe',
-    title: 'Kanso Minimalist 3-Door Wardrobe',
-    category: 'Storage',
-    price: 380000,
+    title: 'Aspen Solid Wardrobe',
+    category: 'Wardrobes',
+    price: 320000,
     origPrice: null,
     currency: 'NGN',
-    rating: 4.6,
-    reviews: 58,
+    rating: 0,
+    reviews: 0,
     availability: 'In stock',
-    shortDescription: 'A clean-lined three-door wardrobe with soft-close hardware.',
-    description:
-      'A minimalist three-door wardrobe with full-height doors, soft-close hinges and an adjustable internal shelving system.',
-    features: ['Soft-close doors', 'Adjustable shelving', 'Anti-tip hardware', 'Matte finish'],
+    shortDescription: 'Ash wood finish with integrated hangers and soft-close German hinges.',
+    description: 'Ash wood finish with integrated hangers and soft-close German hinges.',
+    features: ['Blonde ash wood', 'Soft-close German hinges', 'Modular shelving'],
     specs: [
-      { label: 'Dimensions', value: '180 \u00d7 60 \u00d7 220 cm' },
-      { label: 'Material', value: 'Engineered wood' },
-      { label: 'Assembly', value: 'Professional recommended' },
-      { label: 'Availability', value: 'In stock' }
+      { label: 'Dimensions', value: '150 × 210 × 60 cm' },
+      { label: 'Material', value: 'Blonde ash wood' },
+      { label: 'Storage', value: 'Modular shelving' }
     ],
-    colors: [
-      { name: 'Cloud White', hex: '#f2f2f2' },
-      { name: 'Warm Grey', hex: '#8d8a85' }
+    colors: [],
+    sizes: [],
+    images: ['/assets/featured-product/solid-wardrobe.jpg'],
+    featured: true
+  },
+  {
+    id: 'nordic-desk',
+    title: 'Novo Work Desk',
+    category: 'Desks',
+    price: 150000,
+    origPrice: null,
+    currency: 'NGN',
+    rating: 0,
+    reviews: 0,
+    availability: 'In stock',
+    shortDescription: 'Slender tapered legs with cable routing for clean, mindful workspaces.',
+    description: 'Slender tapered legs with cable routing for clean, mindful workspaces.',
+    features: ['Sustainably sourced white oak', 'Cable routing', 'Beveled perimeter'],
+    specs: [
+      { label: 'Dimensions', value: '120 × 60 × 75 cm' },
+      { label: 'Material', value: 'Sustainably sourced white oak' },
+      { label: 'Shape', value: 'Beveled perimeter' }
     ],
-    sizes: ['180 cm', '220 cm'],
-    images: [],
-    featured: false
+    colors: [],
+    sizes: [],
+    images: ['/assets/featured-product/novo-workdesk.jpg'],
+    featured: true
   },
   {
     id: 'arlo-nightstand',
     title: 'Arlo Floating Walnut Nightstand',
-    category: 'Storage',
+    category: 'Nightstands',
     price: 65000,
     origPrice: null,
     currency: 'NGN',
     rating: 4.7,
-    reviews: 76,
+    reviews: 54,
     availability: 'In stock',
-    shortDescription: 'Wall-mounted walnut nightstand with a floating silhouette.',
-    description:
-      'A wall-mounted walnut nightstand that appears to float, with a soft-close drawer and a generous open shelf.',
-    features: ['Wall-mounted', 'Soft-close drawer', 'Solid walnut veneer', 'Open shelf'],
+    shortDescription: 'Wall-mounted brass cleat with cable dock groove.',
+    description: 'Cantilevered floating American walnut nightstand with cable dock channel.',
+    features: ['Wall-mounted', 'Cable dock groove', 'Brass cleat'],
     specs: [
-      { label: 'Dimensions', value: '145 \u00d7 28 \u00d7 28 cm' },
-      { label: 'Style', value: 'Architectural Modern' },
-      { label: 'Assembly', value: 'Minimal assembly' },
-      { label: 'Availability', value: 'In stock' }
+      { label: 'Dimensions', value: '45 × 32 × 25 cm' },
+      { label: 'Material', value: 'American walnut & brass cleat' },
+      { label: 'Mounting', value: 'Wall mounted' }
     ],
-    colors: [{ name: 'Walnut', hex: '#6b4a2b' }],
-    sizes: ['Single'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuB_BgX8tgqlHLa_HV1eNqg860a2fvSkn0z_6-FpGNAIcusrjo0dAvP6JjGGSc0LXbD_KWBMIs1gGJlaCQqQp0jvkbe7v8T3yvS-DehWBFUDE2JTKoEutIVk7M3xmSJblVndH64_TYpkE73Nv7HhYGWaJm4L74Xq_eDTr6oIOmSnzl4iSRRdwWt0oFRMhsj735XbTwllFlNJyNQ3N4kfevAWBX6B3WMNAG0NHAi-irAo5XXYIwVnfnEd'
-    ],
-    featured: true
+    colors: [],
+    sizes: [],
+    images: ['/assets/categories/nightstand.jpg'],
+    featured: false
   },
   {
     id: 'sahara-rug',
@@ -174,28 +133,21 @@ export const SEED_PRODUCTS = [
     price: 140000,
     origPrice: null,
     currency: 'NGN',
-    rating: 4.8,
-    reviews: 43,
+    rating: 5,
+    reviews: 12,
     availability: 'In stock',
-    shortDescription: 'Handwoven wool rug with a subtle desert-toned pattern.',
-    description:
-      'A handwoven wool rug in warm desert tones, finished with a low pile that is soft underfoot and easy to maintain.',
-    features: ['Handwoven wool', 'Low pile', 'Natural dyes', 'Non-slip backing'],
+    shortDescription: 'Unbleached mountain wool with non-shedding density.',
+    description: 'Handwoven 100% natural mountain wool area rug with subtle Berber motifs.',
+    features: ['100% natural mountain wool', 'Non-shedding pile', 'Handwoven'],
     specs: [
-      { label: 'Dimensions', value: '240 \u00d7 170 cm' },
-      { label: 'Material', value: '100% wool' },
-      { label: 'Care', value: 'Professional clean' },
-      { label: 'Availability', value: 'In stock' }
+      { label: 'Dimensions', value: '240 × 300 cm' },
+      { label: 'Material', value: '100% unbleached mountain wool' },
+      { label: 'Pile', value: 'Non-shedding' }
     ],
-    colors: [
-      { name: 'Sand', hex: '#d9c7a3' },
-      { name: 'Terracotta', hex: '#b45f3f' }
-    ],
-    sizes: ['170\u00d7240', '200\u00d7300'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCW5YUYMH9aON7q4jOaGC1uDak-hGYS4JsGbN3GnKe0o_chDMjZPU1Y_gJL74xWGYIHqR7zMJoPMnQ4XUFTpqHYUXAslVNiR8xWagOR0Z79oq2lUnNaK0JR-zGO-WaW5MbUWA40tjrXaJLCz6-iBowQPq_t7lwcUi73pLBT7pUh_nqBUIYO7FbHgljSTb-HUVDzbXH6KDfU7eTbTCD45gDNoTNVG3NmSl5kjBIdv-wHopfXeBe51Ijx'
-    ],
-    featured: true
+    colors: [],
+    sizes: [],
+    images: ['/assets/categories/rugs.jpg'],
+    featured: false
   },
   {
     id: 'vesper-lamp',
@@ -204,22 +156,20 @@ export const SEED_PRODUCTS = [
     price: 82000,
     origPrice: null,
     currency: 'NGN',
-    rating: 4.5,
+    rating: 4.8,
     reviews: 31,
     availability: 'In stock',
-    shortDescription: 'Slim brass floor lamp with an adjustable linen shade.',
-    description:
-      'A slim brass floor lamp with an adjustable linen shade and a weighted base for stability.',
-    features: ['Solid brass stem', 'Linen shade', 'Adjustable height', 'Weighted base'],
+    shortDescription: 'Solid travertine base with warm dimming toggle.',
+    description: 'Architectural floor lamp crafted from brushed solid brass with travertine base.',
+    features: ['Brushed solid brass', 'Travertine base', 'Warm dimming toggle'],
     specs: [
-      { label: 'Dimensions', value: '45 \u00d7 45 \u00d7 160 cm' },
-      { label: 'Material', value: 'Brass, linen' },
-      { label: 'Bulb', value: 'E27, not included' },
-      { label: 'Availability', value: 'In stock' }
+      { label: 'Dimensions', value: '145 × 28 × 28 cm' },
+      { label: 'Material', value: 'Brushed brass & travertine stone' },
+      { label: 'Light', value: '2700K warm LED' }
     ],
-    colors: [{ name: 'Brass', hex: '#b08d57' }],
-    sizes: ['Standard'],
-    images: [],
+    colors: [],
+    sizes: [],
+    images: ['/assets/carousell/scandinavian-style-home-office.jpg'],
     featured: false
   },
   {
@@ -232,30 +182,18 @@ export const SEED_PRODUCTS = [
     rating: 4.9,
     reviews: 67,
     availability: 'Low stock (2 Left)',
-    shortDescription: 'Low-profile Japanese ash bed frame with traditional joinery.',
-    description:
-      'Low-profile Japanese solid ash bed frame featuring traditional mortise and tenon joinery with integrated floating headboard ledges.',
-    features: [
-      'Mortise & tenon joinery',
-      'Solid Japanese ash timber',
-      'Integrated headboard side ledges',
-      'Low-profile Japandi silhouette'
-    ],
+    shortDescription: 'Mortise & tenon joinery with integrated headboard ledge.',
+    description: 'Low-profile Japanese solid ash bed frame with mortise and tenon joinery.',
+    features: ['Mortise & tenon joinery', 'Solid Japanese ash', 'Integrated headboard ledge'],
     specs: [
-      { label: 'Dimensions', value: '215 \u00d7 170 \u00d7 80 cm' },
-      { label: 'Material', value: 'Solid ash' },
-      { label: 'Assembly', value: 'Minimal assembly' },
-      { label: 'Availability', value: 'Low stock' }
+      { label: 'Dimensions', value: '215 × 195 × 85 cm' },
+      { label: 'Material', value: 'Solid Japanese ash' },
+      { label: 'Style', value: 'Japandi minimalist' }
     ],
-    colors: [
-      { name: 'Ash', hex: '#d6cbb8' },
-      { name: 'Dark Ash', hex: '#6f6455' }
-    ],
-    sizes: ['Queen', 'King'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuD__WE3ymv7GhS8tqZur3RWoUIsQa3hEwrwyBu9mvBKBtD6UiHKplyWeEmyYqs6mEuMN58-lIrRHauFGCmuZM7gxMQXeZZ0LQPk06ezFBj5AedH4zxdzZXtrZ1sXw7kgrmCoN2YNYmelo-iz6eONPOJzeAlv7yvO3LgRoi6wRUVPrgM9CoBBKUp38egfItwr-xKAa2bGMyVIx49Ovjhmut_i_hvKAZELV0XsjOZXeQwjMAviWbQQcbE'
-    ],
-    featured: true
+    colors: [],
+    sizes: [],
+    images: ['/assets/carousell/serene-living-room-sectional-sofa.jpg'],
+    featured: false
   }
 ];
 

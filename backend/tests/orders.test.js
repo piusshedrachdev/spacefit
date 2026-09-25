@@ -26,7 +26,7 @@ describe('POST /api/orders', () => {
 
   it('accepts flat form fields from checkout.html', async () => {
     const res = await request(app).post('/api/orders').send({
-      items: [{ productId: 'arlo-nightstand', quantity: 2 }],
+      items: [{ productId: 'nordic-desk', quantity: 2 }],
       fullName: 'Jane Doe',
       email: 'jane@example.com',
       phone: '+2348099999999',
@@ -43,7 +43,7 @@ describe('POST /api/orders', () => {
   it('builds an order from a server cart and clears it', async () => {
     const cart = await request(app).post('/api/cart');
     const cartId = cart.body.data.id;
-    await request(app).post(`/api/cart/${cartId}/items`).send({ productId: 'vesper-lamp', quantity: 1 });
+    await request(app).post(`/api/cart/${cartId}/items`).send({ productId: 'kanso-wardrobe', quantity: 1 });
 
     const res = await request(app)
       .post('/api/orders')
